@@ -144,7 +144,7 @@ export default function RequestTable({ initialRequests }: { initialRequests: any
                <ListTodo className="w-8 h-8 text-emerald-600 group-hover:rotate-12 transition-transform" />
             </div>
             <div>
-              <h3 className="text-2xl font-black text-slate-900 tracking-tight leading-none">รายการคำขอ IT ทั้งหมด</h3>
+              <h3 className="text-2xl font-black text-slate-900 tracking-tight leading-none">จัดการคำขอทั้งหมด</h3>
               <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-2 flex items-center gap-2">
                  <Settings2 className="w-3 h-3" /> Management Workflow System
               </p>
