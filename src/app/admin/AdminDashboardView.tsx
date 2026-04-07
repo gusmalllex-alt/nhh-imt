@@ -24,7 +24,7 @@ const ALL_STATUSES = [
 export default function AdminDashboardView({ requests }: { requests: any[] }) {
   
   const statsData = useMemo(() => {
-    // 1. Status Distribution (Ensuring all exist)
+    // 1. Status Distribution
     const statusCounts: Record<string, number> = {};
     ALL_STATUSES.forEach(s => statusCounts[s] = 0);
     requests.forEach(r => {
@@ -41,7 +41,7 @@ export default function AdminDashboardView({ requests }: { requests: any[] }) {
     });
     const typeData = Object.entries(typeMap).map(([name, value]) => ({ name, value }));
 
-    // 3. Assignee Workload (ใครรับงานมากที่สุด)
+    // 3. Assignee Workload
     const assigneeMap: Record<string, number> = {};
     requests.forEach(r => {
       const a = r.assigned_to || "- ยังไม่รับเรื่อง -";
@@ -66,52 +66,55 @@ export default function AdminDashboardView({ requests }: { requests: any[] }) {
   }, [requests]);
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 font-sans pb-10">
+    <div className="space-y-6 animate-in fade-in duration-500 font-sans pb-10">
       
-      {/* Header Info */}
-      <div className="flex flex-wrap items-center gap-6 mb-8 bg-white p-8 rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100">
-         <div className="flex items-center gap-4 border-r border-slate-100 pr-8">
-            <div className="w-14 h-14 bg-slate-900 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-slate-900/20">
-               <FileText className="w-7 h-7" />
-            </div>
-            <div>
-               <div className="text-3xl font-black text-slate-900 tracking-tighter">{statsData.total}</div>
-               <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">คำขอทั้งหมด</div>
-            </div>
-         </div>
-         <div className="flex flex-wrap gap-4">
-            {[
-               { name: "รอดำเนินการ", label: "รอดำเนินการ", bg: "bg-amber-50", text: "text-amber-600" },
-               { name: "รับเรื่อง", label: "รับเรื่อง", bg: "bg-sky-50", text: "text-sky-600" },
-               { name: "กำลังดำเนินการ", label: "กำลังดำเนินการ", bg: "bg-blue-50", text: "text-blue-600" },
-               { name: "ขอข้อมูลเพิ่ม", label: "ขอข้อมูลเพิ่ม", bg: "bg-purple-50", text: "text-purple-600" },
-               { name: "ดำเนินการเรียบร้อย", label: "ดำเนินการเรียบร้อย", bg: "bg-emerald-50", text: "text-emerald-600" },
-               { name: "ยกเลิก", label: "ยกเลิก", bg: "bg-rose-50", text: "text-rose-600" }
-            ].map((s, idx) => (
-               <div key={idx} className={`${s.bg} px-5 py-3 rounded-2xl flex flex-col justify-center min-w-[100px] border border-white/50 shadow-sm transition-transform hover:scale-105`}>
-                  <span className={`${s.text} font-black text-xl leading-none`}>
-                     {statsData.statusData.find(st => st.name === s.name)?.value || 0}
-                  </span>
-                  <span className={`${s.text} opacity-70 text-[9px] font-black uppercase tracking-widest mt-1`}>{s.label}</span>
+      {/* Header Info Banner */}
+      <div className="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
+         <div className="flex flex-wrap items-center gap-8">
+            <div className="flex items-center gap-4 border-r border-slate-100 pr-8">
+               <div className="w-11 h-11 bg-slate-900 rounded-lg flex items-center justify-center text-white shadow-sm">
+                  <FileText className="w-5 h-5" />
                </div>
-            ))}
+               <div>
+                  <div className="text-2xl font-bold text-slate-900 leading-none">{statsData.total}</div>
+                  <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-1.5">คำขอรวมทั้งหมด</div>
+               </div>
+            </div>
+            
+            <div className="flex flex-wrap gap-2">
+               {[
+                  { name: "รอดำเนินการ", label: "รอดำเนินการ", bg: "bg-amber-500" },
+                  { name: "รับเรื่อง", label: "รับเรื่อง", bg: "bg-sky-500" },
+                  { name: "กำลังดำเนินการ", label: "กำลังทำงาน", bg: "bg-blue-600" },
+                  { name: "ขอข้อมูลเพิ่ม", label: "ขอข้อมูลเพิ่ม", bg: "bg-purple-600" },
+                  { name: "ดำเนินการเรียบร้อย", label: "เสร็จสิ้น", bg: "bg-emerald-600" },
+                  { name: "ยกเลิก", label: "ยกเลิก", bg: "bg-rose-600" }
+               ].map((s, idx) => (
+                  <div key={idx} className={`${s.bg} px-3 py-1.5 rounded-lg flex items-center gap-2 border border-black/5 shadow-sm`}>
+                     <span className="text-white font-bold text-sm">
+                        {statsData.statusData.find(st => st.name === s.name)?.value || 0}
+                     </span>
+                     <span className="text-white text-[9px] font-bold uppercase tracking-tighter opacity-90">{s.label}</span>
+                  </div>
+               ))}
+            </div>
          </div>
       </div>
 
       {/* Charts Grid 2x2 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         {/* Status Donut */}
-        <ChartCard title="สถานะงาน" sub="Work Status Distribution">
-           <ResponsiveContainer width="100%" height={300}>
+        <ChartCard title="สัดส่วนสถานะงาน" sub="Work Status Distribution">
+           <ResponsiveContainer width="100%" height={280}>
               <PieChart>
                  <Pie
                     data={statsData.statusData}
                     cx="50%" cy="50%"
-                    innerRadius={70}
-                    outerRadius={100}
-                    paddingAngle={5}
-                    cornerRadius={10}
+                    innerRadius={65}
+                    outerRadius={90}
+                    paddingAngle={3}
+                    cornerRadius={6}
                     dataKey="value"
                     label={({ name, value }) => `${value}`}
                  >
@@ -119,23 +122,23 @@ export default function AdminDashboardView({ requests }: { requests: any[] }) {
                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                  </Pie>
-                 <Tooltip contentStyle={{borderRadius: '20px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'}} />
-                 <Legend verticalAlign="bottom" height={36} wrapperStyle={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '1px' }} />
+                 <Tooltip contentStyle={{borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px -2px rgb(0 0 0 / 0.1)'}} />
+                 <Legend verticalAlign="bottom" height={36} wrapperStyle={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase' }} />
               </PieChart>
            </ResponsiveContainer>
         </ChartCard>
 
         {/* Request Type Donut */}
-        <ChartCard title="ประเภทคำขอ" sub="Request Category Distribution">
-           <ResponsiveContainer width="100%" height={300}>
+        <ChartCard title="ประเภทข้อมูลที่ขอ" sub="Request Category Distribution">
+           <ResponsiveContainer width="100%" height={280}>
               <PieChart>
                  <Pie
                     data={statsData.typeData}
                     cx="50%" cy="50%"
-                    innerRadius={70}
-                    outerRadius={100}
-                    paddingAngle={5}
-                    cornerRadius={10}
+                    innerRadius={65}
+                    outerRadius={90}
+                    paddingAngle={3}
+                    cornerRadius={6}
                     dataKey="value"
                     label={({ name, value }) => `${value}`}
                  >
@@ -143,15 +146,15 @@ export default function AdminDashboardView({ requests }: { requests: any[] }) {
                        <Cell key={`cell-${index}`} fill={COLORS[(index + 2) % COLORS.length]} />
                     ))}
                  </Pie>
-                 <Tooltip contentStyle={{borderRadius: '20px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'}} />
-                 <Legend verticalAlign="bottom" height={36} wrapperStyle={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '1px' }} />
+                 <Tooltip contentStyle={{borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px -2px rgb(0 0 0 / 0.1)'}} />
+                 <Legend verticalAlign="bottom" height={36} wrapperStyle={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase' }} />
               </PieChart>
            </ResponsiveContainer>
         </ChartCard>
 
         {/* Assignee Bar Chart */}
-        <ChartCard title="ผู้รับผิดชอบ" sub="Who received the most work">
-           <ResponsiveContainer width="100%" height={300}>
+        <ChartCard title="เจ้าหน้าที่ผู้รับงาน" sub="Staff Workload Distribution">
+           <ResponsiveContainer width="100%" height={280}>
               <BarChart data={statsData.assigneeData} layout="vertical" margin={{ left: 20 }}>
                  <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
                  <XAxis type="number" hide />
@@ -160,32 +163,32 @@ export default function AdminDashboardView({ requests }: { requests: any[] }) {
                     type="category" 
                     axisLine={false} 
                     tickLine={false} 
-                    width={120}
-                    tick={{fontSize: 10, fontWeight: 800, fill: '#64748b'}}
+                    width={110}
+                    tick={{fontSize: 9, fontWeight: 700, fill: '#475569'}}
                  />
-                 <Tooltip cursor={{fill: '#f8fafc'}} contentStyle={{borderRadius: '20px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'}} />
-                 <Bar dataKey="value" fill="#3b82f6" radius={[0, 10, 10, 0]} barSize={24}>
-                    <LabelList dataKey="value" position="right" style={{ fontSize: '10px', fontWeight: 900, fill: '#3b82f6' }} />
+                 <Tooltip cursor={{fill: '#f8fafc'}} contentStyle={{borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px -2px rgb(0 0 0 / 0.1)'}} />
+                 <Bar dataKey="value" fill="#3b82f6" radius={[0, 6, 6, 0]} barSize={20}>
+                    <LabelList dataKey="value" position="right" style={{ fontSize: '10px', fontWeight: 800, fill: '#3b82f6' }} />
                  </Bar>
               </BarChart>
            </ResponsiveContainer>
         </ChartCard>
 
         {/* Department Bar Chart */}
-        <ChartCard title="หน่วยงานที่ขอสูงสุด" sub="Top Departments Activity">
-           <ResponsiveContainer width="100%" height={300}>
+        <ChartCard title="หน่วยงานที่มีการขอสูงสุด" sub="Top 5 Departments Usage">
+           <ResponsiveContainer width="100%" height={280}>
               <BarChart data={statsData.deptData}>
                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                  <XAxis 
                     dataKey="name" 
                     axisLine={false} 
                     tickLine={false} 
-                    tick={{fontSize: 9, fontWeight: 800, fill: '#64748b'}}
+                    tick={{fontSize: 9, fontWeight: 700, fill: '#475569'}}
                  />
-                 <YAxis axisLine={false} tickLine={false} tick={{fontSize: 10, fontWeight: 800, fill: '#94a3b8'}} />
-                 <Tooltip cursor={{fill: '#f8fafc'}} contentStyle={{borderRadius: '20px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'}} />
-                 <Bar dataKey="value" fill="#10b981" radius={[10, 10, 0, 0]} barSize={40}>
-                    <LabelList dataKey="value" position="top" style={{ fontSize: '10px', fontWeight: 900, fill: '#10b981' }} />
+                 <YAxis axisLine={false} tickLine={false} tick={{fontSize: 9, fontWeight: 700, fill: '#94a3b8'}} />
+                 <Tooltip cursor={{fill: '#f8fafc'}} contentStyle={{borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px -2px rgb(0 0 0 / 0.1)'}} />
+                 <Bar dataKey="value" fill="#10b981" radius={[6, 6, 0, 0]} barSize={35}>
+                    <LabelList dataKey="value" position="top" style={{ fontSize: '10px', fontWeight: 800, fill: '#10b981' }} />
                  </Bar>
               </BarChart>
            </ResponsiveContainer>
@@ -198,15 +201,15 @@ export default function AdminDashboardView({ requests }: { requests: any[] }) {
 
 function ChartCard({ title, sub, children }: any) {
   return (
-    <div className="bg-white p-8 rounded-[3rem] shadow-2xl shadow-slate-200/50 border border-slate-100 group">
-       <div className="flex items-center gap-3 mb-8">
-          <div className="w-1 h-8 bg-emerald-500 rounded-full" />
+    <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 group">
+       <div className="flex items-center gap-2 mb-6">
+          <div className="w-1 h-5 bg-emerald-600 rounded-full" />
           <div>
-             <h3 className="text-xl font-black text-slate-900 tracking-tight leading-none">{title}</h3>
-             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1.5">{sub}</p>
+             <h3 className="text-base font-bold text-slate-900 leading-none">{title}</h3>
+             <p className="text-[10px] font-medium text-slate-400 uppercase tracking-wider mt-1">{sub}</p>
           </div>
        </div>
-       <div className="h-[300px]">
+       <div className="h-[280px]">
           {children}
        </div>
     </div>

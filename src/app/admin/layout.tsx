@@ -69,78 +69,75 @@ export default function AdminLayout({
   return (
     <div className="flex h-screen bg-slate-50 font-sans text-gray-800">
       {/* Sidebar */}
-      <aside className="w-64 bg-emerald-950 text-white flex flex-col shadow-2xl z-20 overflow-hidden relative">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] pointer-events-none" />
-
-        <div className="p-6 border-b border-emerald-900/50 relative z-10 bg-emerald-950">
+      <aside className="w-64 bg-slate-900 text-white flex flex-col shadow-xl z-20">
+        <div className="p-5 border-b border-slate-800 bg-slate-900/50">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:rotate-6 transition-transform">
-               <Image src={logo} alt="Logo" width={24} height={24} className="brightness-0 invert" />
+            <div className="w-9 h-9 rounded-lg bg-emerald-600 flex items-center justify-center shadow-lg transition-transform group-hover:scale-105">
+               <Image src={logo} alt="Logo" width={20} height={20} className="brightness-0 invert" />
             </div>
             <div>
-              <h1 className="font-black text-lg leading-none tracking-tight text-white">IMT ADMIN</h1>
-              <p className="text-[10px] text-emerald-400 font-bold uppercase mt-1 tracking-widest leading-none">Nonghan Hospital</p>
+              <h1 className="font-bold text-base leading-none tracking-tight">IMT ADMIN</h1>
+              <p className="text-[10px] text-emerald-500 font-bold uppercase mt-1 tracking-wider">Nonghan Hospital</p>
             </div>
           </Link>
         </div>
 
-        <nav className="flex-1 p-4 space-y-1 mt-4 relative z-10">
+        <nav className="flex-1 p-3 space-y-1 mt-2">
           <Link 
             href="/admin" 
-            className="flex items-center gap-3 px-4 py-3 rounded-xl bg-emerald-800/50 text-emerald-50 border border-emerald-700/50 transition-all font-bold shadow-sm"
+            className="flex items-center gap-2.5 px-4 py-2.5 rounded-lg bg-emerald-600 text-white transition-all font-bold text-sm shadow-sm"
           >
-            <LayoutDashboard className="w-5 h-5" />
-            หน้าแดชบอร์ด
+            <LayoutDashboard className="w-4 h-4" />
+            Dashboard
           </Link>
           <Link 
             href="/admin/users" 
-            className="flex items-center gap-3 px-4 py-3 rounded-xl text-emerald-100/70 hover:bg-white/5 hover:text-white transition-all font-medium"
+            className="flex items-center gap-2.5 px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-all font-bold text-sm"
           >
-            <Users className="w-5 h-5" />
+            <Users className="w-4 h-4" />
             จัดการบุคลากร
           </Link>
         </nav>
 
-        <div className="p-4 border-t border-emerald-900/50 space-y-1 relative z-10 bg-emerald-950/80 backdrop-blur-sm">
+        <div className="p-3 border-t border-slate-800 bg-slate-900/40">
           <Link 
             href="#" 
-            className="flex items-center gap-3 px-4 py-3 rounded-xl text-emerald-100/70 hover:bg-white/5 hover:text-white transition-all font-medium"
+            className="flex items-center gap-2.5 px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-all font-bold text-sm"
           >
-            <Settings className="w-5 h-5" />
+            <Settings className="w-4 h-4" />
             ตั้งค่าระบบ
           </Link>
           <button 
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-rose-300 hover:bg-rose-500/10 hover:text-rose-400 transition-all font-medium"
+            className="w-full flex items-center gap-2.5 px-4 py-2.5 rounded-lg text-rose-400 hover:bg-rose-900/20 transition-all font-bold text-sm"
           >
-            <LogOut className="w-5 h-5" />
+            <LogOut className="w-4 h-4" />
             ออกจากระบบ
           </button>
         </div>
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col overflow-hidden relative">
+      <main className="flex-1 flex flex-col overflow-hidden bg-slate-50">
         {/* Top Header */}
-        <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 shadow-sm relative z-10">
-          <div className="flex items-center gap-4">
-             <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-             <span className="text-sm font-bold text-gray-500">ระบบจัดการคำขอข้อมูลกลาง</span>
+        <header className="h-14 bg-white border-b border-slate-200 flex items-center justify-between px-6 shadow-sm z-10">
+          <div className="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
+             <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+             Personnel Management System
           </div>
           
-          <div className="flex items-center gap-6">
-            <button className="relative p-2 text-gray-400 hover:text-emerald-600 transition-colors">
-              <Bell className="w-6 h-6" />
-              <span className="absolute top-1 right-1 w-4 h-4 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white">3</span>
+          <div className="flex items-center gap-5">
+            <button className="relative p-1.5 text-slate-400 hover:text-emerald-600 transition-colors">
+              <Bell className="w-5 h-5" />
+              <span className="absolute top-1 right-1 w-3.5 h-3.5 bg-rose-600 text-white text-[9px] font-black rounded-full flex items-center justify-center border border-white">3</span>
             </button>
-            <div className="h-8 w-px bg-gray-200" />
-            <div className="flex items-center gap-3 group cursor-pointer">
-              <div className="text-right flex flex-col justify-center">
-                <span className="text-sm font-black text-gray-900 leading-none">เจ้าหน้าที่ IMT</span>
-                <span className="text-[10px] font-bold text-emerald-600 uppercase mt-1 truncate max-w-[120px]">{user?.email}</span>
+            <div className="h-6 w-px bg-slate-200" />
+            <div className="flex items-center gap-3">
+              <div className="text-right hidden sm:flex flex-col">
+                <span className="text-xs font-bold text-slate-900 leading-none">เจ้าหน้าที่ IMT</span>
+                <span className="text-[10px] font-medium text-emerald-600 mt-1">{user?.email}</span>
               </div>
-              <div className="w-10 h-10 rounded-full bg-emerald-100 border-2 border-emerald-500 flex items-center justify-center font-bold text-emerald-700 shadow-sm group-hover:scale-105 transition-transform">
+              <div className="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center font-bold text-xs ring-1 ring-slate-200">
                 {user?.email?.substring(0, 2).toUpperCase() || 'AD'}
               </div>
             </div>
@@ -148,8 +145,7 @@ export default function AdminLayout({
         </header>
 
         {/* Page Body */}
-        <div className="flex-1 overflow-y-auto p-8 relative scroll-smooth">
-          <div className="absolute top-0 left-0 w-full h-[300px] bg-gradient-to-b from-emerald-50/50 to-transparent pointer-events-none -z-10" />
+        <div className="flex-1 overflow-y-auto p-6 scroll-smooth">
           <div className="max-w-7xl mx-auto">
             {children}
           </div>

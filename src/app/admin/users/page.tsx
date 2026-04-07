@@ -6,7 +6,7 @@ import {
   Users, Search, Plus, Filter, 
   MoreVertical, Mail, Shield, 
   CheckCircle2, XCircle, AlertCircle,
-  Loader2, UserPlus, Building2
+  Loader2, UserPlus, X
 } from "lucide-react";
 
 export default function UserManagement() {
@@ -32,7 +32,7 @@ export default function UserManagement() {
         const { data, error } = await supabase
           .from('profiles')
           .select('*')
-          .order('updated_at', { ascending: false });
+          .order('full_name', { ascending: true });
 
         if (error) {
           if (error.code === '42P01' || error.message.includes('not found')) {
@@ -57,8 +57,6 @@ export default function UserManagement() {
     setSubmitting(true);
     
     try {
-      // 1. Create a separate Supabase client instance specifically for signup
-      // to prevent logging out the current admin user session
       const { createClient } = await import('@supabase/supabase-js');
       const tempClient = createClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -66,7 +64,6 @@ export default function UserManagement() {
         { auth: { persistSession: false } }
       );
 
-      // 2. Sign up the new user
       const { data: authData, error: authError } = await tempClient.auth.signUp({
         email: newStaff.email,
         password: newStaff.password,
@@ -75,7 +72,6 @@ export default function UserManagement() {
       if (authError) throw authError;
       if (!authData.user) throw new Error("Could not create user account");
 
-      // 3. Save to the profile table with the link to the created user ID
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .insert([{
@@ -90,12 +86,12 @@ export default function UserManagement() {
 
       if (profileError) throw profileError;
 
-      if (profileData) setProfiles([profileData[0], ...profiles]);
+      if (profileData) setProfiles([...profiles, profileData[0]].sort((a,b) => a.full_name.localeCompare(b.full_name)));
       setIsModalOpen(false);
       setNewStaff({ full_name: "", email: "", password: "", role: "Staff", status: "Active" });
-      alert("สร้างบัญชีและบันทึกข้อมูลบุคลากรสำเร็จแล้วครับ! พนักงานสามารถ Login ได้ทันที");
+      alert("สร้างบัญชีสำเร็จ!");
     } catch (err: any) {
-      alert("เกิดข้อผิดพลาด: " + err.message);
+      alert("Error: " + err.message);
     } finally {
       setSubmitting(false);
     }
@@ -109,230 +105,131 @@ export default function UserManagement() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px]">
-        <Loader2 className="w-12 h-12 text-emerald-600 animate-spin mb-4" />
-        <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">Loading Personnel Directory...</p>
+        <Loader2 className="w-10 h-10 text-emerald-600 animate-spin mb-4" />
+        <p className="text-slate-500 font-bold text-xs uppercase tracking-widest">Loading Personnel...</p>
       </div>
     );
   }
 
   if (error === "NOT_CONFIGURED") {
     return (
-      <div className="max-w-3xl mx-auto bg-white rounded-[2.5rem] shadow-2xl border border-slate-100 p-12 text-center animate-in zoom-in-95 duration-500">
-         <div className="w-20 h-20 bg-amber-50 rounded-3xl flex items-center justify-center mx-auto mb-8">
-            <AlertCircle className="w-10 h-10 text-amber-500" />
-         </div>
-         <h2 className="text-3xl font-black text-slate-900 mb-4 tracking-tight">ยังไม่ได้ตั้งค่าตารางบุคลากร</h2>
-         <p className="text-slate-500 font-medium mb-10 leading-relaxed">
-            ระบบต้องการตาราง <code className="bg-slate-100 px-2 py-0.5 rounded text-rose-500">profiles</code> ในฐานข้อมูลเพื่อแสดงผล <br/>
-            กรุณานำคำสั่ง SQL ด้านล่างนี้ไปรันใน **Supabase SQL Editor** ครับ:
-         </p>
-         
-         <div className="bg-slate-900 p-6 rounded-2xl text-left mb-10 overflow-x-auto">
-            <pre className="text-emerald-400 font-mono text-sm leading-relaxed">
-{`-- 1. สร้างตาราง Profiles
-create table public.profiles (
+      <div className="max-w-2xl mx-auto bg-white rounded-xl border border-slate-200 p-10 text-center shadow-sm">
+         <AlertCircle className="w-12 h-12 text-amber-500 mx-auto mb-6" />
+         <h2 className="text-2xl font-bold text-slate-900 mb-4">ยังไม่ได้ตั้งค่าตารางบุคลากร</h2>
+         <p className="text-slate-600 mb-8 text-sm leading-relaxed">กรุณารันคำสั่ง SQL ใน Supabase เพื่อสร้างตาราง profiles:</p>
+         <div className="bg-slate-900 p-4 rounded-lg text-left mb-8 overflow-x-auto">
+            <pre className="text-emerald-400 font-mono text-xs">
+{`create table public.profiles (
   id uuid references auth.users on delete cascade primary key,
   full_name text not null,
   email text,
   role text default 'Staff',
   status text default 'Active',
   updated_at timestamp with time zone default now()
-);
-
--- 2. ตั้งค่าความปลอดภัย (RLS)
-alter table public.profiles enable row level security;
-create policy "Allow all for authenticated" on public.profiles for all using (auth.role() = 'authenticated');`}
+);`}
             </pre>
          </div>
-         
-         <button 
-           onClick={() => window.location.reload()}
-           className="px-10 py-4 bg-emerald-600 text-white rounded-2xl font-black text-lg shadow-xl shadow-emerald-600/20 hover:scale-105 active:scale-95 transition-all"
-         >
-           ฉันรัน SQL เรียบร้อยแล้ว (Reload)
-         </button>
+         <button onClick={() => window.location.reload()} className="px-6 py-2.5 bg-emerald-600 text-white rounded-lg font-bold hover:bg-emerald-700 transition-colors">Reload Page</button>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8 animate-in fade-in duration-700">
-      {/* Header Area */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+    <div className="space-y-6 animate-in fade-in duration-500">
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-           <h2 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
-             <Users className="w-8 h-8 text-emerald-600" /> รายการบุคลากร
+           <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+             <Users className="w-6 h-6 text-emerald-600" /> จัดการบุคลากร
            </h2>
-           <p className="text-slate-500 font-medium mt-1 uppercase tracking-widest text-[10px]">NHH Hospital Personnel Management</p>
+           <p className="text-slate-500 text-xs font-medium mt-1">รายชื่อเจ้าหน้าที่และสิทธิการใช้งานระบบ</p>
         </div>
         
         <button 
           onClick={() => setIsModalOpen(true)}
-          className="px-6 py-3 bg-emerald-600 text-white rounded-2xl font-black text-sm flex items-center gap-2 shadow-xl shadow-emerald-600/20 hover:scale-[1.03] active:scale-[0.98] transition-all"
+          className="px-5 py-2.5 bg-emerald-600 text-white rounded-lg font-bold text-sm flex items-center gap-2 hover:bg-emerald-700 transition-all shadow-sm"
         >
-           <UserPlus className="w-4 h-4" /> เพิ่มบุคลากรใหม่
+           <UserPlus className="w-4 h-4" /> เพิ่มเจ้าหน้าที่
         </button>
       </div>
 
-      {/* Add Staff Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-           {/* Backdrop */}
-           <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setIsModalOpen(false)} />
-           
-           {/* Modal Card */}
-           <div className="relative bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
-              <div className="p-8 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center">
-                 <h3 className="text-xl font-black text-slate-900 tracking-tight">เพิ่มข้อมูลบุคลากร</h3>
-                 <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-slate-200 rounded-full transition-colors"><XCircle className="w-6 h-6 text-slate-400" /></button>
-              </div>
-
-              <form onSubmit={handleAddStaff} className="p-8 space-y-6">
-                 <div className="space-y-4">
-                    <div className="space-y-1">
-                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">ชื่อ-นามสกุล</label>
-                       <input 
-                         required
-                         type="text" 
-                         value={newStaff.full_name}
-                         onChange={(e) => setNewStaff({...newStaff, full_name: e.target.value})}
-                         className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3 font-bold focus:ring-4 focus:ring-emerald-500/10 transition-all outline-none" 
-                         placeholder="ระบุชื่อจริง..." 
-                       />
-                    </div>
-                    <div className="space-y-1">
-                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">อีเมลพนักงาน</label>
-                       <input 
-                         required
-                         type="email" 
-                         value={newStaff.email}
-                         onChange={(e) => setNewStaff({...newStaff, email: e.target.value})}
-                         className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3 font-bold focus:ring-4 focus:ring-emerald-500/10 transition-all outline-none" 
-                         placeholder="staff@nonghan.com" 
-                       />
-                    </div>
-                    <div className="space-y-1">
-                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">รหัสผ่านสำหรับพนักงาน</label>
-                       <input 
-                         required
-                         type="password" 
-                         value={newStaff.password}
-                         onChange={(e) => setNewStaff({...newStaff, password: e.target.value})}
-                         className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3 font-bold focus:ring-4 focus:ring-emerald-500/10 transition-all outline-none" 
-                         placeholder="ความยาวอย่างน้อย 6 ตัว..." 
-                       />
-                    </div>
-                    <div className="space-y-1">
-                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">บทบาท</label>
-                       <select 
-                         value={newStaff.role}
-                         onChange={(e) => setNewStaff({...newStaff, role: e.target.value})}
-                         className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3 font-bold transition-all outline-none appearance-none cursor-pointer"
-                       >
-                          <option value="Staff">Staff</option>
-                          <option value="Admin">Admin</option>
-                          <option value="IT Assistant">IT Assistant</option>
-                       </select>
-                    </div>
-                 </div>
-
-                 <div className="pt-4">
-                    <button 
-                      type="submit"
-                      disabled={submitting}
-                      className="w-full bg-emerald-600 text-white py-4 rounded-2xl font-black text-lg shadow-xl shadow-emerald-600/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
-                    >
-                       {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
-                       บันทึกข้อมูลบุคลากร
-                    </button>
-                    <p className="text-[10px] text-center text-rose-400 font-bold mt-4 uppercase tracking-widest">
-                       *การบันทึกนี้เพื่อเก็บข้อมูลรายชื่อเท่านั้น ระบบ Login ต้องสร้างที่ Supabase
-                    </p>
-                 </div>
-              </form>
-           </div>
-        </div>
-      )}
-
-      {/* Filters & Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-         <div className="md:col-span-2 relative">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+      {/* Stats & Search */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+         <div className="lg:col-span-3 relative group">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
             <input 
               type="text" 
-              placeholder="ค้นหาชื่อ-นามสกุล..." 
+              placeholder="ค้นหาชื่อ หรืออีเมล..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 bg-white border border-slate-100 rounded-[1.5rem] shadow-sm outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all font-bold"
+              className="w-full pl-11 pr-4 py-2.5 bg-white border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all font-medium text-sm"
             />
          </div>
-         <div className="bg-white p-4 rounded-[1.5rem] border border-slate-100 shadow-sm flex items-center justify-around">
+         <div className="bg-slate-900 text-white p-2 rounded-lg flex items-center justify-around shadow-inner">
             <div className="text-center">
-               <div className="text-2xl font-black text-slate-900">{profiles.length}</div>
-               <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">ทั้งหมด</div>
+               <div className="text-lg font-bold leading-none">{profiles.length}</div>
+               <div className="text-[10px] font-medium text-slate-400 uppercase tracking-tighter">ทั้งหมด</div>
             </div>
-            <div className="w-px h-8 bg-slate-100" />
+            <div className="w-px h-6 bg-slate-800" />
             <div className="text-center">
-               <div className="text-2xl font-black text-emerald-600">{profiles.filter(p => p.status === 'Active').length}</div>
-               <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">ใช้งาน</div>
+               <div className="text-lg font-bold leading-none text-emerald-400">{profiles.filter(p => p.status === 'Active').length}</div>
+               <div className="text-[10px] font-medium text-slate-400 uppercase tracking-tighter">ออนไลน์</div>
             </div>
          </div>
       </div>
 
-      {/* Main Table */}
-      <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-emerald-900/5 border border-slate-100 overflow-hidden">
+      {/* User Table */}
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead className="bg-slate-50/50">
+          <table className="w-full text-left">
+            <thead className="bg-slate-50 border-b border-slate-200">
               <tr>
-                <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-slate-400 border-b border-slate-100">รายชื่อบุคลากร</th>
-                <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-slate-400 border-b border-slate-100">บทบาท / หน้าที่</th>
-                <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-slate-400 border-b border-slate-100">สถานะ</th>
-                <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-slate-400 border-b border-slate-100 text-center">จัดการ</th>
+                <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-slate-500">ชื่อเจ้าหน้าที่</th>
+                <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-slate-500">บทบาท</th>
+                <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-slate-500">สถานะ</th>
+                <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-slate-500 text-right">ดำเนินการ</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-50">
+            <tbody className="divide-y divide-slate-100">
               {filteredProfiles.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-8 py-20 text-center">
-                     <div className="flex flex-col items-center gap-4 text-slate-400">
-                       <Users className="w-16 h-16 opacity-10" />
-                       <p className="font-extrabold text-xl">ไม่พบข้อมูลบุคลากร</p>
-                     </div>
+                  <td colSpan={4} className="px-6 py-20 text-center text-slate-400">
+                     <p className="font-bold">ไม่พบข้อมูลสมาชิก</p>
                   </td>
                 </tr>
               ) : (
                 filteredProfiles.map((user) => (
-                  <tr key={user.id} className="group hover:bg-emerald-50/30 transition-colors">
-                    <td className="px-8 py-6">
-                       <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 rounded-2xl bg-emerald-100 border-2 border-emerald-500/10 flex items-center justify-center font-black text-emerald-700 shadow-sm group-hover:scale-105 transition-transform">
+                  <tr key={user.id} className="hover:bg-slate-50/50 transition-colors">
+                    <td className="px-6 py-4">
+                       <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-lg bg-emerald-600 flex items-center justify-center font-bold text-white text-xs shadow-sm">
                              {user.full_name?.substring(0, 2).toUpperCase()}
                           </div>
                           <div className="flex flex-col">
-                             <span className="text-sm font-black text-slate-900">{user.full_name}</span>
-                             <span className="text-[10px] font-bold text-slate-400 flex items-center gap-1 mt-1 uppercase tracking-tight">
-                                <Mail className="w-3 h-3" /> {user.email || 'NHH-STAFF'}
-                             </span>
+                             <span className="text-sm font-bold text-slate-900 leading-none">{user.full_name}</span>
+                             <span className="text-[11px] font-medium text-slate-500 mt-1">{user.email || 'N/A'}</span>
                           </div>
                        </div>
                     </td>
-                    <td className="px-8 py-6">
-                       <div className="flex items-center gap-2">
-                          <Shield className={`w-4 h-4 ${user.role === 'Admin' ? 'text-rose-500' : 'text-blue-500'}`} />
-                          <span className="text-sm font-bold text-slate-700">{user.role}</span>
-                       </div>
-                    </td>
-                    <td className="px-8 py-6">
-                       <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                         user.status === 'Active' ? 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-400/20' : 'bg-slate-100 text-slate-400 ring-1 ring-slate-400/20'
+                    <td className="px-6 py-4">
+                       <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold border ${
+                         user.role === 'Admin' 
+                          ? 'bg-rose-50 text-rose-700 border-rose-100' 
+                          : 'bg-indigo-50 text-indigo-700 border-indigo-100'
                        }`}>
-                          {user.status === 'Active' ? <CheckCircle2 className="w-3 h-3" /> : <XCircle className="w-3 h-3" />}
+                          <Shield className="w-3 h-3" /> {user.role}
+                       </span>
+                    </td>
+                    <td className="px-6 py-4">
+                       <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold ${
+                         user.status === 'Active' ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600'
+                       }`}>
+                          <div className={`w-1.5 h-1.5 rounded-full ${user.status === 'Active' ? 'bg-emerald-500' : 'bg-slate-400'}`} />
                           {user.status || 'Active'}
                        </span>
                     </td>
-                    <td className="px-8 py-6 text-center">
-                       <button className="p-2.5 bg-white border border-slate-200 text-slate-400 rounded-xl hover:bg-slate-50 hover:text-emerald-600 transition-all shadow-sm">
+                    <td className="px-6 py-4 text-right">
+                       <button className="p-1.5 hover:bg-slate-100 rounded-md transition-colors text-slate-400 hover:text-slate-900">
                           <MoreVertical className="w-4 h-4" />
                        </button>
                     </td>
@@ -342,12 +239,80 @@ create policy "Allow all for authenticated" on public.profiles for all using (au
             </tbody>
           </table>
         </div>
-        
-        {/* Footer info */}
-        <div className="p-8 border-t border-slate-50 bg-slate-50/20 text-center">
-           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Management access for authorized administrators only</p>
-        </div>
       </div>
+
+      {/* Add Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-[2px]">
+           <div className="bg-white w-full max-w-md rounded-xl shadow-2xl animate-in zoom-in-95 duration-200 border border-slate-200">
+              <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center">
+                 <h3 className="font-bold text-slate-900">เพิ่มเจ้าหน้าที่ใหม่</h3>
+                 <button onClick={() => setIsModalOpen(false)} className="p-1 hover:bg-slate-100 rounded-md transition-colors"><X className="w-5 h-5 text-slate-400" /></button>
+              </div>
+
+              <form onSubmit={handleAddStaff} className="p-6 space-y-4">
+                 <div className="space-y-4">
+                    <div className="space-y-1">
+                       <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">ชื่อ-นามสกุล</label>
+                       <input 
+                         required
+                         type="text" 
+                         value={newStaff.full_name}
+                         onChange={(e) => setNewStaff({...newStaff, full_name: e.target.value})}
+                         className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all" 
+                         placeholder="ป้อนชื่อ-นามสกุล..." 
+                       />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                       <div className="space-y-1">
+                          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">อีเมล</label>
+                          <input 
+                            required
+                            type="email" 
+                            value={newStaff.email}
+                            onChange={(e) => setNewStaff({...newStaff, email: e.target.value})}
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all" 
+                            placeholder="user@nhh.com" 
+                          />
+                       </div>
+                       <div className="space-y-1">
+                          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">รหัสผ่าน</label>
+                          <input 
+                            required
+                            type="password" 
+                            value={newStaff.password}
+                            onChange={(e) => setNewStaff({...newStaff, password: e.target.value})}
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all" 
+                            placeholder="ความยาว 6+..." 
+                          />
+                       </div>
+                    </div>
+                    <div className="space-y-1">
+                       <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">บทบาททางสิทธิ์</label>
+                       <select 
+                         value={newStaff.role}
+                         onChange={(e) => setNewStaff({...newStaff, role: e.target.value})}
+                         className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none cursor-pointer"
+                       >
+                          <option value="Staff">IT Staff (ทั่วไป)</option>
+                          <option value="Admin">Administrator (หน้าหลัก)</option>
+                          <option value="IT Assistant">IT Assistant (ผู้ช่วย)</option>
+                       </select>
+                    </div>
+                 </div>
+
+                 <button 
+                   type="submit"
+                   disabled={submitting}
+                   className="w-full bg-emerald-600 text-white py-2.5 rounded-lg font-bold text-sm shadow-md hover:bg-emerald-700 active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-4"
+                 >
+                    {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
+                    บันทึกข้อมูล
+                 </button>
+              </form>
+           </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -62,34 +62,34 @@ export default function AdminPage() {
   return (
     <div className="space-y-8 animate-in fade-in duration-700 pb-20">
       {/* Header & Tabs */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
-            <LayoutDashboard className="w-8 h-8 text-emerald-600" /> ระบบบริหารจัดการคำขอ
+          <h2 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+            <LayoutDashboard className="w-6 h-6 text-emerald-600" /> บริหารจัดการคำขอ
           </h2>
-          <p className="text-slate-500 font-bold text-sm mt-1 uppercase tracking-widest opacity-60">Admin Control Center • IMT Hub</p>
+          <p className="text-slate-500 text-xs font-medium">ศูนย์ควบคุมการจัดการข้อมูลและสถิติกลาง</p>
         </div>
 
-        <div className="flex bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm">
+        <div className="flex bg-slate-100 p-1 rounded-lg border border-slate-200">
           <button
             onClick={() => setActiveTab("dashboard")}
-            className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-black transition-all ${
+            className={`flex items-center gap-2 px-4 py-1.5 rounded-md text-xs font-bold transition-all ${
               activeTab === "dashboard" 
-                ? "bg-slate-900 text-white shadow-lg" 
-                : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
+                ? "bg-white text-slate-900 shadow-sm border border-slate-200" 
+                : "text-slate-500 hover:text-slate-700"
             }`}
           >
-            <PieChart className="w-4 h-4" /> หน้าแดชบอร์ด
+            <PieChart className="w-3.5 h-3.5" /> Dashboard
           </button>
           <button
             onClick={() => setActiveTab("requests")}
-            className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-black transition-all ${
+            className={`flex items-center gap-2 px-4 py-1.5 rounded-md text-xs font-bold transition-all ${
               activeTab === "requests" 
-                ? "bg-slate-900 text-white shadow-lg" 
-                : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
+                ? "bg-white text-slate-900 shadow-sm border border-slate-200" 
+                : "text-slate-500 hover:text-slate-700"
             }`}
           >
-            <ListTodo className="w-4 h-4" /> จัดการคำขอทั้งหมด
+            <ListTodo className="w-3.5 h-3.5" /> จัดการคำขอทั้งหมด
           </button>
         </div>
       </div>
