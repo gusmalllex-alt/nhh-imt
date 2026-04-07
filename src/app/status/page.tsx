@@ -8,7 +8,7 @@ import {
   FileDown, Info, Send, X, ClipboardList, User2, Building2, PhoneCall, MailCheck
 } from "lucide-react";
 import { getRequests, updateRequestStatus } from "../actions/adminActions";
-import logo from "../../public/nhh.png";
+import logo from "../../../public/nhh.png";
 import Image from "next/image";
 
 export default function StatusTracking() {
