@@ -19,6 +19,7 @@ export default function UserManagement() {
   const [newStaff, setNewStaff] = useState({
     full_name: "",
     email: "",
+    password: "",
     role: "Staff",
     status: "Active"
   });
@@ -56,22 +57,43 @@ export default function UserManagement() {
     setSubmitting(true);
     
     try {
-      // For now, we save only to the profile table. 
-      // Individual login must still be created in Supabase Auth.
-      const { data, error } = await supabase
+      // 1. Create a separate Supabase client instance specifically for signup
+      // to prevent logging out the current admin user session
+      const { createClient } = await import('@supabase/supabase-js');
+      const tempClient = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        { auth: { persistSession: false } }
+      );
+
+      // 2. Sign up the new user
+      const { data: authData, error: authError } = await tempClient.auth.signUp({
+        email: newStaff.email,
+        password: newStaff.password,
+      });
+
+      if (authError) throw authError;
+      if (!authData.user) throw new Error("Could not create user account");
+
+      // 3. Save to the profile table with the link to the created user ID
+      const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .insert([{
-          ...newStaff,
+          id: authData.user.id,
+          full_name: newStaff.full_name,
+          email: newStaff.email,
+          role: newStaff.role,
+          status: "Active",
           updated_at: new Date().toISOString()
         }])
         .select();
 
-      if (error) throw error;
+      if (profileError) throw profileError;
 
-      if (data) setProfiles([data[0], ...profiles]);
+      if (profileData) setProfiles([profileData[0], ...profiles]);
       setIsModalOpen(false);
-      setNewStaff({ full_name: "", email: "", role: "Staff", status: "Active" });
-      alert("เพิ่มข้อมูลบุคลากรสำเร็จ! อย่าลืมไปสร้างบัญชี Login ใน Supabase ด้วยนะครับ");
+      setNewStaff({ full_name: "", email: "", password: "", role: "Staff", status: "Active" });
+      alert("สร้างบัญชีและบันทึกข้อมูลบุคลากรสำเร็จแล้วครับ! พนักงานสามารถ Login ได้ทันที");
     } catch (err: any) {
       alert("เกิดข้อผิดพลาด: " + err.message);
     } finally {
@@ -109,7 +131,7 @@ export default function UserManagement() {
             <pre className="text-emerald-400 font-mono text-sm leading-relaxed">
 {`-- 1. สร้างตาราง Profiles
 create table public.profiles (
-  id uuid default gen_random_uuid() primary key,
+  id uuid references auth.users on delete cascade primary key,
   full_name text not null,
   email text,
   role text default 'Staff',
@@ -119,7 +141,7 @@ create table public.profiles (
 
 -- 2. ตั้งค่าความปลอดภัย (RLS)
 alter table public.profiles enable row level security;
-create policy "Allow all for demo" on public.profiles for all using (true);`}
+create policy "Allow all for authenticated" on public.profiles for all using (auth.role() = 'authenticated');`}
             </pre>
          </div>
          
@@ -187,6 +209,17 @@ create policy "Allow all for demo" on public.profiles for all using (true);`}
                          onChange={(e) => setNewStaff({...newStaff, email: e.target.value})}
                          className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3 font-bold focus:ring-4 focus:ring-emerald-500/10 transition-all outline-none" 
                          placeholder="staff@nonghan.com" 
+                       />
+                    </div>
+                    <div className="space-y-1">
+                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">รหัสผ่านสำหรับพนักงาน</label>
+                       <input 
+                         required
+                         type="password" 
+                         value={newStaff.password}
+                         onChange={(e) => setNewStaff({...newStaff, password: e.target.value})}
+                         className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3 font-bold focus:ring-4 focus:ring-emerald-500/10 transition-all outline-none" 
+                         placeholder="ความยาวอย่างน้อย 6 ตัว..." 
                        />
                     </div>
                     <div className="space-y-1">
