@@ -106,7 +106,7 @@ export default function StatusTracking() {
     if (!replyText.trim() || !selectedRequest) return;
     
     setIsSubmittingReply(true);
-    const result = await addUserInformation(selectedRequest.rowIndex.toString(), replyText);
+    const result = await addUserInformation(selectedRequest.id, replyText);
 
     if (result.success) {
       alert("ส่งข้อมูลเพิ่มเติมเรียบร้อยแล้ว สถานะจะเปลี่ยนเป็น 'รอดำเนินการ' อีกครั้งครับ");

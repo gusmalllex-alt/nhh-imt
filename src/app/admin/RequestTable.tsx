@@ -206,13 +206,13 @@ export default function RequestTable({ initialRequests }: { initialRequests: any
                      </td>
                      <td className="px-8 py-6">
                         <div className="relative inline-block text-left group/status">
-                          {updatingId === req.rowIndex.toString() ? (
+                          {updatingId === req.id ? (
                             <Loader2 className="w-5 h-5 animate-spin text-emerald-600 mx-auto" />
                           ) : (
                             <div className="flex items-center gap-2">
                               {getStatusBadge(req.status)}
                               <select 
-                                onChange={(e) => handleStatusUpdate(req.rowIndex.toString(), e.target.value)}
+                                onChange={(e) => handleStatusUpdate(req.id, e.target.value)}
                                 value={req.status}
                                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                               >
@@ -253,7 +253,7 @@ export default function RequestTable({ initialRequests }: { initialRequests: any
 
         {/* Footer info */}
         <div className="p-8 border-t border-slate-50 bg-slate-50/20 text-center">
-           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">© 2026 Nonghan Hospital IMT Service Hub • Powerby Google Sheets</p>
+           <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">© 2026 Nonghan Hospital IMT Service Hub • Powered by Supabase</p>
         </div>
       </div>
     </div>
