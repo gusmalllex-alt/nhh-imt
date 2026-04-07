@@ -6,6 +6,9 @@ const nextConfig: NextConfig = {
     unoptimized: true,
   },
   trailingSlash: true,
+  // GitHub Pages usually hosts at /repository-name/
+  basePath: '/nhh-imt',
+  assetPrefix: '/nhh-imt',
 };
 
 export default nextConfig;
