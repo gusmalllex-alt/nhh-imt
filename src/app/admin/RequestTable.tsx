@@ -130,16 +130,20 @@ export default function RequestTable({ initialRequests }: { initialRequests: any
       <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-emerald-900/5 border border-slate-100 overflow-hidden">
         
         {/* Table Header Controls */}
-        <div className="p-8 border-b border-slate-50 bg-slate-50/30 flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <div className="px-5 py-2 bg-emerald-600 text-white rounded-full text-xs font-black shadow-lg shadow-emerald-600/20">
-               รายการคำขอล่าสุด (Google Sheets)
+        <div className="p-8 border-b border-slate-50 bg-slate-50/30 flex justify-between items-center bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-repeat opacity-[0.9]">
+          <div className="flex items-center gap-3">
+            <div className="w-2 h-8 bg-emerald-500 rounded-full" />
+            <div className="flex flex-col">
+              <h3 className="text-xl font-black text-slate-900 tracking-tight">รายการคำขอล่าสุด</h3>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mt-1">Nonghan Hospital Request Management</p>
             </div>
-            <span className="text-xs font-bold text-slate-400">เรียลไทม์ผ่าน GAS API</span>
           </div>
           
-          <div className="text-xs font-bold text-slate-600">
-             แสดง <span className="text-emerald-600">{filteredRequests.length}</span> รายการ
+          <div className="flex flex-col items-end">
+            <div className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">Total Records</div>
+            <div className="px-5 py-1.5 bg-white border border-slate-200 text-emerald-700 rounded-full text-xs font-black shadow-sm ring-1 ring-emerald-500/10">
+               {filteredRequests.length} รายการ
+            </div>
           </div>
         </div>
 
