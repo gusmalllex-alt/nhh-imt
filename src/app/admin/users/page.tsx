@@ -15,18 +15,27 @@ export default function UserManagement() {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newStaff, setNewStaff] = useState({
+    full_name: "",
+    email: "",
+    role: "Staff",
+    department: "",
+    status: "Active"
+  });
+  const [submitting, setSubmitting] = useState(false);
+
   useEffect(() => {
     async function fetchProfiles() {
       setLoading(true);
       try {
-        // We will try to fetch profiles. If the table doesn't exist yet, we show a guide.
         const { data, error } = await supabase
           .from('profiles')
           .select('*')
-          .order('full_name', { ascending: true });
+          .order('updated_at', { ascending: false });
 
         if (error) {
-          if (error.code === 'PGRST116' || error.message.includes('not found')) {
+          if (error.code === '42P01' || error.message.includes('not found')) {
              setError("NOT_CONFIGURED");
           } else {
              throw error;
@@ -43,9 +52,38 @@ export default function UserManagement() {
     fetchProfiles();
   }, []);
 
+  const handleAddStaff = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+    
+    try {
+      // For now, we save only to the profile table. 
+      // Individual login must still be created in Supabase Auth.
+      const { data, error } = await supabase
+        .from('profiles')
+        .insert([{
+          ...newStaff,
+          updated_at: new Date().toISOString()
+        }])
+        .select();
+
+      if (error) throw error;
+
+      setProfiles([data[0], ...profiles]);
+      setIsModalOpen(false);
+      setNewStaff({ full_name: "", email: "", role: "Staff", department: "", status: "Active" });
+      alert("เพิ่มข้อมูลบุคลากรสำเร็จ! อย่าลืมไปสร้างบัญชี Login ใน Supabase ด้วยนะครับ");
+    } catch (err: any) {
+      alert("เกิดข้อผิดพลาด: " + err.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   const filteredProfiles = profiles.filter(p => 
     p.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    p.department?.toLowerCase().includes(searchTerm.toLowerCase())
+    p.department?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    p.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (loading) {
@@ -71,20 +109,20 @@ export default function UserManagement() {
          
          <div className="bg-slate-900 p-6 rounded-2xl text-left mb-10 overflow-x-auto">
             <pre className="text-emerald-400 font-mono text-sm leading-relaxed">
-{`-- สร้างตาราง Profiles
+{`-- 1. สร้างตาราง Profiles
 create table public.profiles (
-  id uuid references auth.users on delete cascade primary key,
+  id uuid default gen_random_uuid() primary key,
   full_name text not null,
+  email text,
   role text default 'Staff',
   status text default 'Active',
   department text,
   updated_at timestamp with time zone default now()
 );
 
--- ตั้งค่าความปลอดภัย
+-- 2. ตั้งค่าความปลอดภัย (RLS)
 alter table public.profiles enable row level security;
-create policy "Public view" on public.profiles for select using (true);
-create policy "Admin manage" on public.profiles for all using (true);`}
+create policy "Allow all for demo" on public.profiles for all using (true);`}
             </pre>
          </div>
          
@@ -109,10 +147,94 @@ create policy "Admin manage" on public.profiles for all using (true);`}
            <p className="text-slate-500 font-medium mt-1 uppercase tracking-widest text-[10px]">NHH Hospital Personnel Management</p>
         </div>
         
-        <button className="px-6 py-3 bg-emerald-600 text-white rounded-2xl font-black text-sm flex items-center gap-2 shadow-xl shadow-emerald-600/20 hover:scale-[1.03] active:scale-[0.98] transition-all">
+        <button 
+          onClick={() => setIsModalOpen(true)}
+          className="px-6 py-3 bg-emerald-600 text-white rounded-2xl font-black text-sm flex items-center gap-2 shadow-xl shadow-emerald-600/20 hover:scale-[1.03] active:scale-[0.98] transition-all"
+        >
            <UserPlus className="w-4 h-4" /> เพิ่มบุคลากรใหม่
         </button>
       </div>
+
+      {/* Add Staff Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+           {/* Backdrop */}
+           <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setIsModalOpen(false)} />
+           
+           {/* Modal Card */}
+           <div className="relative bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
+              <div className="p-8 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center">
+                 <h3 className="text-xl font-black text-slate-900 tracking-tight">เพิ่มข้อมูลบุคลากร</h3>
+                 <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-slate-200 rounded-full transition-colors"><XCircle className="w-6 h-6 text-slate-400" /></button>
+              </div>
+
+              <form onSubmit={handleAddStaff} className="p-8 space-y-6">
+                 <div className="space-y-4">
+                    <div className="space-y-1">
+                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">ชื่อ-นามสกุล</label>
+                       <input 
+                         required
+                         type="text" 
+                         value={newStaff.full_name}
+                         onChange={(e) => setNewStaff({...newStaff, full_name: e.target.value})}
+                         className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3 font-bold focus:ring-4 focus:ring-emerald-500/10 transition-all outline-none" 
+                         placeholder="ระบุชื่อจริง..." 
+                       />
+                    </div>
+                    <div className="space-y-1">
+                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">อีเมลพนักงาน</label>
+                       <input 
+                         required
+                         type="email" 
+                         value={newStaff.email}
+                         onChange={(e) => setNewStaff({...newStaff, email: e.target.value})}
+                         className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3 font-bold focus:ring-4 focus:ring-emerald-500/10 transition-all outline-none" 
+                         placeholder="staff@nonghan.com" 
+                       />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                       <div className="space-y-1">
+                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">บทบาท</label>
+                          <select 
+                            value={newStaff.role}
+                            onChange={(e) => setNewStaff({...newStaff, role: e.target.value})}
+                            className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3 font-bold transition-all outline-none appearance-none cursor-pointer"
+                          >
+                             <option value="Staff">Staff</option>
+                             <option value="Admin">Admin</option>
+                             <option value="IT Assistant">IT Assistant</option>
+                          </select>
+                       </div>
+                       <div className="space-y-1">
+                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">แผนก / งาน</label>
+                          <input 
+                            type="text" 
+                            value={newStaff.department}
+                            onChange={(e) => setNewStaff({...newStaff, department: e.target.value})}
+                            className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3 font-bold transition-all outline-none" 
+                            placeholder="ระบุแผนก..." 
+                          />
+                       </div>
+                    </div>
+                 </div>
+
+                 <div className="pt-4">
+                    <button 
+                      type="submit"
+                      disabled={submitting}
+                      className="w-full bg-emerald-600 text-white py-4 rounded-2xl font-black text-lg shadow-xl shadow-emerald-600/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                    >
+                       {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
+                       บันทึกข้อมูลบุคลากร
+                    </button>
+                    <p className="text-[10px] text-center text-rose-400 font-bold mt-4 uppercase tracking-widest">
+                       *การบันทึกนี้เพื่อเก็บข้อมูลรายชื่อเท่านั้น ระบบ Login ต้องสร้างที่ Supabase
+                    </p>
+                 </div>
+              </form>
+           </div>
+        </div>
+      )}
 
       {/* Filters & Summary */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
