@@ -94,13 +94,6 @@ export default function AdminLayout({
             หน้าแดชบอร์ด
           </Link>
           <Link 
-            href="/status" 
-            className="flex items-center gap-3 px-4 py-3 rounded-xl text-emerald-100/70 hover:bg-white/5 hover:text-white transition-all font-medium"
-          >
-            <FileText className="w-5 h-5" />
-            รายการคำขอทั้งหมด
-          </Link>
-          <Link 
             href="/admin/users" 
             className="flex items-center gap-3 px-4 py-3 rounded-xl text-emerald-100/70 hover:bg-white/5 hover:text-white transition-all font-medium"
           >
