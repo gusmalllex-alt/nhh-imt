@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
-  PieChart, Pie, Cell, Legend
+  PieChart, Pie, Cell, Legend, LabelList
 } from "recharts";
 import { 
   FileText, Users, Activity, Layers, CheckCircle2, Clock, AlertCircle
@@ -113,6 +113,7 @@ export default function AdminDashboardView({ requests }: { requests: any[] }) {
                     paddingAngle={5}
                     cornerRadius={10}
                     dataKey="value"
+                    label={({ name, value }) => `${value}`}
                  >
                     {statsData.statusData.map((entry, index) => (
                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -136,6 +137,7 @@ export default function AdminDashboardView({ requests }: { requests: any[] }) {
                     paddingAngle={5}
                     cornerRadius={10}
                     dataKey="value"
+                    label={({ name, value }) => `${value}`}
                  >
                     {statsData.typeData.map((entry, index) => (
                        <Cell key={`cell-${index}`} fill={COLORS[(index + 2) % COLORS.length]} />
@@ -162,7 +164,9 @@ export default function AdminDashboardView({ requests }: { requests: any[] }) {
                     tick={{fontSize: 10, fontWeight: 800, fill: '#64748b'}}
                  />
                  <Tooltip cursor={{fill: '#f8fafc'}} contentStyle={{borderRadius: '20px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'}} />
-                 <Bar dataKey="value" fill="#3b82f6" radius={[0, 10, 10, 0]} barSize={24} />
+                 <Bar dataKey="value" fill="#3b82f6" radius={[0, 10, 10, 0]} barSize={24}>
+                    <LabelList dataKey="value" position="right" style={{ fontSize: '10px', fontWeight: 900, fill: '#3b82f6' }} />
+                 </Bar>
               </BarChart>
            </ResponsiveContainer>
         </ChartCard>
@@ -180,7 +184,9 @@ export default function AdminDashboardView({ requests }: { requests: any[] }) {
                  />
                  <YAxis axisLine={false} tickLine={false} tick={{fontSize: 10, fontWeight: 800, fill: '#94a3b8'}} />
                  <Tooltip cursor={{fill: '#f8fafc'}} contentStyle={{borderRadius: '20px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'}} />
-                 <Bar dataKey="value" fill="#10b981" radius={[10, 10, 0, 0]} barSize={40} />
+                 <Bar dataKey="value" fill="#10b981" radius={[10, 10, 0, 0]} barSize={40}>
+                    <LabelList dataKey="value" position="top" style={{ fontSize: '10px', fontWeight: 900, fill: '#10b981' }} />
+                 </Bar>
               </BarChart>
            </ResponsiveContainer>
         </ChartCard>
