@@ -79,15 +79,22 @@ export default function AdminDashboardView({ requests }: { requests: any[] }) {
                <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">คำขอทั้งหมด</div>
             </div>
          </div>
-         <div className="flex gap-4">
-            <div className="bg-amber-50 px-6 py-3 rounded-2xl flex flex-col justify-center">
-               <span className="text-amber-600 font-black text-xl leading-none">{statsData.statusData.find(s => s.name === "รอดำเนินการ")?.value || 0}</span>
-               <span className="text-[9px] font-black text-amber-700 uppercase tracking-widest mt-1">Pending</span>
-            </div>
-            <div className="bg-emerald-50 px-6 py-3 rounded-2xl flex flex-col justify-center">
-               <span className="text-emerald-600 font-black text-xl leading-none">{statsData.statusData.find(s => s.name === "ดำเนินการเรียบร้อย")?.value || 0}</span>
-               <span className="text-[9px] font-black text-emerald-700 uppercase tracking-widest mt-1">Completed</span>
-            </div>
+         <div className="flex flex-wrap gap-4">
+            {[
+               { name: "รอดำเนินการ", label: "Pending", bg: "bg-amber-50", text: "text-amber-600" },
+               { name: "รับเรื่อง", label: "Received", bg: "bg-sky-50", text: "text-sky-600" },
+               { name: "กำลังดำเนินการ", label: "Processing", bg: "bg-blue-50", text: "text-blue-600" },
+               { name: "ขอข้อมูลเพิ่ม", label: "Need Info", bg: "bg-purple-50", text: "text-purple-600" },
+               { name: "ดำเนินการเรียบร้อย", label: "Completed", bg: "bg-emerald-50", text: "text-emerald-600" },
+               { name: "ยกเลิก", label: "Cancelled", bg: "bg-rose-50", text: "text-rose-600" }
+            ].map((s, idx) => (
+               <div key={idx} className={`${s.bg} px-5 py-3 rounded-2xl flex flex-col justify-center min-w-[100px] border border-white/50 shadow-sm transition-transform hover:scale-105`}>
+                  <span className={`${s.text} font-black text-xl leading-none`}>
+                     {statsData.statusData.find(st => st.name === s.name)?.value || 0}
+                  </span>
+                  <span className={`${s.text} opacity-70 text-[9px] font-black uppercase tracking-widest mt-1`}>{s.label}</span>
+               </div>
+            ))}
          </div>
       </div>
 
