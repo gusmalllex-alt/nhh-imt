@@ -4,9 +4,8 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { 
   Users, Search, Plus, Filter, 
-  MoreVertical, Mail, Shield, 
-  CheckCircle2, XCircle, AlertCircle,
-  Loader2, UserPlus, X
+  Loader2, UserPlus, X, Pencil, Trash2, Settings, MoreVertical as Dots,
+  Shield, AlertCircle, CheckCircle2, XCircle
 } from "lucide-react";
 
 export default function UserManagement() {
@@ -25,30 +24,41 @@ export default function UserManagement() {
   });
   const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => {
-    async function fetchProfiles() {
-      setLoading(true);
-      try {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('*')
-          .order('full_name', { ascending: true });
+  // Action Menu & Edit State
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState<any | null>(null);
+  const [editFormData, setEditFormData] = useState({
+    full_name: "",
+    role: "",
+    status: ""
+  });
 
-        if (error) {
-          if (error.code === '42P01' || error.message.includes('not found')) {
-             setError("NOT_CONFIGURED");
-          } else {
-             throw error;
-          }
+  const fetchProfiles = async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .order('full_name', { ascending: true });
+
+      if (error) {
+        if (error.code === '42P01' || error.message.includes('not found')) {
+           setError("NOT_CONFIGURED");
         } else {
-          setProfiles(data || []);
+           throw error;
         }
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+      } else {
+        setProfiles(data || []);
       }
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  useEffect(() => {
     fetchProfiles();
   }, []);
 
@@ -97,12 +107,72 @@ export default function UserManagement() {
     }
   };
 
+  const handleDeleteUser = async (user: any) => {
+    if (!confirm(`ยืนยันการลบบัญชีของ ${user.full_name}?`)) return;
+    
+    try {
+      setSubmitting(true);
+      const { error } = await supabase
+        .from('profiles')
+        .delete()
+        .eq('id', user.id);
+
+      if (error) throw error;
+      
+      setProfiles(profiles.filter(p => p.id !== user.id));
+      setOpenMenuId(null);
+      alert("ลบข้อมูลสำเร็จ");
+    } catch (err: any) {
+      alert("Error: " + err.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleEditClick = (user: any) => {
+    setEditingUser(user);
+    setEditFormData({
+      full_name: user.full_name || "",
+      role: user.role || "Staff",
+      status: user.status || "Active"
+    });
+    setIsEditModalOpen(true);
+    setOpenMenuId(null);
+  };
+
+  const handleUpdateUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+    
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          full_name: editFormData.full_name,
+          role: editFormData.role,
+          status: editFormData.status,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', editingUser.id);
+
+      if (error) throw error;
+      
+      setProfiles(profiles.map(p => p.id === editingUser.id ? { ...p, ...editFormData } : p));
+      setIsEditModalOpen(false);
+      alert("อัพเดทข้อมูลสำเร็จ!");
+    } catch (err: any) {
+      alert("Error: " + err.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   const filteredProfiles = profiles.filter(p => 
     p.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     p.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  if (loading) {
+  if (loading && profiles.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px]">
         <Loader2 className="w-10 h-10 text-emerald-600 animate-spin mb-4" />
@@ -179,8 +249,8 @@ export default function UserManagement() {
       </div>
 
       {/* User Table */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm">
+        <div className="overflow-x-visible">
           <table className="w-full text-left">
             <thead className="bg-slate-50 border-b border-slate-200">
               <tr>
@@ -228,10 +298,38 @@ export default function UserManagement() {
                           {user.status || 'Active'}
                        </span>
                     </td>
-                    <td className="px-6 py-4 text-right">
-                       <button className="p-1.5 hover:bg-slate-100 rounded-md transition-colors text-slate-400 hover:text-slate-900">
-                          <MoreVertical className="w-4 h-4" />
+                    <td className={`px-6 py-4 text-right transition-all ${openMenuId === user.id ? 'relative z-[30]' : 'relative'}`}>
+                       <button 
+                         onClick={(e) => {
+                           e.stopPropagation();
+                           setOpenMenuId(openMenuId === user.id ? null : user.id);
+                         }}
+                         className={`p-1.5 rounded-md transition-colors ${openMenuId === user.id ? 'bg-slate-100 text-slate-900' : 'text-slate-400 hover:text-slate-900 hover:bg-slate-50'}`}
+                       >
+                          <Dots className="w-4 h-4" />
                        </button>
+
+                       {/* Action Dropdown Menu */}
+                       {openMenuId === user.id && (
+                         <>
+                           <div className="fixed inset-0 z-10" onClick={() => setOpenMenuId(null)} />
+                           <div className="absolute right-0 top-full mt-1 w-44 bg-white rounded-lg shadow-2xl border border-slate-200 py-1.5 z-[50] animate-in fade-in slide-in-from-top-1 duration-200 text-left">
+                              <button 
+                                onClick={() => handleEditClick(user)}
+                                className="w-full px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-2 transition-colors"
+                              >
+                                 <Pencil className="w-3.5 h-3.5 text-blue-500" /> แก้ไขข้อมูล
+                              </button>
+                              <div className="h-px bg-slate-50 my-1" />
+                              <button 
+                                onClick={() => handleDeleteUser(user)}
+                                className="w-full px-4 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 flex items-center gap-2 transition-colors"
+                              >
+                                 <Trash2 className="w-3.5 h-3.5" /> ลบบัญชี
+                              </button>
+                           </div>
+                         </>
+                       )}
                     </td>
                   </tr>
                 ))
@@ -244,8 +342,8 @@ export default function UserManagement() {
       {/* Add Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-[2px]">
-           <div className="bg-white w-full max-w-md rounded-xl shadow-2xl animate-in zoom-in-95 duration-200 border border-slate-200">
-              <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center">
+           <div className="bg-white w-full max-w-md rounded-xl shadow-2xl animate-in zoom-in-95 duration-200 border border-slate-200 overflow-hidden">
+              <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
                  <h3 className="font-bold text-slate-900">เพิ่มเจ้าหน้าที่ใหม่</h3>
                  <button onClick={() => setIsModalOpen(false)} className="p-1 hover:bg-slate-100 rounded-md transition-colors"><X className="w-5 h-5 text-slate-400" /></button>
               </div>
@@ -308,6 +406,70 @@ export default function UserManagement() {
                  >
                     {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
                     บันทึกข้อมูล
+                 </button>
+              </form>
+           </div>
+        </div>
+      )}
+
+      {/* Edit Modal */}
+      {isEditModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-[2px]">
+           <div className="bg-white w-full max-w-md rounded-xl shadow-2xl animate-in zoom-in-95 duration-200 border border-slate-200 overflow-hidden">
+              <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                 <h3 className="font-bold text-slate-900 flex items-center gap-2">
+                    <Pencil className="w-4 h-4 text-emerald-600" /> แก้ไขข้อมูลเจ้าหน้าที่
+                 </h3>
+                 <button onClick={() => setIsEditModalOpen(false)} className="p-1 hover:bg-slate-100 rounded-md transition-colors"><X className="w-5 h-5 text-slate-400" /></button>
+              </div>
+
+              <form onSubmit={handleUpdateUser} className="p-6 space-y-4">
+                 <div className="space-y-4">
+                    <div className="space-y-1">
+                       <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">ชื่อ-นามสกุล</label>
+                       <input 
+                         required
+                         type="text" 
+                         value={editFormData.full_name}
+                         onChange={(e) => setEditFormData({...editFormData, full_name: e.target.value})}
+                         className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm font-bold text-slate-900 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all" 
+                       />
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                       <div className="space-y-1">
+                          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">บทบาท</label>
+                          <select 
+                            value={editFormData.role}
+                            onChange={(e) => setEditFormData({...editFormData, role: e.target.value})}
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm font-bold text-slate-900 outline-none cursor-pointer"
+                          >
+                             <option value="Staff">IT Staff</option>
+                             <option value="Admin">Admin</option>
+                             <option value="IT Assistant">IT Assistant</option>
+                          </select>
+                       </div>
+                       <div className="space-y-1">
+                          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">สถานะ</label>
+                          <select 
+                            value={editFormData.status}
+                            onChange={(e) => setEditFormData({...editFormData, status: e.target.value})}
+                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm font-bold text-slate-900 outline-none cursor-pointer"
+                          >
+                             <option value="Active">เปิดใช้งาน</option>
+                             <option value="Inactive">ปิดใช้งาน</option>
+                          </select>
+                       </div>
+                    </div>
+                 </div>
+
+                 <button 
+                   type="submit"
+                   disabled={submitting}
+                   className="w-full bg-emerald-600 text-white py-3 rounded-lg font-bold text-sm shadow-lg hover:bg-emerald-700 active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-6"
+                 >
+                    {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <CheckCircle2 className="w-5 h-5" />}
+                    บันทึกการเปลี่ยนแปลง
                  </button>
               </form>
            </div>
