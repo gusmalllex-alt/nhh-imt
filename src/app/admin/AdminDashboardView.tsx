@@ -81,12 +81,12 @@ export default function AdminDashboardView({ requests }: { requests: any[] }) {
          </div>
          <div className="flex flex-wrap gap-4">
             {[
-               { name: "รอดำเนินการ", label: "Pending", bg: "bg-amber-50", text: "text-amber-600" },
-               { name: "รับเรื่อง", label: "Received", bg: "bg-sky-50", text: "text-sky-600" },
-               { name: "กำลังดำเนินการ", label: "Processing", bg: "bg-blue-50", text: "text-blue-600" },
-               { name: "ขอข้อมูลเพิ่ม", label: "Need Info", bg: "bg-purple-50", text: "text-purple-600" },
-               { name: "ดำเนินการเรียบร้อย", label: "Completed", bg: "bg-emerald-50", text: "text-emerald-600" },
-               { name: "ยกเลิก", label: "Cancelled", bg: "bg-rose-50", text: "text-rose-600" }
+               { name: "รอดำเนินการ", label: "รอดำเนินการ", bg: "bg-amber-50", text: "text-amber-600" },
+               { name: "รับเรื่อง", label: "รับเรื่อง", bg: "bg-sky-50", text: "text-sky-600" },
+               { name: "กำลังดำเนินการ", label: "กำลังดำเนินการ", bg: "bg-blue-50", text: "text-blue-600" },
+               { name: "ขอข้อมูลเพิ่ม", label: "ขอข้อมูลเพิ่ม", bg: "bg-purple-50", text: "text-purple-600" },
+               { name: "ดำเนินการเรียบร้อย", label: "ดำเนินการเรียบร้อย", bg: "bg-emerald-50", text: "text-emerald-600" },
+               { name: "ยกเลิก", label: "ยกเลิก", bg: "bg-rose-50", text: "text-rose-600" }
             ].map((s, idx) => (
                <div key={idx} className={`${s.bg} px-5 py-3 rounded-2xl flex flex-col justify-center min-w-[100px] border border-white/50 shadow-sm transition-transform hover:scale-105`}>
                   <span className={`${s.text} font-black text-xl leading-none`}>
