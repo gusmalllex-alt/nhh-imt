@@ -20,7 +20,6 @@ export default function UserManagement() {
     full_name: "",
     email: "",
     role: "Staff",
-    department: "",
     status: "Active"
   });
   const [submitting, setSubmitting] = useState(false);
@@ -69,9 +68,9 @@ export default function UserManagement() {
 
       if (error) throw error;
 
-      setProfiles([data[0], ...profiles]);
+      if (data) setProfiles([data[0], ...profiles]);
       setIsModalOpen(false);
-      setNewStaff({ full_name: "", email: "", role: "Staff", department: "", status: "Active" });
+      setNewStaff({ full_name: "", email: "", role: "Staff", status: "Active" });
       alert("เพิ่มข้อมูลบุคลากรสำเร็จ! อย่าลืมไปสร้างบัญชี Login ใน Supabase ด้วยนะครับ");
     } catch (err: any) {
       alert("เกิดข้อผิดพลาด: " + err.message);
@@ -82,7 +81,6 @@ export default function UserManagement() {
 
   const filteredProfiles = profiles.filter(p => 
     p.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    p.department?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     p.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -116,7 +114,6 @@ create table public.profiles (
   email text,
   role text default 'Staff',
   status text default 'Active',
-  department text,
   updated_at timestamp with time zone default now()
 );
 
@@ -192,29 +189,17 @@ create policy "Allow all for demo" on public.profiles for all using (true);`}
                          placeholder="staff@nonghan.com" 
                        />
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
-                       <div className="space-y-1">
-                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">บทบาท</label>
-                          <select 
-                            value={newStaff.role}
-                            onChange={(e) => setNewStaff({...newStaff, role: e.target.value})}
-                            className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3 font-bold transition-all outline-none appearance-none cursor-pointer"
-                          >
-                             <option value="Staff">Staff</option>
-                             <option value="Admin">Admin</option>
-                             <option value="IT Assistant">IT Assistant</option>
-                          </select>
-                       </div>
-                       <div className="space-y-1">
-                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">แผนก / งาน</label>
-                          <input 
-                            type="text" 
-                            value={newStaff.department}
-                            onChange={(e) => setNewStaff({...newStaff, department: e.target.value})}
-                            className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3 font-bold transition-all outline-none" 
-                            placeholder="ระบุแผนก..." 
-                          />
-                       </div>
+                    <div className="space-y-1">
+                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">บทบาท</label>
+                       <select 
+                         value={newStaff.role}
+                         onChange={(e) => setNewStaff({...newStaff, role: e.target.value})}
+                         className="w-full bg-slate-50 border-none rounded-2xl px-5 py-3 font-bold transition-all outline-none appearance-none cursor-pointer"
+                       >
+                          <option value="Staff">Staff</option>
+                          <option value="Admin">Admin</option>
+                          <option value="IT Assistant">IT Assistant</option>
+                       </select>
                     </div>
                  </div>
 
@@ -242,7 +227,7 @@ create policy "Allow all for demo" on public.profiles for all using (true);`}
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
             <input 
               type="text" 
-              placeholder="ค้นหาชื่อ-นามสกุล หรือ หน่วยงาน..." 
+              placeholder="ค้นหาชื่อ-นามสกุล..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-12 pr-4 py-4 bg-white border border-slate-100 rounded-[1.5rem] shadow-sm outline-none focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all font-bold"
@@ -269,7 +254,6 @@ create policy "Allow all for demo" on public.profiles for all using (true);`}
               <tr>
                 <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-slate-400 border-b border-slate-100">รายชื่อบุคลากร</th>
                 <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-slate-400 border-b border-slate-100">บทบาท / หน้าที่</th>
-                <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-slate-400 border-b border-slate-100">แผนก / งาน</th>
                 <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-slate-400 border-b border-slate-100">สถานะ</th>
                 <th className="px-8 py-5 text-[11px] font-black uppercase tracking-widest text-slate-400 border-b border-slate-100 text-center">จัดการ</th>
               </tr>
@@ -277,7 +261,7 @@ create policy "Allow all for demo" on public.profiles for all using (true);`}
             <tbody className="divide-y divide-slate-50">
               {filteredProfiles.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-8 py-20 text-center">
+                  <td colSpan={4} className="px-8 py-20 text-center">
                      <div className="flex flex-col items-center gap-4 text-slate-400">
                        <Users className="w-16 h-16 opacity-10" />
                        <p className="font-extrabold text-xl">ไม่พบข้อมูลบุคลากร</p>
@@ -295,7 +279,7 @@ create policy "Allow all for demo" on public.profiles for all using (true);`}
                           <div className="flex flex-col">
                              <span className="text-sm font-black text-slate-900">{user.full_name}</span>
                              <span className="text-[10px] font-bold text-slate-400 flex items-center gap-1 mt-1 uppercase tracking-tight">
-                                <Mail className="w-3 h-3" /> NHH-STAFF
+                                <Mail className="w-3 h-3" /> {user.email || 'NHH-STAFF'}
                              </span>
                           </div>
                        </div>
@@ -304,12 +288,6 @@ create policy "Allow all for demo" on public.profiles for all using (true);`}
                        <div className="flex items-center gap-2">
                           <Shield className={`w-4 h-4 ${user.role === 'Admin' ? 'text-rose-500' : 'text-blue-500'}`} />
                           <span className="text-sm font-bold text-slate-700">{user.role}</span>
-                       </div>
-                    </td>
-                    <td className="px-8 py-6">
-                       <div className="flex items-center gap-2">
-                          <Building2 className="w-4 h-4 text-slate-300" />
-                          <span className="text-sm font-bold text-slate-600">{user.department || '-'}</span>
                        </div>
                     </td>
                     <td className="px-8 py-6">
