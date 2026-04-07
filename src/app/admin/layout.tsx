@@ -101,7 +101,7 @@ export default function AdminLayout({
             รายการคำขอทั้งหมด
           </Link>
           <Link 
-            href="#" 
+            href="/admin/users" 
             className="flex items-center gap-3 px-4 py-3 rounded-xl text-emerald-100/70 hover:bg-white/5 hover:text-white transition-all font-medium"
           >
             <Users className="w-5 h-5" />
