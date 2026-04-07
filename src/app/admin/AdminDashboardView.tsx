@@ -104,10 +104,11 @@ export default function AdminDashboardView({ requests }: { requests: any[] }) {
                     innerRadius={70}
                     outerRadius={100}
                     paddingAngle={5}
+                    cornerRadius={10}
                     dataKey="value"
                  >
                     {statsData.statusData.map((entry, index) => (
-                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} cornerRadius={10} />
+                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                  </Pie>
                  <Tooltip contentStyle={{borderRadius: '20px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'}} />
@@ -126,10 +127,11 @@ export default function AdminDashboardView({ requests }: { requests: any[] }) {
                     innerRadius={70}
                     outerRadius={100}
                     paddingAngle={5}
+                    cornerRadius={10}
                     dataKey="value"
                  >
                     {statsData.typeData.map((entry, index) => (
-                       <Cell key={`cell-${index}`} fill={COLORS[(index + 2) % COLORS.length]} cornerRadius={10} />
+                       <Cell key={`cell-${index}`} fill={COLORS[(index + 2) % COLORS.length]} />
                     ))}
                  </Pie>
                  <Tooltip contentStyle={{borderRadius: '20px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'}} />
