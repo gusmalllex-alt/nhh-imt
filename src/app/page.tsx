@@ -9,6 +9,7 @@ import {
   Zap, Clock, Timer, Sparkles, ShieldAlert, Activity, ShieldCheck, HeartPulse
 } from "lucide-react";
 import { submitRequestAction } from "./actions/submitRequest";
+import logo from "../../public/nhh.png";
 
 export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -87,7 +88,7 @@ export default function Home() {
           <div className="mb-8 inline-block animate-float">
             <div className="relative w-28 h-28 mx-auto rounded-full bg-white/95 p-2 shadow-2xl border-4 border-emerald-500/30 flex items-center justify-center">
               <Image 
-                src="/nhh.png" 
+                src={logo} 
                 alt="Nonghan Hospital Logo" 
                 width={100} 
                 height={100} 
@@ -328,7 +329,7 @@ export default function Home() {
         <div className="relative z-10 space-y-6">
            <div className="inline-block p-1.5 bg-white/10 rounded-full border border-white/10 backdrop-blur-sm shadow-xl">
              <Image 
-               src="/nhh.png" 
+               src={logo} 
                alt="NHH Logo Footer" 
                width={60} 
                height={60} 

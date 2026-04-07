@@ -11,7 +11,8 @@ export async function getRequests() {
 
     const response = await fetch(GOOGLE_SCRIPT_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      // Important: Use text/plain to avoid CORS preflight (OPTIONS) which GAS doesn't support
+      headers: { "Content-Type": "text/plain" },
       body: JSON.stringify({ action: "getRequests" }),
     });
 
@@ -70,7 +71,8 @@ export async function updateRequestStatus(rowIndex: string, updates: {
 
     const response = await fetch(GOOGLE_SCRIPT_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      // Important: Use text/plain to avoid CORS preflight (OPTIONS) which GAS doesn't support
+      headers: { "Content-Type": "text/plain" },
       body: JSON.stringify(payload),
     });
 

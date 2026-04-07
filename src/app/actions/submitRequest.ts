@@ -65,7 +65,8 @@ export async function submitRequestAction(formData: FormData) {
     try {
       const response = await fetch(GOOGLE_SCRIPT_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        // Important: Use text/plain to avoid CORS preflight (OPTIONS) which GAS doesn't support
+        headers: { "Content-Type": "text/plain" },
         body: JSON.stringify(scriptPayload),
       });
       
