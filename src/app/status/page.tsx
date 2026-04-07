@@ -7,7 +7,7 @@ import {
   Home, Activity, CheckCircle2, Clock, AlertCircle, PlayCircle, XCircle,
   FileDown, Info, Send, X, ClipboardList, User2, Building2, PhoneCall, MailCheck
 } from "lucide-react";
-import { getRequests, updateRequestStatus } from "../actions/adminActions";
+import { getRequests, updateRequestStatus, addUserInformation } from "../actions/adminActions";
 import logo from "../../../public/nhh.png";
 import Image from "next/image";
 
@@ -106,12 +106,7 @@ export default function StatusTracking() {
     if (!replyText.trim() || !selectedRequest) return;
     
     setIsSubmittingReply(true);
-    const updatedNote = `${selectedRequest.admin_note || ""}\n[ผู้แจ้งตอบกลับเมื่อ ${new Date().toLocaleString('th-TH')}]: ${replyText}`;
-    
-    const result = await updateRequestStatus(selectedRequest.rowIndex.toString(), {
-      status: "รอดำเนินการ",
-      admin_note: updatedNote
-    });
+    const result = await addUserInformation(selectedRequest.rowIndex.toString(), replyText);
 
     if (result.success) {
       alert("ส่งข้อมูลเพิ่มเติมเรียบร้อยแล้ว สถานะจะเปลี่ยนเป็น 'รอดำเนินการ' อีกครั้งครับ");

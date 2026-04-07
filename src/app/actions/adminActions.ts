@@ -71,7 +71,6 @@ export async function updateRequestStatus(rowIndex: string, updates: {
 
     const response = await fetch(GOOGLE_SCRIPT_URL, {
       method: "POST",
-      // Important: Use text/plain to avoid CORS preflight (OPTIONS) which GAS doesn't support
       headers: { "Content-Type": "text/plain" },
       body: JSON.stringify(payload),
     });
@@ -80,6 +79,32 @@ export async function updateRequestStatus(rowIndex: string, updates: {
     return result;
   } catch (error: any) {
     console.error("updateRequestStatus GAS Error:", error);
+    return { success: false, message: error.message };
+  }
+}
+
+export async function addUserInformation(rowIndex: string, additionalInfo: string) {
+  try {
+    if (!GOOGLE_SCRIPT_URL) return { success: false, message: "Google Script URL not configured" };
+
+    const payload = {
+      action: "addUserInformation",
+      updateData: {
+        rowIndex: rowIndex,
+        additionalInfo: additionalInfo
+      }
+    };
+
+    const response = await fetch(GOOGLE_SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify(payload),
+    });
+
+    const result = await response.json();
+    return result;
+  } catch (error: any) {
+    console.error("addUserInformation GAS Error:", error);
     return { success: false, message: error.message };
   }
 }
