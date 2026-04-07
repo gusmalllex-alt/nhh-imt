@@ -455,6 +455,7 @@ export default function RequestTable({ initialRequests }: { initialRequests: any
                        <option value="นายสุทธิชัย ลำพุทธา">นายสุทธิชัย ลำพุทธา</option>
                        <option value="นายเจริญราษฏร์ ลิศรี">นายเจริญราษฏร์ ลิศรี</option>
                        <option value="นายณภัทร ตันสกุล">นายณภัทร ตันสกุล</option>
+                       <option value="นายศราวุธ สุขรักษ์">นายศราวุธ สุขรักษ์</option>
                     </select>
                     <ChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 pointer-events-none" />
                   </div>
