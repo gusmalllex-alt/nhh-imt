@@ -276,65 +276,131 @@ export default function RequestTable({ initialRequests }: { initialRequests: any
                <button onClick={() => setIsDetailModalOpen(false)} className="p-2 hover:bg-white rounded-full transition-all text-slate-400 hover:text-slate-700 shadow-sm border border-transparent hover:border-slate-200 bg-slate-50"><X className="w-5 h-5" /></button>
             </div>
 
-            <div className="p-8 space-y-8 max-h-[70vh] overflow-y-auto font-sans">
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-5 rounded-lg border border-slate-100">
-                  <div className="md:col-span-2">
-                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">เรื่องที่ขอรับบริการ</label>
-                     <div className="text-base font-bold text-slate-900 mt-1">{selectedReq.title}</div>
-                  </div>
-                  <div>
-                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">ประเภทงาน</label>
-                     <div className="text-sm font-bold text-slate-800">{selectedReq.type}</div>
-                  </div>
-                  <div>
-                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">ความเร่งด่วน</label>
-                     <div className={`text-sm font-bold ${selectedReq.urgency === 'ด่วนมาก' ? 'text-rose-600' : 'text-slate-800'}`}>{selectedReq.urgency}</div>
-                  </div>
-                  <div className="md:col-span-2">
-                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">รายละเอียดเพิ่มเติม</label>
-                     <div className="text-sm text-slate-600 bg-white p-3 rounded-lg border border-slate-200 mt-1 font-medium italic whitespace-pre-wrap">{selectedReq.condition || "ไม่ได้ระบุ"}</div>
+            <div className="p-0 max-h-[75vh] overflow-y-auto font-sans bg-slate-50">
+               
+               {/* Work Info Section */}
+               <div className="p-6 md:p-8 space-y-8">
+                  {/* Title and Status Header */}
+                  <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                     <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
+                        <div className="flex-1">
+                           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1"><FileText className="w-3 h-3" /> หัวข้อที่แจ้ง / รายละเอียดข้อมูลที่ขอ</label>
+                           <h4 className="text-xl font-black text-slate-900 leading-snug mt-2">{selectedReq.title || "-"}</h4>
+                        </div>
+                        <div className="flex flex-col items-start md:items-end gap-2">
+                           <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">สถานะงานปัจจุบัน</div>
+                           <div>{getStatusBadge(selectedReq.status)}</div>
+                        </div>
+                     </div>
                   </div>
 
-                  {selectedReq.file_url && (
-                    <div className="md:col-span-2 pt-2">
-                       <label className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider block mb-2">ไฟล์แนบประกอบ</label>
-                       <a 
-                         href={selectedReq.file_url} 
-                         target="_blank" 
-                         rel="noopener noreferrer"
-                         className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-xl font-bold text-xs hover:bg-emerald-100 transition-all shadow-sm group"
-                       >
-                         <Download className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
-                         ดาวน์โหลด / เปิดดูไฟล์แนบ
-                       </a>
-                    </div>
+                  {/* Classification Grid */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                     <div className="bg-white p-4 rounded-xl border border-slate-200">
+                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">ประเภทงาน</label>
+                        <div className="text-sm font-bold text-slate-800">{selectedReq.type || "-"}</div>
+                     </div>
+                     <div className="bg-white p-4 rounded-xl border border-slate-200">
+                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">ความเร่งด่วน</label>
+                        <div className={`text-sm font-bold ${selectedReq.urgency === 'ด่วนมาก' ? 'text-rose-600' : 'text-slate-800'}`}>{selectedReq.urgency || "-"}</div>
+                     </div>
+                     <div className="bg-white p-4 rounded-xl border border-slate-200">
+                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">ความถี่ที่ใช้งาน</label>
+                        <div className="text-sm font-bold text-slate-800">{selectedReq.frequency || "-"}</div>
+                     </div>
+                     <div className="bg-white p-4 rounded-xl border border-slate-200">
+                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">ผู้รับผิดชอบงาน</label>
+                        <div className="text-sm font-bold text-emerald-600">{selectedReq.assigned_to || "รอดำเนินการ"}</div>
+                     </div>
+                  </div>
+
+                  {/* Dates Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                     <div className="flex items-center gap-3 bg-white px-4 py-3 border border-slate-200 rounded-xl">
+                        <Calendar className="w-5 h-5 text-slate-400" />
+                        <div>
+                           <div className="text-[10px] font-bold text-slate-400 uppercase">วันที่ส่งคำขอ</div>
+                           <div className="text-xs font-bold text-slate-800">{selectedReq.created_at ? new Date(selectedReq.created_at).toLocaleDateString('th-TH') : "-"}</div>
+                        </div>
+                     </div>
+                     <div className="flex items-center gap-3 bg-sky-50 px-4 py-3 border border-sky-100 rounded-xl">
+                        <PlayCircle className="w-5 h-5 text-sky-500" />
+                        <div>
+                           <div className="text-[10px] font-bold text-sky-600 uppercase">วันที่รับเรื่อง</div>
+                           <div className="text-xs font-bold text-sky-900">{selectedReq.date_received ? new Date(selectedReq.date_received).toLocaleDateString('th-TH') : "ยังไม่รับเรื่อง"}</div>
+                        </div>
+                     </div>
+                     <div className="flex items-center gap-3 bg-emerald-50 px-4 py-3 border border-emerald-100 rounded-xl">
+                        <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                        <div>
+                           <div className="text-[10px] font-bold text-emerald-600 uppercase">กำหนดเสร็จ / ทำเสร็จ</div>
+                           <div className="text-xs font-bold text-emerald-900">{selectedReq.due_date ? new Date(selectedReq.due_date).toLocaleDateString('th-TH') : "-"}</div>
+                        </div>
+                     </div>
+                  </div>
+
+                  {/* Full Detail & File */}
+                  <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-3">
+                        <ClipboardList className="w-4 h-4" /> เงื่อนไข / คำอธิบายเพิ่มเติม
+                     </label>
+                     <div className="text-sm text-slate-700 bg-slate-50 p-4 rounded-xl border border-slate-100 leading-relaxed whitespace-pre-wrap font-medium">
+                        {selectedReq.condition || "ไม่ได้ระบุรายละเอียด"}
+                     </div>
+                     
+                     {selectedReq.file_url && (
+                        <div className="mt-4 pt-4 border-t border-slate-100">
+                           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">ไฟล์แนบประกอบ</label>
+                           <a 
+                             href={selectedReq.file_url} 
+                             target="_blank" 
+                             rel="noopener noreferrer"
+                             className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-xl font-bold text-xs hover:bg-emerald-100 transition-all shadow-sm group"
+                           >
+                             <Download className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
+                             คลิกเพื่อดาวน์โหลด / เปิดดูไฟล์แนบ
+                           </a>
+                        </div>
+                     )}
+                  </div>
+
+                  {/* Admin Note Information */}
+                  {selectedReq.admin_note && (
+                     <div className="bg-amber-50 p-6 rounded-2xl shadow-sm border border-amber-200">
+                        <label className="text-[10px] font-bold text-amber-600 uppercase tracking-widest flex items-center gap-2 mb-3">
+                           <Info className="w-4 h-4" /> หมายเหตุจากแอดมิน (Admin Note)
+                        </label>
+                        <div className="text-sm text-amber-900 font-medium italic whitespace-pre-wrap">
+                           {selectedReq.admin_note}
+                        </div>
+                     </div>
                   )}
-               </div>
 
-               <div className="bg-white p-5 rounded-lg border border-slate-200 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">ชื่อผู้ขอ</label>
-                     <div className="text-sm font-bold text-slate-800">{selectedReq.requester_name}</div>
+                  {/* Requester Info */}
+                  <div className="bg-emerald-900/5 rounded-2xl border border-emerald-900/10 p-6 md:p-8">
+                     <div className="flex items-center gap-2 text-emerald-800 font-black text-sm uppercase tracking-widest mb-6">
+                        <UserCircle2 className="w-5 h-5" /> ข้อมูลผู้ติดต่อ
+                     </div>
+                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div>
+                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">ชื่อ-สกุล</label>
+                           <div className="text-sm font-bold text-slate-900 flex items-center gap-2"><User border-slate-400="true" className="w-4 h-4 text-slate-400" /> {selectedReq.requester_name || "-"}</div>
+                        </div>
+                        <div>
+                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">หน่วยงาน / แผนก</label>
+                           <div className="text-sm font-bold text-slate-900 flex items-center gap-2"><Building2 className="w-4 h-4 text-slate-400" /> {selectedReq.department || "-"}</div>
+                        </div>
+                        <div>
+                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">เบอร์โทรศัพท์</label>
+                           <div className="text-sm font-bold text-slate-900 flex items-center gap-2"><PhoneCall className="w-4 h-4 text-slate-400" /> {selectedReq.phone || "-"}</div>
+                        </div>
+                        <div>
+                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">อีเมล</label>
+                           <div className="text-sm font-bold text-slate-900 flex items-center gap-2 truncate"><Mail className="w-4 h-4 text-slate-400" /> {selectedReq.email || "-"}</div>
+                        </div>
+                     </div>
                   </div>
-                  <div>
-                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">เบอร์โทรศัพท์</label>
-                     <div className="text-sm font-bold text-slate-800">{selectedReq.phone}</div>
-                  </div>
-                  <div className="sm:col-span-2">
-                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">สังกัดหน่วยงาน</label>
-                     <div className="text-sm font-bold text-slate-800">{selectedReq.department}</div>
-                  </div>
-               </div>
-
-               <div className="bg-emerald-50 p-5 rounded-lg border border-emerald-100 grid grid-cols-2 gap-4">
-                  <div>
-                     <label className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider">สถานะปัจจุบัน</label>
-                     <div className="mt-1">{getStatusBadge(selectedReq.status)}</div>
-                  </div>
-                  <div>
-                     <label className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider">ผู้รับงาน</label>
-                     <div className="text-sm font-bold text-slate-800 mt-1">{selectedReq.assigned_to || "ยังไม่รับเรื่อง"}</div>
-                  </div>
+                  
                </div>
             </div>
 
