@@ -1,4 +1,4 @@
-const GAS_URL = process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL || "";
+const GAS_URL = "https://script.google.com/macros/s/AKfycbxx9ZaF9iCFAq7jNJDA4FFNFKnQK5JLRHE21jgIxQP252YLSBubussoan60TbRmUNem/exec";
 
 /**
  * Utility to send LINE notifications via the existing Google Apps Script bridge.
