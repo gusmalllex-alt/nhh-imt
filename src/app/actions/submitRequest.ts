@@ -21,7 +21,11 @@ export async function submitRequestAction(formData: FormData) {
 
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('request-files')
-        .upload(filePath, file);
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false,
+          contentType: file.type // Ensure correct content type is sent
+        });
 
       if (uploadError) {
         console.error("Supabase Storage Error:", uploadError);
