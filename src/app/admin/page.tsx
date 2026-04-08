@@ -3,14 +3,26 @@
 import { useState, useEffect } from "react";
 import { getRequests } from "../actions/adminActions";
 import { LayoutDashboard, AlertCircle, Loader2, ListTodo, PieChart } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import RequestTable from "./RequestTable";
 import AdminDashboardView from "./AdminDashboardView";
+import { Suspense } from "react";
 
 export default function AdminPage() {
+  return (
+    <Suspense fallback={<div className="flex justify-center p-20"><Loader2 className="animate-spin text-emerald-600 w-10 h-10" /></div>}>
+      <AdminPageContent />
+    </Suspense>
+  );
+}
+
+function AdminPageContent() {
   const [requests, setRequests] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"dashboard" | "requests">("dashboard");
+  
+  const searchParams = useSearchParams();
+  const activeTab = searchParams.get("view") === "requests" ? "requests" : "dashboard";
 
   const fetchData = async () => {
     setLoading(true);
@@ -65,32 +77,13 @@ export default function AdminPage() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-            <LayoutDashboard className="w-6 h-6 text-emerald-600" /> บริหารจัดการคำขอ
+            {activeTab === "dashboard" ? (
+              <><PieChart className="w-6 h-6 text-emerald-600" /> แดชบอร์ดสรุปผล</>
+            ) : (
+              <><ListTodo className="w-6 h-6 text-emerald-600" /> รายการคำขอทั้งหมด</>
+            )}
           </h2>
           <p className="text-slate-500 text-xs font-medium">ศูนย์ควบคุมการจัดการข้อมูลและสถิติกลาง</p>
-        </div>
-
-        <div className="flex bg-slate-100 p-1 rounded-lg border border-slate-200">
-          <button
-            onClick={() => setActiveTab("dashboard")}
-            className={`flex items-center gap-2 px-4 py-1.5 rounded-md text-xs font-bold transition-all ${
-              activeTab === "dashboard" 
-                ? "bg-white text-slate-900 shadow-sm border border-slate-200" 
-                : "text-slate-500 hover:text-slate-700"
-            }`}
-          >
-            <PieChart className="w-3.5 h-3.5" /> Dashboard
-          </button>
-          <button
-            onClick={() => setActiveTab("requests")}
-            className={`flex items-center gap-2 px-4 py-1.5 rounded-md text-xs font-bold transition-all ${
-              activeTab === "requests" 
-                ? "bg-white text-slate-900 shadow-sm border border-slate-200" 
-                : "text-slate-500 hover:text-slate-700"
-            }`}
-          >
-            <ListTodo className="w-3.5 h-3.5" /> จัดการคำขอทั้งหมด
-          </button>
         </div>
       </div>
 

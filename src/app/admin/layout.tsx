@@ -11,9 +11,11 @@ import {
   Home, 
   Users,
   Bell,
-  Loader2
+  Loader2,
+  ListTodo
 } from "lucide-react";
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import logo from "../../../public/nhh.png";
 
@@ -25,6 +27,9 @@ export default function AdminLayout({
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const view = searchParams.get("view");
 
   useEffect(() => {
     const checkUser = async () => {
@@ -85,14 +90,33 @@ export default function AdminLayout({
         <nav className="flex-1 p-3 space-y-1 mt-2">
           <Link 
             href="/admin" 
-            className="flex items-center gap-2.5 px-4 py-2.5 rounded-lg bg-emerald-600 text-white transition-all font-bold text-sm shadow-sm"
+            className={`flex items-center gap-2.5 px-4 py-2.5 rounded-lg transition-all font-bold text-sm ${
+              pathname === "/admin" && !view
+                ? "bg-emerald-600 text-white shadow-sm"
+                : "text-slate-400 hover:bg-slate-800 hover:text-white"
+            }`}
           >
             <LayoutDashboard className="w-4 h-4" />
             Dashboard
           </Link>
           <Link 
+            href="/admin?view=requests" 
+            className={`flex items-center gap-2.5 px-4 py-2.5 rounded-lg transition-all font-bold text-sm ${
+              pathname === "/admin" && view === "requests"
+                ? "bg-emerald-600 text-white shadow-sm"
+                : "text-slate-400 hover:bg-slate-800 hover:text-white"
+            }`}
+          >
+            <ListTodo className="w-4 h-4" />
+            จัดการคำขอทั้งหมด
+          </Link>
+          <Link 
             href="/admin/users" 
-            className="flex items-center gap-2.5 px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-all font-bold text-sm"
+            className={`flex items-center gap-2.5 px-4 py-2.5 rounded-lg transition-all font-bold text-sm ${
+              pathname === "/admin/users"
+                ? "bg-emerald-600 text-white shadow-sm"
+                : "text-slate-400 hover:bg-slate-800 hover:text-white"
+            }`}
           >
             <Users className="w-4 h-4" />
             จัดการบุคลากร
