@@ -337,13 +337,42 @@ export default function Home() {
                 isSubmitting ? 'bg-gray-400' : 'bg-[#004d40] shadow-emerald-900/40'
               }`}
             >
-              {isSubmitting ? 'กำลังส่งข้อมูล...' : isSuccess ? '🚀 ส่งข้อมูลสำเร็จ!' : '🚀 ยืนยันการส่งข้อมูล'}
+              {isSubmitting ? 'กำลังส่งข้อมูล...' : '🚀 ยืนยันการส่งข้อมูล'}
               {/* Shine Effect */}
               <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer" />
             </button>
           </div>
         </form>
       </main>
+
+      {/* --- Success Modal --- */}
+      {isSuccess && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300">
+           <div className="bg-white rounded-[2.5rem] shadow-2xl max-w-sm w-full p-8 text-center animate-in zoom-in-95 duration-300 border border-emerald-50 relative overflow-hidden">
+              {/* Decorative Background Elements */}
+              <div className="absolute -top-10 -right-10 w-32 h-32 bg-emerald-50 rounded-full opacity-50" />
+              <div className="absolute -bottom-10 -left-10 w-24 h-24 bg-emerald-50 rounded-full opacity-50" />
+              
+              <div className="relative">
+                <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce shadow-inner">
+                  <CheckCircle2 className="w-12 h-12 text-emerald-600" />
+                </div>
+                
+                <h3 className="text-2xl font-black text-slate-900 mb-2">ส่งคำขอสำเร็จ!</h3>
+                <p className="text-sm font-bold text-slate-500 mb-8 leading-relaxed">
+                  ขอบคุณที่ใช้บริการครับ เจ้าหน้าที่จะดำเนินการตรวจสอบ<br/>และแจ้งผลกลับโดยเร็วที่สุด
+                </p>
+                
+                <button 
+                  onClick={() => setIsSuccess(false)}
+                  className="w-full py-4 bg-emerald-600 text-white rounded-2xl font-black text-sm shadow-xl shadow-emerald-200 hover:bg-emerald-700 active:scale-95 transition-all"
+                >
+                  รับทราบ
+                </button>
+              </div>
+           </div>
+        </div>
+      )}
 
       {/* Footer Section */}
       <footer className="bg-[#003820] pt-20 pb-10 px-4 mt-20 text-center relative overflow-hidden">
