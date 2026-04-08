@@ -5,9 +5,9 @@ import {
   CheckCircle2, Clock, AlertCircle, PlayCircle, XCircle, Search, 
   Download, User, FileText, Loader2, Calendar, Pencil, X, Send, 
   Activity, ListTodo, Building2, PhoneCall, Mail, Info, MoreHorizontal,
-  ClipboardList, UserCircle2, Settings2, ChevronDown
+  ClipboardList, UserCircle2, Settings2, ChevronDown, Trash2
 } from "lucide-react";
-import { updateRequestStatus } from "../actions/adminActions";
+import { updateRequestStatus, deleteRequest } from "../actions/adminActions";
 
 export default function RequestTable({ initialRequests }: { initialRequests: any[] }) {
   const [requests, setRequests] = useState(initialRequests);
@@ -53,6 +53,24 @@ export default function RequestTable({ initialRequests }: { initialRequests: any
     });
     setIsDetailModalOpen(false);
     setIsEditModalOpen(true);
+  };
+
+  const handleDelete = async (id: string, title: string) => {
+    if (!confirm(`ยืนยันการลบคำขอเรื่อง: "${title}"?\nข้อมูลนี้จะถูกลบถาวรจากฐานข้อมูล`)) return;
+    
+    setUpdatingId(id);
+    try {
+      const result = await deleteRequest(id);
+      if (result.success) {
+        setRequests(prev => prev.filter(r => r.id !== id));
+      } else {
+        alert("Error: " + result.message);
+      }
+    } catch (err) {
+      alert("Failed to delete");
+    } finally {
+      setUpdatingId(null);
+    }
   };
 
   const handleUpdateSubmit = async () => {
@@ -117,7 +135,7 @@ export default function RequestTable({ initialRequests }: { initialRequests: any
         <div className="flex flex-col lg:flex-row gap-4 items-center">
           <div className="relative flex-1 w-full group">
              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-             <input 
+              <input 
                type="text" 
                placeholder="ค้นหาเรื่อง, ผู้ขอ, แผนก..." 
                value={searchTerm}
@@ -222,6 +240,15 @@ export default function RequestTable({ initialRequests }: { initialRequests: any
                            </button>
                            <button onClick={(e) => { e.stopPropagation(); setSelectedReq(req); openEditModalFromDetail(); }} className="p-1.5 hover:bg-slate-100 rounded-md text-slate-400 hover:text-slate-900 transition-colors">
                               <Pencil className="w-4 h-4" />
+                           </button>
+                           <button 
+                             onClick={(e) => { 
+                               e.stopPropagation(); 
+                               handleDelete(req.id, req.title); 
+                             }} 
+                             className="p-1.5 hover:bg-rose-50 rounded-md text-slate-400 hover:text-rose-600 transition-colors"
+                           >
+                              {updatingId === req.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
                            </button>
                         </div>
                      </td>
