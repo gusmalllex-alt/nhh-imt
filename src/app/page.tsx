@@ -401,34 +401,34 @@ export default function Home() {
       )}
 
       {/* Footer Section */}
-      <footer className="bg-[#003820] pt-20 pb-10 px-4 mt-20 text-center relative overflow-hidden">
+      <footer className="bg-[#003820] pt-12 pb-8 px-4 mt-12 text-center relative overflow-hidden">
         {/* Pattern Background */}
         <div className="absolute inset-0 opacity-[0.1] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] pointer-events-none" />
         
         <div className="relative z-10 space-y-6">
-           <div className="inline-block p-1.5 bg-white/10 rounded-full border border-white/10 backdrop-blur-sm shadow-xl">
+           <div className="inline-block p-1 bg-white/10 rounded-full border border-white/10 backdrop-blur-sm shadow-lg">
              <Image 
                src={logo} 
                alt="NHH Logo Footer" 
-               width={60} 
-               height={60} 
+               width={45} 
+               height={45} 
                className="object-contain"
              />
            </div>
            
            <div className="text-white">
-             <h3 className="text-xl font-black mb-1">กลุ่มงานสุขภาพดิจิทัล</h3>
-             <p className="text-emerald-400 font-bold text-sm">โรงพยาบาลหนองหาน · Nonghan Hospital</p>
+             <h3 className="text-lg font-black mb-0.5">กลุ่มงานสุขภาพดิจิทัล</h3>
+             <p className="text-emerald-400 font-bold text-xs">โรงพยาบาลหนองหาน · Nonghan Hospital</p>
            </div>
 
-           <div className="flex justify-center gap-6 text-emerald-100 font-bold text-sm">
-              <span className="flex items-center gap-2"><Phone className="w-4 h-4" /> 042-261135-6 ต่อ 235 หรือ 469</span>
-              <span className="flex items-center gap-2"><HeartPulse className="w-4 h-4" /> 24/7 Service</span>
+           <div className="flex flex-col md:flex-row justify-center gap-3 md:gap-6 text-emerald-100/70 font-bold text-xs">
+              <span className="flex items-center justify-center gap-2"><Phone className="w-3.5 h-3.5" /> 042-261135-6 ต่อ 235 หรือ 469</span>
+              <span className="flex items-center justify-center gap-2"><HeartPulse className="w-3.5 h-3.5" /> 24/7 Service</span>
            </div>
 
-           <div className="pt-10 opacity-30 text-emerald-50 text-[10px] font-bold uppercase tracking-[0.3em] space-y-2">
+           <div className="pt-8 opacity-30 text-emerald-50 text-[9px] font-bold uppercase tracking-[0.2em] space-y-1">
               <div>© 2026 NONGHAN HOSPITAL IT CENTER · IMT HUB</div>
-              <div className="text-[9px] opacity-70">พัฒนาโดย <span className="text-emerald-300">กลุ่มงานสุขภาพดิจิทัล</span> : นายศุภชัย สุนารักษ์ นักวิชาการสถิติ</div>
+              <div className="text-[8px] opacity-70">พัฒนาโดย <span className="text-emerald-300">กลุ่มงานสุขภาพดิจิทัล</span></div>
            </div>
         </div>
       </footer>
