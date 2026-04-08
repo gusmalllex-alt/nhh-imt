@@ -288,6 +288,21 @@ export default function RequestTable({ initialRequests }: { initialRequests: any
                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">รายละเอียดเพิ่มเติม</label>
                      <div className="text-sm text-slate-600 bg-white p-3 rounded-lg border border-slate-200 mt-1 font-medium italic whitespace-pre-wrap">{selectedReq.condition || "ไม่ได้ระบุ"}</div>
                   </div>
+
+                  {selectedReq.file_url && (
+                    <div className="md:col-span-2 pt-2">
+                       <label className="text-[10px] font-bold text-emerald-600 uppercase tracking-wider block mb-2">ไฟล์แนบประกอบ</label>
+                       <a 
+                         href={selectedReq.file_url} 
+                         target="_blank" 
+                         rel="noopener noreferrer"
+                         className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-xl font-bold text-xs hover:bg-emerald-100 transition-all shadow-sm group"
+                       >
+                         <Download className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
+                         ดาวน์โหลด / เปิดดูไฟล์แนบ
+                       </a>
+                    </div>
+                  )}
                </div>
 
                <div className="bg-white p-5 rounded-lg border border-slate-200 grid grid-cols-1 sm:grid-cols-2 gap-4">

@@ -18,6 +18,7 @@ export default function Home() {
   
   const [selectedType, setSelectedType] = useState<string>("");
   const [selectedUrgency, setSelectedUrgency] = useState<string>("");
+  const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -44,6 +45,7 @@ export default function Home() {
         e.currentTarget.reset();
         setSelectedType("");
         setSelectedUrgency("");
+        setSelectedFileName(null);
       } else {
         alert("ข้อผิดพลาด: " + result.message);
       }
@@ -237,17 +239,26 @@ export default function Home() {
                     <div className="w-14 h-14 rounded-full bg-white flex items-center justify-center shadow-sm group-hover:scale-110 transition-transform mb-3">
                       <FileUp className="w-6 h-6 text-emerald-600" />
                     </div>
-                    <span className="text-sm font-bold text-gray-600">คลิกที่นี่เพื่อแนบไฟล์</span>
-                    <span className="text-[10px] font-bold text-gray-400 mt-1">PDF, Excel, Word (MAX 5MB)</span>
+                    <span className="text-sm font-bold text-gray-600">
+                      {selectedFileName ? `📄 ${selectedFileName}` : "คลิกที่นี่เพื่อแนบไฟล์"}
+                    </span>
+                    <span className="text-[10px] font-bold text-gray-400 mt-1">
+                      {selectedFileName ? "คลิกเพื่อเปลี่ยนไฟล์" : "PDF, Excel, Word (MAX 5MB)"}
+                    </span>
                     <input 
                       type="file" 
                       name="file" 
                       className="sr-only" 
                       onChange={(e) => {
                         const file = e.target.files?.[0];
-                        if (file && file.size > 5 * 1024 * 1024) {
-                          alert("ขนาดไฟล์ใหญ่เกินไป ห้ามเกิน 5MB ครับ");
-                          e.target.value = ""; // Clear input
+                        if (file) {
+                          if (file.size > 5 * 1024 * 1024) {
+                            alert("ขนาดไฟล์ใหญ่เกินไป ห้ามเกิน 5MB ครับ");
+                            e.target.value = "";
+                            setSelectedFileName(null);
+                          } else {
+                            setSelectedFileName(file.name);
+                          }
                         }
                       }}
                     />
