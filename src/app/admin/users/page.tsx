@@ -5,7 +5,7 @@ import { supabase } from "@/lib/supabase";
 import { 
   Users, Search, Plus, Filter, 
   Loader2, UserPlus, X, Pencil, Trash2, Settings, MoreVertical as Dots,
-  Shield, AlertCircle, CheckCircle2, XCircle
+  Shield, AlertCircle, CheckCircle2, XCircle, Mail
 } from "lucide-react";
 
 export default function UserManagement() {
@@ -427,14 +427,39 @@ export default function UserManagement() {
                     </div>
                  </div>
 
-                 <button 
-                   type="submit"
-                   disabled={submitting}
-                   className="w-full bg-emerald-600 text-white py-3 rounded-lg font-bold text-sm shadow-lg hover:bg-emerald-700 active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-6"
-                 >
-                    {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <CheckCircle2 className="w-5 h-5" />}
-                    บันทึกการเปลี่ยนแปลง
-                 </button>
+                 <div className="pt-4 border-t border-slate-100 flex flex-col gap-3">
+                    <button 
+                      type="button"
+                      onClick={async () => {
+                         if (!editingUser.email) return alert("ไม่พบอีเมลเจ้าหน้าที่");
+                         setSubmitting(true);
+                         try {
+                            const { error } = await supabase.auth.resetPasswordForEmail(editingUser.email, {
+                              redirectTo: window.location.origin + '/login'
+                            });
+                            if (error) throw error;
+                            alert("ส่งอีเมลรีเซ็ตรหัสผ่านสำเร็จ! กรุณาแจ้งให้เจ้าหน้าที่ตรวจสอบ Inbox");
+                         } catch (err: any) {
+                            alert("Error: " + err.message);
+                         } finally {
+                            setSubmitting(false);
+                         }
+                      }}
+                      disabled={submitting}
+                      className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border-2 border-slate-200 text-slate-600 font-bold text-xs hover:bg-slate-50 hover:border-slate-300 transition-all disabled:opacity-50"
+                    >
+                       <Mail className="w-4 h-4 text-emerald-600" /> ส่งอีเมลรีเซ็ตรหัสผ่าน
+                    </button>
+                    
+                    <button 
+                      type="submit"
+                      disabled={submitting}
+                      className="w-full bg-emerald-600 text-white py-3 rounded-lg font-bold text-sm shadow-lg hover:bg-emerald-700 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                    >
+                       {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <CheckCircle2 className="w-5 h-5" />}
+                       บันทึกการเปลี่ยนแปลง
+                    </button>
+                 </div>
               </form>
            </div>
         </div>
