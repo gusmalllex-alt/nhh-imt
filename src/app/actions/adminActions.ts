@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase";
-import { sendLineNotification } from "@/lib/notifications";
+import { sendLineNotification, sendEmailNotification } from "@/lib/notifications";
 
 /**
  * Note: Switched from 'use server' to standard TypeScript function
@@ -81,6 +81,29 @@ export async function updateRequestStatus(requestId: string, updates: {
        }).eq('id', requestId);
     }
 
+    // 3. Send Status update notification
+    if (updates.status) {
+       try {
+          const { data: reqInfo } = await supabase
+            .from('requests')
+            .select('report_name, email, requester_name')
+            .eq('id', requestId)
+            .single();
+
+          if (reqInfo && reqInfo.email) {
+             const subject = `[IMT Portal] อัปเดตสถานะคำขอ: ${reqInfo.report_name}`;
+             const body = `เรียนคุณ ${reqInfo.requester_name},\n\n` +
+               `คำขอข้อมูลเรื่อง "${reqInfo.report_name}" มีการเปลี่ยนแปลงสถานะเป็น: ${updates.status}\n\n` +
+               `คุณสามารถติดตามรายละเอียดและความคืบหน้าได้ที่: https://gusmalllex-alt.github.io/nhh-imt/status\n\n` +
+               `ขอบคุณครับ\nกลุ่มงานดิจิทัลและเทคโนโลยีสารสนเทศ โรงพยาบาลหนองหาน`;
+             
+             await sendEmailNotification(reqInfo.email, subject, body);
+          }
+       } catch (err) {
+          console.error("Status update email failed:", err);
+       }
+    }
+
     return { success: true, data };
   } catch (error: any) {
     console.error("updateRequestStatus Supabase Error:", error);
@@ -122,6 +145,17 @@ export async function addUserInformation(requestId: string, additionalInfo: stri
     // 3. Send LINE notification
     const msg = `💬 *ผู้ใช้ตอบกลับข้อมูล (Supabase)*\n\n📝 *ชื่อเรื่อง:* ${currentReq.report_name}\n👤 *จาก:* ${currentReq.requester_name}\n\n"${additionalInfo}"`;
     await sendLineNotification(msg);
+
+    // 4. Send Email notification to Admin
+    const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL || "imt.nonghan@gmail.com";
+    const emailSubject = `[IMT Portal] มีการตอบกลับข้อมูลเพิ่มเติม: ${currentReq.report_name}`;
+    const emailBody = `มีการส่งข้อมูลเพิ่มเติมจากผู้ขอใช้งาน\n\n` +
+      `ชื่อเรื่อง: ${currentReq.report_name}\n` +
+      `ผู้ส่ง: ${currentReq.requester_name}\n` +
+      `ข้อความ: "${additionalInfo}"\n\n` +
+      `จัดการข้อมูล: https://gusmalllex-alt.github.io/nhh-imt/admin`;
+    
+    await sendEmailNotification(adminEmail, emailSubject, emailBody);
 
     return { success: true, message: "ส่งข้อมูลเพิ่มเติมเรียบร้อยแล้ว" };
   } catch (error: any) {

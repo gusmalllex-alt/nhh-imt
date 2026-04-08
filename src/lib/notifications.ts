@@ -24,3 +24,29 @@ export async function sendLineNotification(message: string) {
     return { success: false, message: error.message };
   }
 }
+
+/**
+ * Utility to send Email notifications via the GAS bridge.
+ */
+export async function sendEmailNotification(to: string, subject: string, body: string) {
+  if (!GAS_URL) return { success: false, message: "Notification bridge not configured" };
+
+  try {
+    const response = await fetch(GAS_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify({
+        action: "sendEmail",
+        to: to,
+        subject: subject,
+        body: body
+      }),
+    });
+
+    const result = await response.json();
+    return result;
+  } catch (error: any) {
+    console.error("Email Notification Error:", error);
+    return { success: false, message: error.message };
+  }
+}
