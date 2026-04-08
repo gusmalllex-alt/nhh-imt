@@ -19,7 +19,7 @@ export default function UserManagement() {
     full_name: "",
     email: "",
     password: "",
-    role: "Staff",
+    role: "Admin",
     status: "Active"
   });
   const [submitting, setSubmitting] = useState(false);
@@ -255,7 +255,6 @@ export default function UserManagement() {
             <thead className="bg-slate-50 border-b border-slate-200">
               <tr>
                 <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-slate-500">ชื่อเจ้าหน้าที่</th>
-                <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-slate-500">บทบาท</th>
                 <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-slate-500">สถานะ</th>
                 <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-slate-500 text-right">ดำเนินการ</th>
               </tr>
@@ -280,15 +279,6 @@ export default function UserManagement() {
                              <span className="text-[11px] font-medium text-slate-500 mt-1">{user.email || 'N/A'}</span>
                           </div>
                        </div>
-                    </td>
-                    <td className="px-6 py-4">
-                       <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold border ${
-                         user.role === 'Admin' 
-                          ? 'bg-rose-50 text-rose-700 border-rose-100' 
-                          : 'bg-indigo-50 text-indigo-700 border-indigo-100'
-                       }`}>
-                          <Shield className="w-3 h-3" /> {user.role}
-                       </span>
                     </td>
                     <td className="px-6 py-4">
                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold ${
@@ -385,18 +375,6 @@ export default function UserManagement() {
                           />
                        </div>
                     </div>
-                    <div className="space-y-1">
-                       <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">บทบาททางสิทธิ์</label>
-                       <select 
-                         value={newStaff.role}
-                         onChange={(e) => setNewStaff({...newStaff, role: e.target.value})}
-                         className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none cursor-pointer"
-                       >
-                          <option value="Staff">IT Staff (ทั่วไป)</option>
-                          <option value="Admin">Administrator (หน้าหลัก)</option>
-                          <option value="IT Assistant">IT Assistant (ผู้ช่วย)</option>
-                       </select>
-                    </div>
                  </div>
 
                  <button 
@@ -436,30 +414,16 @@ export default function UserManagement() {
                        />
                     </div>
                     
-                    <div className="grid grid-cols-2 gap-4">
-                       <div className="space-y-1">
-                          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">บทบาท</label>
-                          <select 
-                            value={editFormData.role}
-                            onChange={(e) => setEditFormData({...editFormData, role: e.target.value})}
-                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm font-bold text-slate-900 outline-none cursor-pointer"
-                          >
-                             <option value="Staff">IT Staff</option>
-                             <option value="Admin">Admin</option>
-                             <option value="IT Assistant">IT Assistant</option>
-                          </select>
-                       </div>
-                       <div className="space-y-1">
-                          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">สถานะ</label>
-                          <select 
-                            value={editFormData.status}
-                            onChange={(e) => setEditFormData({...editFormData, status: e.target.value})}
-                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm font-bold text-slate-900 outline-none cursor-pointer"
-                          >
-                             <option value="Active">เปิดใช้งาน</option>
-                             <option value="Inactive">ปิดใช้งาน</option>
-                          </select>
-                       </div>
+                    <div className="space-y-1">
+                       <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">สถานะการใช้งาน</label>
+                       <select 
+                         value={editFormData.status}
+                         onChange={(e) => setEditFormData({...editFormData, status: e.target.value})}
+                         className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm font-bold text-slate-900 outline-none cursor-pointer"
+                       >
+                          <option value="Active">เปิดใช้งาน</option>
+                          <option value="Inactive">ปิดใช้งาน</option>
+                       </select>
                     </div>
                  </div>
 
