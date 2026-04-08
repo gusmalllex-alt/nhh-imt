@@ -116,7 +116,7 @@ export default function SettingsPage() {
                <span className="flex items-center gap-1.5"><Terminal className="w-3 h-3 text-emerald-500" /> Compiled & Optimized</span>
                <span className="flex items-center gap-1.5"><Cpu className="w-3 h-3 text-emerald-500" /> Active System Status</span>
             </div>
-            <p className="mt-8 text-slate-500 text-[10px] font-bold">© 2026 Developed for Nonghan Hospital Information Management Team</p>
+            <p className="mt-8 text-slate-500 text-[10px] font-bold uppercase tracking-wider">พัฒนาโดย กลุ่มงานสุขภาพดิจิทัล : นายศุภชัย สุนารักษ์ นักวิชาการสถิติ</p>
          </div>
       </div>
     </div>

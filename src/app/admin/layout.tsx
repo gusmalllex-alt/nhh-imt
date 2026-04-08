@@ -146,8 +146,17 @@ export default function AdminLayout({
 
         {/* Page Body */}
         <div className="flex-1 overflow-y-auto p-6 scroll-smooth">
-          <div className="max-w-7xl mx-auto">
-            {children}
+          <div className="max-w-7xl mx-auto min-h-full flex flex-col">
+            <div className="flex-1">
+               {children}
+            </div>
+            
+            {/* Global Footer */}
+            <footer className="mt-12 py-6 border-t border-slate-200 text-center">
+               <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em]">
+                  พัฒนาโดย <span className="text-emerald-600">กลุ่มงานสุขภาพดิจิทัล</span> : นายศุภชัย สุนารักษ์ นักวิชาการสถิติ
+               </p>
+            </footer>
           </div>
         </div>
       </main>
