@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { 
@@ -12,7 +12,9 @@ import {
   Users,
   Bell,
   Loader2,
-  ListTodo
+  ListTodo,
+  Activity,
+  Clock
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -27,9 +29,7 @@ export default function AdminLayout({
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
   const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const view = searchParams.get("view");
+  const [showHistory, setShowHistory] = useState(false);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -87,41 +87,9 @@ export default function AdminLayout({
           </Link>
         </div>
 
-        <nav className="flex-1 p-3 space-y-1 mt-2">
-          <Link 
-            href="/admin" 
-            className={`flex items-center gap-2.5 px-4 py-2.5 rounded-lg transition-all font-bold text-sm ${
-              pathname === "/admin" && !view
-                ? "bg-emerald-600 text-white shadow-sm"
-                : "text-slate-400 hover:bg-slate-800 hover:text-white"
-            }`}
-          >
-            <LayoutDashboard className="w-4 h-4" />
-            Dashboard
-          </Link>
-          <Link 
-            href="/admin?view=requests" 
-            className={`flex items-center gap-2.5 px-4 py-2.5 rounded-lg transition-all font-bold text-sm ${
-              pathname === "/admin" && view === "requests"
-                ? "bg-emerald-600 text-white shadow-sm"
-                : "text-slate-400 hover:bg-slate-800 hover:text-white"
-            }`}
-          >
-            <ListTodo className="w-4 h-4" />
-            จัดการคำขอทั้งหมด
-          </Link>
-          <Link 
-            href="/admin/users" 
-            className={`flex items-center gap-2.5 px-4 py-2.5 rounded-lg transition-all font-bold text-sm ${
-              pathname === "/admin/users"
-                ? "bg-emerald-600 text-white shadow-sm"
-                : "text-slate-400 hover:bg-slate-800 hover:text-white"
-            }`}
-          >
-            <Users className="w-4 h-4" />
-            จัดการบุคลากร
-          </Link>
-        </nav>
+        <Suspense fallback={<div className="flex-1 p-5 opacity-20"><Loader2 className="animate-spin" /></div>}>
+          <AdminSidebarContent />
+        </Suspense>
 
         <div className="p-3 border-t border-slate-800 bg-slate-900/40">
           <Link 
@@ -150,11 +118,37 @@ export default function AdminLayout({
              Personnel Management System
           </div>
           
-          <div className="flex items-center gap-5">
-            <button className="relative p-1.5 text-slate-400 hover:text-emerald-600 transition-colors">
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-1 right-1 w-3.5 h-3.5 bg-rose-600 text-white text-[9px] font-black rounded-full flex items-center justify-center border border-white">3</span>
-            </button>
+          <div className="flex items-center gap-5 relative">
+            <div className="relative">
+              <button 
+                onClick={() => setShowHistory(!showHistory)}
+                className={`relative p-1.5 transition-colors rounded-lg ${showHistory ? 'bg-emerald-50 text-emerald-600' : 'text-slate-400 hover:text-emerald-600'}`}
+              >
+                <Bell className="w-5 h-5" />
+                <span className="absolute top-1 right-1 w-3.5 h-3.5 bg-rose-600 text-white text-[9px] font-black rounded-full flex items-center justify-center border border-white">3</span>
+              </button>
+
+              {/* Login History Dropdown */}
+              {showHistory && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setShowHistory(false)} />
+                  <div className="absolute right-0 mt-3 w-80 bg-white rounded-2xl shadow-2xl border border-slate-100 z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200 origin-top-right">
+                    <div className="p-4 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center">
+                       <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
+                          <Activity className="w-3.5 h-3.5 text-emerald-600" /> ประวัติการเข้าใช้งาน
+                       </h3>
+                       <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">Recent Logs</span>
+                    </div>
+                    <div className="max-h-[300px] overflow-y-auto">
+                       <LoginHistoryList userEmail={user?.email} />
+                    </div>
+                    <div className="p-3 bg-slate-50 border-t border-slate-100 text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                       Security Logs · NHH IMT
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
             <div className="h-6 w-px bg-slate-200" />
             <div className="flex items-center gap-3">
               <div className="text-right hidden sm:flex flex-col">
@@ -184,6 +178,111 @@ export default function AdminLayout({
           </div>
         </div>
       </main>
+    </div>
+  );
+}
+
+function AdminSidebarContent() {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const view = searchParams.get("view");
+
+  return (
+    <nav className="flex-1 p-3 space-y-1 mt-2">
+      <Link 
+        href="/admin" 
+        className={`flex items-center gap-2.5 px-4 py-2.5 rounded-lg transition-all font-bold text-sm ${
+          pathname === "/admin" && !view
+            ? "bg-emerald-600 text-white shadow-sm"
+            : "text-slate-400 hover:bg-slate-800 hover:text-white"
+        }`}
+      >
+        <LayoutDashboard className="w-4 h-4" />
+        Dashboard
+      </Link>
+      <Link 
+        href="/admin?view=requests" 
+        className={`flex items-center gap-2.5 px-4 py-2.5 rounded-lg transition-all font-bold text-sm ${
+          pathname === "/admin" && view === "requests"
+            ? "bg-emerald-600 text-white shadow-sm"
+            : "text-slate-400 hover:bg-slate-800 hover:text-white"
+        }`}
+      >
+        <ListTodo className="w-4 h-4" />
+        จัดการคำขอทั้งหมด
+      </Link>
+      <Link 
+        href="/admin/users" 
+        className={`flex items-center gap-2.5 px-4 py-2.5 rounded-lg transition-all font-bold text-sm ${
+          pathname === "/admin/users"
+            ? "bg-emerald-600 text-white shadow-sm"
+            : "text-slate-400 hover:bg-slate-800 hover:text-white"
+        }`}
+      >
+        <Users className="w-4 h-4" />
+        จัดการบุคลากร
+      </Link>
+    </nav>
+  );
+}
+
+function LoginHistoryList({ userEmail }: { userEmail: string | undefined }) {
+  const [logs, setLogs] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchLogs = async () => {
+      if (!userEmail) {
+        setLoading(false);
+        return;
+      }
+      
+      const { data, error } = await supabase
+        .from('login_history')
+        .select('*')
+        .eq('email', userEmail)
+        .order('login_at', { ascending: false })
+        .limit(10);
+      
+      if (!error && data) {
+        setLogs(data);
+      }
+      setLoading(false);
+    };
+    fetchLogs();
+  }, [userEmail]);
+
+  if (loading) return <div className="p-10 text-center"><Loader2 className="w-5 h-5 animate-spin mx-auto text-slate-300" /></div>;
+  
+  if (logs.length === 0) return (
+    <div className="p-10 text-center">
+       <div className="text-2xl mb-2 opacity-20">🕒</div>
+       <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">ยังไม่มีประวัติการใช้งาน</div>
+       <p className="text-[9px] text-slate-300 mt-1 italic">Logs will appear after your next login</p>
+    </div>
+  );
+
+  return (
+    <div className="divide-y divide-slate-50">
+      {logs.map((log) => (
+        <div key={log.id} className="p-4 hover:bg-slate-50/50 transition-colors flex items-center gap-4">
+           <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 shadow-sm border border-emerald-100/50">
+              <Clock className="w-4 h-4" />
+           </div>
+           <div>
+              <div className="text-[11px] font-black text-slate-900 flex items-center gap-2">
+                 เข้าสู่ระบบสำเร็จ
+                 <span className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
+              </div>
+              <div className="text-[10px] text-slate-400 font-bold uppercase tracking-tight mt-0.5">
+                 {new Date(log.login_at).toLocaleString('th-TH', { 
+                   dateStyle: 'medium', 
+                   timeStyle: 'short' 
+                 })}
+              </div>
+           </div>
+        </div>
+      ))}
     </div>
   );
 }

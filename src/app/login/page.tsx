@@ -42,6 +42,16 @@ export default function LoginPage() {
 
       if (error) throw error;
       
+      // Log login event to history table
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        await supabase.from('login_history').insert({
+          user_id: user.id,
+          email: user.email,
+          login_at: new Date().toISOString()
+        });
+      }
+
       router.push("/admin");
     } catch (err: any) {
       setError(err.message || "อีเมลหรือรหัสผ่านไม่ถูกต้อง");
