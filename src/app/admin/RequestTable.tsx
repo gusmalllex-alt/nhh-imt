@@ -339,7 +339,7 @@ export default function RequestTable({ initialRequests }: { initialRequests: any
                      <option value="นายสุทธิชัย ลำพุทธา">นายสุทธิชัย ลำพุทธา</option>
                      <option value="นายเจริญราษฏร์ ลิศรี">นายเจริญราษฏร์ ลิศรี</option>
                      <option value="นายณภัทร ตันสกุล">นายณภัทร ตันสกุล</option>
-                     <option value="นายศราวุธ สุขรักษ์">นายศราวุธ สุขรักษ์</option>
+
                      <option value="นายศุภชัย สุนารักษ์">นายศุภชัย สุนารักษ์</option>
                   </select>
                </div>
