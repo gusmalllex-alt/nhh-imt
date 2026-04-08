@@ -237,8 +237,19 @@ export default function Home() {
                       <FileUp className="w-6 h-6 text-emerald-600" />
                     </div>
                     <span className="text-sm font-bold text-gray-600">คลิกที่นี่เพื่อแนบไฟล์</span>
-                    <span className="text-[10px] font-bold text-gray-400 mt-1">PDF, Excel, Word (MAX 10MB)</span>
-                    <input type="file" name="file" className="sr-only" />
+                    <span className="text-[10px] font-bold text-gray-400 mt-1">PDF, Excel, Word (MAX 5MB)</span>
+                    <input 
+                      type="file" 
+                      name="file" 
+                      className="sr-only" 
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file && file.size > 5 * 1024 * 1024) {
+                          alert("ขนาดไฟล์ใหญ่เกินไป ห้ามเกิน 5MB ครับ");
+                          e.target.value = ""; // Clear input
+                        }
+                      }}
+                    />
                   </label>
               </div>
             </div>

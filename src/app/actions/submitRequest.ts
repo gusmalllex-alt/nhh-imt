@@ -13,6 +13,8 @@ export async function submitRequestAction(formData: FormData) {
 
     // 1. Upload File to Supabase Storage if exists
     if (file && file.size > 0 && file.name) {
+      if (file.size > 5 * 1024 * 1024) throw new Error("ไฟล์ใหญ่เกินไปครับ (จำกัด 5MB)");
+
       const fileExt = file.name.split('.').pop();
       const fileName = `${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
       const filePath = `uploads/${fileName}`;
