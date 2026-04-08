@@ -131,28 +131,28 @@ export default function RequestTable({ initialRequests }: { initialRequests: any
     <div className="space-y-6 animate-in fade-in duration-500">
       
       {/* Search & Filter Bar */}
-      <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+      <div className="bg-white/80 backdrop-blur-xl p-4 md:p-5 rounded-3xl border border-white shadow-lg shadow-slate-200/40">
         <div className="flex flex-col lg:flex-row gap-4 items-center">
           <div className="relative flex-1 w-full group">
-             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+             <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
               <input 
                type="text" 
                placeholder="ค้นหาเรื่อง, ผู้ขอ, แผนก..." 
                value={searchTerm}
                onChange={(e) => setSearchTerm(e.target.value)}
-               className="w-full pl-11 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium outline-none focus:ring-2 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all font-sans"
+               className="w-full pl-14 pr-6 py-3.5 bg-slate-50/50 border border-slate-200 rounded-2xl text-sm font-bold outline-none focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all text-slate-800 placeholder:text-slate-400"
              />
           </div>
           
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 lg:pb-0 scrollbar-hide">
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 lg:pb-0 scrollbar-hide lg:w-auto w-full px-1">
             {["ทั้งหมด", "รอดำเนินการ", "รับเรื่อง", "กำลังดำเนินการ", "ขอข้อมูลเพิ่ม", "ดำเนินการเรียบร้อย"].map((status) => (
               <button
                 key={status}
                 onClick={() => setStatusFilter(status)}
-                className={`px-4 py-1.5 rounded-lg text-[11px] font-bold whitespace-nowrap transition-all border ${
+                className={`px-5 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-wider whitespace-nowrap transition-all border ${
                   statusFilter === status 
-                    ? "bg-slate-900 text-white border-slate-900 shadow-sm" 
-                    : "bg-white text-slate-500 border-slate-200 hover:border-slate-300"
+                    ? "bg-slate-900 text-white border-slate-900 shadow-md transform scale-105" 
+                    : "bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:bg-slate-50"
                 }`}
               >
                 {status}
@@ -163,22 +163,23 @@ export default function RequestTable({ initialRequests }: { initialRequests: any
       </div>
 
       {/* Main Table Container */}
-      <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden min-h-[500px] flex flex-col">
+      <div className="bg-white/90 backdrop-blur-3xl rounded-[2rem] shadow-xl shadow-slate-200/50 border border-white overflow-hidden flex flex-col min-h-[500px]">
         
         {/* Table Toolbar */}
-        <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/30">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-emerald-600 rounded-lg flex items-center justify-center text-white shadow-sm">
-               <ListTodo className="w-5 h-5" />
+        <div className="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-gradient-to-r from-slate-50/80 to-transparent">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-emerald-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-emerald-600/30">
+               <ListTodo className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-slate-900 leading-none">จัดการคำขอทั้งหมด</h3>
-              <p className="text-[10px] font-medium text-slate-400 uppercase tracking-widest mt-1">Management Workflow System</p>
+              <h3 className="text-xl font-black text-slate-900 leading-none tracking-tight">การจัดการคำขอ</h3>
+              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-1.5">Request Workflow Management</p>
             </div>
           </div>
           
-          <div className="text-xs font-bold text-slate-500 bg-white px-3 py-1.5 rounded-md border border-slate-200">
-             พบข้อมูล <span className="text-emerald-600">{filteredRequests.length}</span> รายการ
+          <div className="text-xs font-bold text-slate-500 bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-sm flex items-center gap-2">
+             <Activity className="w-4 h-4 text-emerald-500" />
+             รายการที่พบ <span className="text-emerald-600 text-base">{filteredRequests.length}</span>
           </div>
         </div>
 
@@ -201,7 +202,7 @@ export default function RequestTable({ initialRequests }: { initialRequests: any
                  </tr>
                ) : (
                  filteredRequests.map((req: any) => (
-                   <tr key={req.id} className="group hover:bg-slate-50/50 transition-colors cursor-pointer" onClick={() => openDetailModal(req)}>
+                   <tr key={req.id} className="group hover:bg-emerald-50/40 transition-all duration-300 cursor-pointer hover:shadow-md hover:scale-[1.002] bg-white relative z-0 hover:z-10" onClick={() => openDetailModal(req)}>
                      <td className="px-6 py-4">
                         <div className="flex flex-col">
                            <span className="text-[11px] font-bold text-slate-400 mb-1">
@@ -262,15 +263,20 @@ export default function RequestTable({ initialRequests }: { initialRequests: any
 
       {/* --- Detail Modal --- */}
       {isDetailModalOpen && selectedReq && (
-        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
-          <div className="relative w-full max-w-2xl bg-white rounded-xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 border border-slate-200">
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300">
+          <div className="relative w-full max-w-2xl bg-white/95 backdrop-blur-3xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 border border-white/50">
             
-            <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-               <h3 className="font-bold text-slate-900 flex items-center gap-2"><FileText className="w-4 h-4 text-emerald-600" /> รายละเอียดคำขอ</h3>
-               <button onClick={() => setIsDetailModalOpen(false)} className="p-1.5 hover:bg-slate-200 rounded-md transition-colors text-slate-400"><X className="w-5 h-5" /></button>
+            <div className="px-8 py-6 border-b border-slate-100 flex justify-between items-center bg-gradient-to-r from-emerald-50/50 to-transparent">
+               <h3 className="text-xl font-black text-slate-900 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-600 shadow-sm border border-white">
+                     <FileText className="w-5 h-5" />
+                  </div>
+                  รายละเอียดคำขอ
+               </h3>
+               <button onClick={() => setIsDetailModalOpen(false)} className="p-2 hover:bg-white rounded-full transition-all text-slate-400 hover:text-slate-700 shadow-sm border border-transparent hover:border-slate-200 bg-slate-50"><X className="w-5 h-5" /></button>
             </div>
 
-            <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto font-sans">
+            <div className="p-8 space-y-8 max-h-[70vh] overflow-y-auto font-sans">
                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-5 rounded-lg border border-slate-100">
                   <div className="md:col-span-2">
                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">เรื่องที่ขอรับบริการ</label>
@@ -332,10 +338,10 @@ export default function RequestTable({ initialRequests }: { initialRequests: any
                </div>
             </div>
 
-            <div className="px-6 py-4 border-t border-slate-100 flex gap-3">
-               <button onClick={() => setIsDetailModalOpen(false)} className="flex-1 py-2 bg-slate-100 text-slate-600 rounded-lg font-bold text-xs hover:bg-slate-200 transition-colors">ปิด</button>
-               <button onClick={openEditModalFromDetail} className="flex-1 py-2 bg-amber-500 text-white rounded-lg font-bold text-xs flex items-center justify-center gap-2 hover:bg-amber-600 transition-colors">
-                  <Pencil className="w-3.5 h-3.5" /> แก้ไข/อัพเดทงาน
+            <div className="px-8 py-6 border-t border-slate-100 flex gap-4 bg-slate-50/50">
+               <button onClick={() => setIsDetailModalOpen(false)} className="flex-1 py-3 bg-white text-slate-600 rounded-2xl font-bold text-sm hover:bg-slate-100 transition-colors border border-slate-200 shadow-sm">ปิด</button>
+               <button onClick={openEditModalFromDetail} className="flex-1 py-3 bg-amber-500 text-white rounded-2xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-amber-600 transition-colors shadow-lg shadow-amber-500/20 active:scale-[0.98]">
+                  <Pencil className="w-4 h-4" /> แก้ไข/อัพเดทงาน
                </button>
             </div>
           </div>
@@ -344,12 +350,17 @@ export default function RequestTable({ initialRequests }: { initialRequests: any
 
       {/* --- Edit Modal --- */}
       {isEditModalOpen && selectedReq && (
-        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
-          <div className="relative w-full max-w-lg bg-white rounded-xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 border border-slate-200">
+        <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 sm:p-6 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300">
+          <div className="relative w-full max-w-lg bg-white/95 backdrop-blur-3xl rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 border border-white/50">
             
-            <div className="px-6 py-4 bg-amber-50 border-b border-amber-100 flex justify-between items-center">
-               <h3 className="font-bold text-amber-900 flex items-center gap-2"><Pencil className="w-4 h-4" /> อัพเดทสถานะงาน</h3>
-               <button onClick={() => setIsEditModalOpen(false)} className="p-1.5 hover:bg-amber-100 rounded-md transition-colors text-amber-600"><X className="w-5 h-5" /></button>
+            <div className="px-8 py-6 bg-amber-50 border-b border-amber-100 flex justify-between items-center">
+               <h3 className="text-xl font-black text-amber-900 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 shadow-sm border border-white">
+                     <Pencil className="w-5 h-5" />
+                  </div>
+                  อัพเดทสถานะงาน
+               </h3>
+               <button onClick={() => setIsEditModalOpen(false)} className="p-2 hover:bg-white rounded-full transition-all text-amber-500 hover:text-amber-700 shadow-sm border border-transparent hover:border-amber-200 bg-amber-100/50"><X className="w-5 h-5" /></button>
             </div>
 
             <div className="p-6 space-y-5">
@@ -397,14 +408,14 @@ export default function RequestTable({ initialRequests }: { initialRequests: any
                   />
                </div>
 
-               <div className="grid grid-cols-2 gap-4 pt-2">
-                  <button onClick={() => setIsEditModalOpen(false)} className="py-2.5 bg-slate-100 text-slate-500 rounded-lg font-bold text-xs hover:bg-slate-200 transition-colors">ยกเลิก</button>
+               <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-100">
+                  <button onClick={() => setIsEditModalOpen(false)} className="py-3 bg-white text-slate-600 rounded-2xl font-bold text-sm hover:bg-slate-100 transition-colors border border-slate-200 shadow-sm">ยกเลิก</button>
                   <button 
                      onClick={handleUpdateSubmit}
                      disabled={!!updatingId}
-                     className="py-2.5 bg-emerald-600 text-white rounded-lg font-bold text-xs shadow-md hover:bg-emerald-700 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                     className="py-3 bg-emerald-600 text-white rounded-2xl font-bold text-sm shadow-lg shadow-emerald-500/20 hover:bg-emerald-700 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
                   >
-                     {updatingId ? <Loader2 className="w-4 h-4 animate-spin" /> : "บันทึกการเปลี่ยนแปลง"}
+                     {updatingId ? <Loader2 className="w-5 h-5 animate-spin" /> : "บันทึกการเปลี่ยนแปลง"}
                   </button>
                </div>
             </div>

@@ -74,16 +74,22 @@ function AdminPageContent() {
   return (
     <div className="space-y-8 animate-in fade-in duration-700 pb-20">
       {/* Header & Tabs */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h2 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-            {activeTab === "dashboard" ? (
-              <><PieChart className="w-6 h-6 text-emerald-600" /> แดชบอร์ดสรุปผล</>
-            ) : (
-              <><ListTodo className="w-6 h-6 text-emerald-600" /> รายการคำขอทั้งหมด</>
-            )}
-          </h2>
-          <p className="text-slate-500 text-xs font-medium">ศูนย์ควบคุมการจัดการข้อมูลและสถิติกลาง</p>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white/50 backdrop-blur-sm p-6 rounded-3xl border border-slate-200/60 shadow-sm relative overflow-hidden">
+         <div className="absolute right-0 top-0 opacity-5 pointer-events-none transform translate-x-1/4 -translate-y-1/4">
+             {activeTab === "dashboard" ? <PieChart className="w-32 h-32" /> : <ListTodo className="w-32 h-32" />}
+         </div>
+        <div className="relative z-10 flex items-center gap-4">
+          <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-emerald-600 shadow-sm ring-1 ring-slate-100">
+             {activeTab === "dashboard" ? <PieChart className="w-6 h-6" /> : <ListTodo className="w-6 h-6" />}
+          </div>
+          <div>
+            <h2 className="text-3xl font-black text-slate-900 tracking-tight">
+              {activeTab === "dashboard" ? "แดชบอร์ดสรุปผล" : "รายการคำขอทั้งหมด"}
+            </h2>
+            <p className="text-emerald-600 font-bold text-[10px] uppercase tracking-widest mt-1">
+               {activeTab === "dashboard" ? "Overview & Analytics" : "Request Management"}
+            </p>
+          </div>
         </div>
       </div>
 
