@@ -81,8 +81,8 @@ export default function LoginPage() {
          
          {/* Title Area */}
          <div className="relative z-10 p-10 xl:p-14 pb-20">
-           <div className="w-24 h-24 bg-white/10 backdrop-blur-xl rounded-[2rem] flex items-center justify-center p-4 shadow-2xl mb-10 border border-white/20 transform hover:scale-105 transition-transform duration-500">
-             <Image src={logo} alt="Nonghan Hospital" width={70} height={70} className="object-contain brightness-0 invert" />
+           <div className="w-28 h-28 bg-white/90 backdrop-blur-xl rounded-[2rem] flex items-center justify-center p-4 shadow-2xl shadow-emerald-900/50 mb-10 border-[4px] border-white/20 transform hover:-translate-y-1 transition-all duration-500">
+             <Image src={logo} alt="Nonghan Hospital" width={90} height={90} className="object-contain drop-shadow-md" />
            </div>
            
            <h1 className="text-4xl xl:text-4xl font-black text-white leading-[1.2] mb-6 tracking-tight animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
