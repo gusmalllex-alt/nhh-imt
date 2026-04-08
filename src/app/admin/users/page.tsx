@@ -77,29 +77,26 @@ export default function UserManagement() {
       const { data: authData, error: authError } = await tempClient.auth.signUp({
         email: newStaff.email,
         password: newStaff.password,
+        options: {
+          data: {
+            full_name: newStaff.full_name,
+            role: newStaff.role
+          }
+        }
       });
 
       if (authError) throw authError;
       if (!authData.user) throw new Error("Could not create user account");
 
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .insert([{
-          id: authData.user.id,
-          full_name: newStaff.full_name,
-          email: newStaff.email,
-          role: newStaff.role,
-          status: "Active",
-          updated_at: new Date().toISOString()
-        }])
-        .select();
+      // Wait a bit for the trigger to complete
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      // Refresh the list from the database
+      await fetchProfiles();
 
-      if (profileError) throw profileError;
-
-      if (profileData) setProfiles([...profiles, profileData[0]].sort((a,b) => a.full_name.localeCompare(b.full_name)));
       setIsModalOpen(false);
-      setNewStaff({ full_name: "", email: "", password: "", role: "Staff", status: "Active" });
-      alert("สร้างบัญชีสำเร็จ!");
+      setNewStaff({ full_name: "", email: "", password: "", role: "Admin", status: "Active" });
+      alert("สร้างบัญชีและโปรไฟล์เจ้าหน้าที่สำเร็จ!");
     } catch (err: any) {
       alert("Error: " + err.message);
     } finally {
