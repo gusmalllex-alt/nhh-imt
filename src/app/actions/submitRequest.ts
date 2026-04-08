@@ -25,7 +25,7 @@ export async function submitRequestAction(formData: FormData) {
 
       if (uploadError) {
         console.error("Supabase Storage Error:", uploadError);
-        // We continue even if file upload fails, but you might want to stop
+        throw new Error(`ไม่สามารถอัปโหลดไฟล์ได้: ${uploadError.message}`);
       } else {
         const { data: urlData } = supabase.storage
           .from('request-files')
