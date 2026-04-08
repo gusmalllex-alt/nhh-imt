@@ -94,7 +94,7 @@ export default function LoginPage() {
              />
            </div>
            
-           <h1 className="text-3xl xl:text-5xl font-black text-white leading-tight tracking-tight animate-in fade-in slide-in-from-bottom-5 duration-700 delay-150">
+           <h1 className="text-2xl xl:text-3xl font-black text-white leading-tight tracking-tight animate-in fade-in slide-in-from-bottom-5 duration-700 delay-150">
              แบบสำรวจความต้องการระบบสารสนเทศ
            </h1>
            
