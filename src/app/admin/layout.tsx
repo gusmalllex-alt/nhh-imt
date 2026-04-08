@@ -101,7 +101,7 @@ export default function AdminLayout({
 
         <div className="p-3 border-t border-slate-800 bg-slate-900/40">
           <Link 
-            href="#" 
+            href="/admin/settings" 
             className="flex items-center gap-2.5 px-4 py-2.5 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-all font-bold text-sm"
           >
             <Settings className="w-4 h-4" />
