@@ -31,10 +31,11 @@ export default function Home() {
       return;
     }
     
+    const form = e.currentTarget;
     setIsSubmitting(true);
     
     try {
-      const formData = new FormData(e.currentTarget);
+      const formData = new FormData(form);
       const result = await submitRequestAction(formData);
 
       setIsSubmitting(false);
@@ -42,7 +43,7 @@ export default function Home() {
       if (result.success) {
         setIsSuccess(true);
         setTimeout(() => setIsSuccess(false), 5000);
-        e.currentTarget.reset();
+        form.reset();
         setSelectedType("");
         setSelectedUrgency("");
         setSelectedFileName(null);
