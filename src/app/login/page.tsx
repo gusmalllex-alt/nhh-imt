@@ -85,29 +85,18 @@ export default function LoginPage() {
              <Image src={logo} alt="Nonghan Hospital" width={70} height={70} className="object-contain brightness-0 invert" />
            </div>
            
-           <h1 className="text-4xl xl:text-5xl font-black text-white leading-[1.15] mb-6 tracking-tight">
-             ศูนย์บริการ<br /> 
+           <h1 className="text-4xl xl:text-4xl font-black text-white leading-[1.2] mb-6 tracking-tight animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
+             แบบสำรวจความต้องการ<br />
              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-teal-200">
-                สารสนเทศทางการแพทย์
+                ระบบสารสนเทศ
              </span>
            </h1>
            
-           <p className="text-emerald-100/70 font-medium text-lg lg:text-xl leading-relaxed max-w-xl">
-             ระบบแจ้งซ่อมและสนับสนุนการปฏิบัติงานของบุคลากรทางการแพทย์ โรงพยาบาลหนองหาน เพื่อการบริการที่ไร้รอยต่อ
-           </p>
-           
-           <div className="mt-14 flex items-center gap-6">
-              <div className="flex -space-x-4">
-                 {[1,2,3,4].map((i) => (
-                    <div key={i} className="w-12 h-12 rounded-full border-[3px] border-emerald-900 bg-emerald-100/10 backdrop-blur-md flex items-center justify-center shadow-lg">
-                       <User className="w-5 h-5 text-emerald-300" />
-                    </div>
-                 ))}
-              </div>
-              <div className="text-sm font-bold text-emerald-200/80 leading-tight">
-                 บุคลากรกว่า<br/>
-                 <span className="text-white text-base tracking-wide">500+ คนใช้งานระบบนี้</span>
-              </div>
+           <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
+               <p className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-emerald-800/40 border border-emerald-400/20 text-emerald-50 font-bold text-sm leading-relaxed backdrop-blur-md shadow-xl shadow-emerald-900/20">
+                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                 กลุ่มงานสุขภาพดิจิทัล โรงพยาบาลหนองหาน · จังหวัดอุดรธานี
+               </p>
            </div>
          </div>
       </div>
@@ -132,7 +121,7 @@ export default function LoginPage() {
           </div>
 
           <div className="mb-10 text-center lg:text-left drop-shadow-sm">
-            <h2 className="text-3xl lg:text-4xl font-black text-slate-900 tracking-tight mb-2">ยินดีต้อนรับกลับมา👋</h2>
+            <h2 className="text-3xl lg:text-4xl font-black text-slate-900 tracking-tight mb-2">ยินดีต้อนรับ 👋</h2>
             <p className="text-slate-500 font-medium text-sm lg:text-base">เข้าสู่ระบบเพื่อจัดการคำขอและติดตามสถานะงานระบบ IMT</p>
           </div>
 
@@ -201,7 +190,7 @@ export default function LoginPage() {
                   ) : (
                     <>
                       <ShieldCheck className="w-5 h-5" />
-                      <span>เข้าสู่ระบบปฏิบัติการ</span>
+                      <span>เข้าสู่ระบบ</span>
                       <ArrowRight className="w-4 h-4 ml-1 opacity-60 group-hover:translate-x-1 transition-transform" />
                     </>
                   )}
