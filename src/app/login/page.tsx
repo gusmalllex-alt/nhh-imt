@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { 
   Lock, Mail, ArrowRight, ShieldCheck, 
-  AlertCircle, Loader2, Home 
+  AlertCircle, Loader2, Home, User 
 } from "lucide-react";
 import logo from "../../../public/nhh.png";
 
@@ -61,116 +61,162 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 selection:bg-emerald-200">
-      {/* Background Decorative Elements */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-emerald-100/50 rounded-full blur-3xl opacity-50" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-teal-100/50 rounded-full blur-3xl opacity-50" />
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.03]" />
+    <div className="min-h-screen flex selection:bg-emerald-200 relative bg-slate-50">
+      
+      {/* Left Panel - Branding (Hidden on Mobile) */}
+      <div className="hidden lg:flex lg:w-5/12 xl:w-1/2 bg-emerald-900 relative flex-col justify-between overflow-hidden">
+         {/* Medical Image Background with Blend */}
+         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=3136&auto=format&fit=crop')] bg-cover bg-center mix-blend-overlay opacity-30" />
+         <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/95 via-emerald-800/90 to-slate-900/90" />
+         
+         {/* Top Left Back Link */}
+         <div className="relative z-10 p-10 xl:p-14">
+            <Link href="/" className="inline-flex items-center gap-4 text-emerald-100/70 hover:text-white font-bold transition-colors group">
+              <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-white/20 group-hover:scale-110 transition-all backdrop-blur-md">
+                <Home className="w-4 h-4" />
+              </div>
+              <span className="text-sm tracking-widest uppercase">กลับสู่หน้าหลัก</span>
+            </Link>
+         </div>
+         
+         {/* Title Area */}
+         <div className="relative z-10 p-10 xl:p-14 pb-20">
+           <div className="w-24 h-24 bg-white/10 backdrop-blur-xl rounded-[2rem] flex items-center justify-center p-4 shadow-2xl mb-10 border border-white/20 transform hover:scale-105 transition-transform duration-500">
+             <Image src={logo} alt="Nonghan Hospital" width={70} height={70} className="object-contain brightness-0 invert" />
+           </div>
+           
+           <h1 className="text-4xl xl:text-5xl font-black text-white leading-[1.15] mb-6 tracking-tight">
+             ศูนย์บริการ<br /> 
+             <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-teal-200">
+                สารสนเทศทางการแพทย์
+             </span>
+           </h1>
+           
+           <p className="text-emerald-100/70 font-medium text-lg lg:text-xl leading-relaxed max-w-xl">
+             ระบบแจ้งซ่อมและสนับสนุนการปฏิบัติงานของบุคลากรทางการแพทย์ โรงพยาบาลหนองหาน เพื่อการบริการที่ไร้รอยต่อ
+           </p>
+           
+           <div className="mt-14 flex items-center gap-6">
+              <div className="flex -space-x-4">
+                 {[1,2,3,4].map((i) => (
+                    <div key={i} className="w-12 h-12 rounded-full border-[3px] border-emerald-900 bg-emerald-100/10 backdrop-blur-md flex items-center justify-center shadow-lg">
+                       <User className="w-5 h-5 text-emerald-300" />
+                    </div>
+                 ))}
+              </div>
+              <div className="text-sm font-bold text-emerald-200/80 leading-tight">
+                 บุคลากรกว่า<br/>
+                 <span className="text-white text-base tracking-wide">500+ คนใช้งานระบบนี้</span>
+              </div>
+           </div>
+         </div>
       </div>
 
-      <div className="relative w-full max-w-md animate-in fade-in zoom-in-95 duration-500">
+      {/* Right Panel - Form Container */}
+      <div className="w-full lg:w-7/12 xl:w-1/2 relative flex items-center justify-center p-6 sm:p-12 overflow-hidden">
         
-        {/* Back Link */}
-        <div className="mb-8 flex justify-center">
-           <Link href="/" className="inline-flex items-center gap-2 text-slate-400 hover:text-emerald-600 font-bold transition-colors group">
-              <Home className="w-4 h-4" />
-              <span>กลับสู่หน้าหลัก</span>
-           </Link>
-        </div>
-
-        {/* Login Card */}
-        <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-emerald-900/10 border border-slate-100 overflow-hidden">
+        {/* Decorative blur on right side */}
+        <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-emerald-200/40 rounded-full blur-[120px] opacity-60 pointer-events-none" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-blue-200/30 rounded-full blur-[120px] opacity-60 pointer-events-none" />
+        
+        <div className="w-full max-w-md relative z-10 animate-in fade-in slide-in-from-bottom-8 duration-700">
           
-          <div className="p-8 md:p-10 border-b border-slate-50 text-center">
-             <div className="w-20 h-20 bg-emerald-50 rounded-3xl mx-auto flex items-center justify-center p-3 shadow-inner mb-6 ring-1 ring-emerald-500/10">
+          {/* Mobile Back & Logo */}
+          <div className="lg:hidden mb-12 text-center">
+             <Link href="/" className="inline-flex items-center gap-2 text-slate-400 hover:text-emerald-600 font-bold transition-colors mb-8">
+                <Home className="w-4 h-4" /> <span>กลับสู่หน้าหลัก</span>
+             </Link>
+             <div className="w-20 h-20 bg-white rounded-3xl mx-auto flex items-center justify-center p-3 shadow-xl shadow-slate-200 mb-4 border border-slate-100">
                 <Image src={logo} alt="Nonghan Hospital Logo" width={60} height={60} className="object-contain" />
              </div>
-             <h1 className="text-3xl font-black text-slate-900 tracking-tight">เข้าสู่ระบบ</h1>
-             <p className="text-slate-400 font-bold text-sm mt-2 uppercase tracking-widest">IMT Portal Administrative Access</p>
           </div>
 
-          <div className="p-8 md:p-10">
+          <div className="mb-10 text-center lg:text-left drop-shadow-sm">
+            <h2 className="text-3xl lg:text-4xl font-black text-slate-900 tracking-tight mb-2">ยินดีต้อนรับกลับมา👋</h2>
+            <p className="text-slate-500 font-medium text-sm lg:text-base">เข้าสู่ระบบเพื่อจัดการคำขอและติดตามสถานะงานระบบ IMT</p>
+          </div>
+
+          {/* Form Card */}
+          <div className="bg-white/80 backdrop-blur-2xl rounded-[2.5rem] shadow-2xl shadow-slate-200/60 border border-white p-8 sm:p-10">
             <form onSubmit={handleLogin} className="space-y-6">
               
               {!supabase && (
-                <div className="bg-amber-50 border-2 border-amber-100 p-4 rounded-2xl flex items-start gap-3 animate-in slide-in-from-top-2">
+                <div className="bg-amber-50/80 backdrop-blur border border-amber-200/50 p-4 rounded-2xl flex items-start gap-3">
                    <AlertCircle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
-                   <div className="space-y-1">
+                   <div className="space-y-0.5">
                       <p className="text-sm font-bold text-amber-800 leading-tight">ระบบยังไม่ได้เชื่อมต่อฐานข้อมูล</p>
-                      <p className="text-[10px] font-bold text-amber-600 uppercase tracking-tight">กรุณาตั้งค่า Environment Variables ใน GitHub Secrets</p>
+                      <p className="text-[10px] font-bold text-amber-600 uppercase tracking-tight">กรุณาตั้งค่า Environment Variables</p>
                    </div>
                 </div>
               )}
 
               {error && (
-                <div className="bg-rose-50 border-2 border-rose-100 p-4 rounded-2xl flex items-start gap-3 animate-in slide-in-from-top-2">
-                   <AlertCircle className="w-5 h-5 text-rose-500 shrink-0 mt-0.5" />
-                   <p className="text-sm font-bold text-rose-800 leading-tight">{error}</p>
+                <div className="bg-rose-50/90 backdrop-blur-sm border border-rose-200/80 p-4 rounded-2xl flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
+                   <AlertCircle className="w-5 h-5 text-rose-600 shrink-0" />
+                   <p className="text-sm font-bold text-rose-900 leading-tight">{error}</p>
                 </div>
               )}
 
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <div className="space-y-2">
-                  <label className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2 ml-4">
-                    <Mail className="w-3 h-3" /> Email Address
+                  <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2 ml-2">
+                    <Mail className="w-3.5 h-3.5 text-emerald-600" /> อีเมลบุคลากร (Email)
                   </label>
                   <input 
                     type="email" 
                     required 
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-6 py-4 outline-none font-bold text-lg focus:bg-white focus:border-emerald-500/30 focus:ring-4 focus:ring-emerald-500/5 transition-all"
+                    className="w-full bg-slate-50/50 border-2 border-slate-100 rounded-2xl px-5 py-3.5 outline-none font-bold text-slate-800 text-sm focus:bg-white focus:border-emerald-500/50 focus:ring-4 focus:ring-emerald-500/10 transition-all placeholder:text-slate-300 placeholder:font-medium"
                     placeholder="name@nonghan.com"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2 ml-4">
-                    <Lock className="w-3 h-3" /> Password Access
+                  <label className="text-[11px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2 ml-2">
+                    <Lock className="w-3.5 h-3.5 text-emerald-600" /> รหัสผ่าน (Password)
                   </label>
                   <input 
                     type="password" 
                     required 
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full bg-slate-50 border-2 border-transparent rounded-2xl px-6 py-4 outline-none font-bold text-lg focus:bg-white focus:border-emerald-500/30 focus:ring-4 focus:ring-emerald-500/5 transition-all"
+                    className="w-full bg-slate-50/50 border-2 border-slate-100 rounded-2xl px-5 py-3.5 outline-none font-bold text-slate-800 text-sm focus:bg-white focus:border-emerald-500/50 focus:ring-4 focus:ring-emerald-500/10 transition-all tracking-widest placeholder:text-slate-300 placeholder:font-medium placeholder:tracking-normal"
                     placeholder="••••••••"
                   />
                 </div>
               </div>
 
-              <div className="pt-2">
+              <div className="pt-6">
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-5 rounded-2xl font-black text-xl shadow-xl shadow-emerald-600/20 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 disabled:bg-slate-300 disabled:shadow-none"
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-4 rounded-2xl font-black text-base shadow-xl shadow-emerald-600/30 hover:shadow-emerald-700/40 hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-3 disabled:bg-slate-300 disabled:shadow-none disabled:transform-none group"
                 >
                   {loading ? (
                     <>
-                      <Loader2 className="w-6 h-6 animate-spin" />
-                      <span>กำลังประมวลผล...</span>
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <span>กำลังตรวจสอบข้อมูล...</span>
                     </>
                   ) : (
                     <>
-                      <ShieldCheck className="w-6 h-6" />
-                      <span>เข้าสู่ระบบ</span>
-                      <ArrowRight className="w-5 h-5 ml-1 opacity-50" />
+                      <ShieldCheck className="w-5 h-5" />
+                      <span>เข้าสู่ระบบปฏิบัติการ</span>
+                      <ArrowRight className="w-4 h-4 ml-1 opacity-60 group-hover:translate-x-1 transition-transform" />
                     </>
                   )}
                 </button>
               </div>
-
             </form>
-          </div>
-
-          <div className="px-8 pb-8 text-center">
-             <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] italic">
-               ระบบรักษาความปลอดภัยโรงพยาบาลหนองหาน © 2026
-             </p>
+            
+            <div className="mt-8 text-center pt-6 border-t border-slate-100">
+               <p className="text-[10px] font-black text-slate-300 uppercase tracking-[0.1em]">
+                 ระบบรักษาความปลอดภัย <br className="sm:hidden" />© โรงพยาบาลหนองหาน 2026
+               </p>
+            </div>
+            
           </div>
         </div>
-
       </div>
     </div>
   );
