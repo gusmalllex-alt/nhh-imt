@@ -357,6 +357,29 @@ export default function StatusTracking() {
         </div>
       )}
 
+      {/* Footer Section */}
+      <footer className="mt-12 py-12 border-t border-slate-200 text-center">
+         <div className="max-w-7xl mx-auto px-6 space-y-6">
+            <div className="flex justify-center items-center gap-4 text-slate-300">
+               <div className="h-px w-12 bg-slate-200" />
+               <Image src={logo} alt="Mini Logo" width={24} height={24} className="opacity-20 grayscale" />
+               <div className="h-px w-12 bg-slate-200" />
+            </div>
+            
+            <div className="space-y-1">
+               <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.3em]">
+                  NONGHAN HOSPITAL · IMT INFORMATION HUB
+               </p>
+               <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
+                  พัฒนาโดย <span className="text-emerald-600">กลุ่มงานสุขภาพดิจิทัล</span> : นายศุภชัย สุนารักษ์ นักวิชาการสถิติ
+               </p>
+            </div>
+            
+            <div className="text-[9px] font-bold text-slate-300 uppercase tracking-widest">
+               © 2026 OFFICIAL IT PORTAL · ALL RIGHTS RESERVED
+            </div>
+         </div>
+      </footer>
     </div>
   );
 }

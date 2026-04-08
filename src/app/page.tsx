@@ -347,8 +347,9 @@ export default function Home() {
               <span className="flex items-center gap-2"><HeartPulse className="w-4 h-4" /> 24/7 Service</span>
            </div>
 
-           <div className="pt-10 opacity-30 text-emerald-50 text-[10px] font-bold uppercase tracking-[0.3em]">
-              © 2026 NONGHAN HOSPITAL IT CENTER · IMT HUB
+           <div className="pt-10 opacity-30 text-emerald-50 text-[10px] font-bold uppercase tracking-[0.3em] space-y-2">
+              <div>© 2026 NONGHAN HOSPITAL IT CENTER · IMT HUB</div>
+              <div className="text-[9px] opacity-70">พัฒนาโดย <span className="text-emerald-300">กลุ่มงานสุขภาพดิจิทัล</span> : นายศุภชัย สุนารักษ์ นักวิชาการสถิติ</div>
            </div>
         </div>
       </footer>
