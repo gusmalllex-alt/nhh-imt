@@ -47,9 +47,10 @@ export default function Home() {
       } else {
         alert("ข้อผิดพลาด: " + result.message);
       }
-    } catch (err) {
+    } catch (err: any) {
       setIsSubmitting(false);
-      alert("เกิดข้อผิดพลาดในการเชื่อมต่อระบบ");
+      console.error("Submission Crash:", err);
+      alert("เกิดข้อผิดพลาดในการเชื่อมต่อระบบ: " + (err.message || "Unknown error"));
     }
   };
 
