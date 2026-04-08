@@ -18,6 +18,7 @@ export default function Home() {
   
   const [selectedType, setSelectedType] = useState<string>("");
   const [selectedUrgency, setSelectedUrgency] = useState<string>("");
+  const [selectedFrequency, setSelectedFrequency] = useState<string>("");
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
 
   useEffect(() => {
@@ -67,6 +68,15 @@ export default function Home() {
     { id: '60', label: 'ปกติ', time: 'ภายใน 60 วัน', emoji: '✅', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
     { id: '30', label: 'ด่วน', time: 'ภายใน 30 วัน', emoji: '⚠️', color: 'bg-amber-50 text-amber-700 border-amber-200' },
     { id: '14', label: 'ด่วนมาก', time: 'ภายใน 14 วัน', emoji: '🚨', color: 'bg-rose-50 text-rose-700 border-rose-200' }
+  ];
+
+  const frequencies = [
+    { id: 'one-time', label: 'ครั้งเดียว', emoji: '🎯', desc: 'One-time' },
+    { id: 'day', label: 'รายวัน', emoji: '☀️', desc: 'Daily' },
+    { id: 'week', label: 'รายสัปดาห์', emoji: '📅', desc: 'Weekly' },
+    { id: 'month', label: 'รายเดือน', emoji: '🗓️', desc: 'Monthly' },
+    { id: 'quarter', label: 'รายไตรมาส', emoji: '📦', desc: 'Quarterly' },
+    { id: 'year', label: 'รายปี', emoji: '🎉', desc: 'Annually' }
   ];
 
   if (!mounted) return null;
@@ -220,14 +230,30 @@ export default function Home() {
                   <label className="text-[10px] font-extrabold text-slate-600 uppercase tracking-wider flex items-center gap-2">
                     📅 รอบการใช้ข้อมูล <span className="text-rose-500">*</span>
                   </label>
-                  <select name="frequency" className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 outline-none font-bold text-xs focus:border-emerald-500 focus:bg-white transition-all text-slate-900 appearance-none cursor-pointer h-[120px]" required multiple={false}>
-                    <option value="one-time">ขอครั้งเดียว (One-time)</option>
-                    <option value="day">รายวัน (Daily)</option>
-                    <option value="week">รายสัปดาห์ (Weekly)</option>
-                    <option value="month">รายเดือน (Monthly)</option>
-                    <option value="quarter">รายไตรมาส (Quarterly)</option>
-                    <option value="year">รายปี (Annually)</option>
-                  </select>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                    {frequencies.map((f) => (
+                      <label 
+                        key={f.id}
+                        className={`relative flex flex-col items-center justify-center p-2.5 cursor-pointer rounded-lg border-2 transition-all duration-300 ${
+                          selectedFrequency === f.id 
+                            ? 'bg-emerald-50 border-emerald-500 shadow-sm' 
+                            : 'bg-slate-100/50 border-transparent hover:bg-slate-100'
+                        }`}
+                      >
+                        <input 
+                          type="radio" name="frequency" value={f.id} required className="sr-only"
+                          onChange={(e) => setSelectedFrequency(e.target.value)}
+                        />
+                        <span className="text-lg mb-1">{f.emoji}</span>
+                        <div className="flex flex-col items-center leading-none">
+                          <span className={`text-[10px] font-black ${selectedFrequency === f.id ? 'text-emerald-700' : 'text-slate-800'}`}>
+                            {f.label}
+                          </span>
+                          <span className="text-[7px] font-bold text-slate-400 mt-0.5 uppercase tracking-tighter">{f.desc}</span>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
                 </div>
               </div>
 
