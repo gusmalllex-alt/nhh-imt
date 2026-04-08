@@ -13,7 +13,7 @@ export async function sendLineNotification(message: string) {
       headers: { "Content-Type": "text/plain" },
       body: JSON.stringify({
         action: "sendLineNotification",
-        message: message
+        message: `${message}\n\n🌐 จัดการข้อมูล: https://gusmalllex-alt.github.io/nhh-imt/admin`
       }),
     });
 
