@@ -14,6 +14,8 @@ export default function RequestTable({ initialRequests }: { initialRequests: any
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("ทั้งหมด");
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   
   // Modals State
   const [selectedReq, setSelectedReq] = useState<any | null>(null);
@@ -33,9 +35,20 @@ export default function RequestTable({ initialRequests }: { initialRequests: any
       req.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       req.requester_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       req.department?.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === "ทั้งหมด" || req.status === statusFilter;
+    const reqStatusTrimmed = req.status ? req.status.trim() : "";
+    const filterStatusTrimmed = statusFilter.trim();
+    const matchesStatus = statusFilter === "ทั้งหมด" || reqStatusTrimmed === filterStatusTrimmed;
     return matchesSearch && matchesStatus;
   });
+
+  const totalPages = Math.ceil(filteredRequests.length / rowsPerPage);
+  const paginatedRequests = filteredRequests.slice((currentPage - 1) * rowsPerPage, currentPage * rowsPerPage);
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
 
   const openDetailModal = (req: any) => {
     setSelectedReq(req);
@@ -139,7 +152,10 @@ export default function RequestTable({ initialRequests }: { initialRequests: any
                type="text" 
                placeholder="ค้นหาเรื่อง, ผู้ขอ, แผนก..." 
                value={searchTerm}
-               onChange={(e) => setSearchTerm(e.target.value)}
+               onChange={(e) => {
+                 setSearchTerm(e.target.value);
+                 setCurrentPage(1);
+               }}
                className="w-full pl-14 pr-6 py-3.5 bg-slate-50/50 border border-slate-200 rounded-2xl text-sm font-bold outline-none focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all text-slate-800 placeholder:text-slate-400"
              />
           </div>
@@ -148,7 +164,10 @@ export default function RequestTable({ initialRequests }: { initialRequests: any
             {["ทั้งหมด", "รอดำเนินการ", "รับเรื่อง", "กำลังดำเนินการ", "ขอข้อมูลเพิ่ม", "ดำเนินการเรียบร้อย"].map((status) => (
               <button
                 key={status}
-                onClick={() => setStatusFilter(status)}
+                onClick={() => {
+                  setStatusFilter(status);
+                  setCurrentPage(1);
+                }}
                 className={`px-5 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-wider whitespace-nowrap transition-all border ${
                   statusFilter === status 
                     ? "bg-slate-900 text-white border-slate-900 shadow-md transform scale-105" 
@@ -201,12 +220,12 @@ export default function RequestTable({ initialRequests }: { initialRequests: any
                    <td colSpan={5} className="px-6 py-32 text-center text-slate-400 font-bold">ไม่พบข้อมูลคำขอ</td>
                  </tr>
                ) : (
-                 filteredRequests.map((req: any) => (
+                 paginatedRequests.map((req: any, idx: number) => (
                    <tr key={req.id} className="group hover:bg-emerald-50/40 transition-all duration-300 cursor-pointer hover:shadow-md hover:scale-[1.002] bg-white relative z-0 hover:z-10" onClick={() => openDetailModal(req)}>
                      <td className="px-6 py-4">
                         <div className="flex flex-col">
                            <span className="text-[11px] font-bold text-slate-400 mb-1">
-                             {req.created_at ? new Date(req.created_at).toLocaleDateString('th-TH') : '-'}
+                             REQ#{(currentPage - 1) * rowsPerPage + idx + 1} • {req.created_at ? new Date(req.created_at).toLocaleDateString('th-TH') : '-'}
                            </span>
                            <span className="text-sm font-bold text-slate-900 line-clamp-1">{req.title}</span>
                         </div>
@@ -258,6 +277,45 @@ export default function RequestTable({ initialRequests }: { initialRequests: any
                )}
              </tbody>
           </table>
+        </div>
+
+        {/* Pagination */}
+        <div className="px-6 py-4 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-4">
+           <div className="flex items-center gap-3">
+              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">แสดง</span>
+              <select 
+                 className="bg-white border border-slate-200 text-slate-700 text-xs font-bold rounded-lg px-2 py-1 outline-none focus:ring-2 focus:ring-emerald-500/20 active:scale-95 transition-all cursor-pointer"
+                 value={rowsPerPage}
+                 onChange={(e) => {
+                    setRowsPerPage(Number(e.target.value));
+                    setCurrentPage(1);
+                 }}
+              >
+                 <option value={5}>5 รายการ</option>
+                 <option value={10}>10 รายการ</option>
+                 <option value={20}>20 รายการ</option>
+              </select>
+           </div>
+           
+           <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+              หน้า <span className="text-emerald-600 text-sm">{currentPage}</span> / <span className="text-slate-700">{totalPages || 1}</span>
+           </div>
+           <div className="flex gap-2">
+              <button 
+                disabled={currentPage === 1 || paginatedRequests.length === 0}
+                onClick={() => handlePageChange(currentPage - 1)}
+                className="px-4 py-1.5 bg-white border border-slate-200 rounded-lg font-bold text-xs text-slate-600 hover:bg-slate-100 disabled:opacity-30 transition-all active:scale-95 shadow-sm"
+              >
+                ย้อนกลับ
+              </button>
+              <button 
+                disabled={currentPage === totalPages || totalPages === 0}
+                onClick={() => handlePageChange(currentPage + 1)}
+                className="px-4 py-1.5 bg-white border border-slate-200 rounded-lg font-bold text-xs text-slate-600 hover:bg-slate-100 disabled:opacity-30 transition-all active:scale-95 shadow-sm"
+              >
+                หน้าถัดไป
+              </button>
+           </div>
         </div>
       </div>
 

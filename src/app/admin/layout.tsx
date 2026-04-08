@@ -192,9 +192,9 @@ function AdminSidebarContent() {
   return (
     <nav className="flex-1 p-3 space-y-1 mt-2">
       <Link 
-        href="/admin" 
+        href="/admin?view=dashboard" 
         className={`flex items-center gap-2.5 px-4 py-2.5 rounded-lg transition-all font-bold text-sm ${
-          pathname === "/admin" && !view
+          pathname === "/admin" && view !== "requests"
             ? "bg-emerald-600 text-white shadow-sm"
             : "text-slate-400 hover:bg-slate-800 hover:text-white"
         }`}
