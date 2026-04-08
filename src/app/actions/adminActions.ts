@@ -8,6 +8,10 @@ import { sendLineNotification, sendEmailNotification } from "@/lib/notifications
 
 export async function getRequests() {
   try {
+    if (!supabase) {
+      throw new Error("Supabase is not configured. Please check your environment variables.");
+    }
+    
     const { data, error } = await supabase
       .from('requests')
       .select('*')

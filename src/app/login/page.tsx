@@ -93,6 +93,16 @@ export default function LoginPage() {
           <div className="p-8 md:p-10">
             <form onSubmit={handleLogin} className="space-y-6">
               
+              {!supabase && (
+                <div className="bg-amber-50 border-2 border-amber-100 p-4 rounded-2xl flex items-start gap-3 animate-in slide-in-from-top-2">
+                   <AlertCircle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+                   <div className="space-y-1">
+                      <p className="text-sm font-bold text-amber-800 leading-tight">ระบบยังไม่ได้เชื่อมต่อฐานข้อมูล</p>
+                      <p className="text-[10px] font-bold text-amber-600 uppercase tracking-tight">กรุณาตั้งค่า Environment Variables ใน GitHub Secrets</p>
+                   </div>
+                </div>
+              )}
+
               {error && (
                 <div className="bg-rose-50 border-2 border-rose-100 p-4 rounded-2xl flex items-start gap-3 animate-in slide-in-from-top-2">
                    <AlertCircle className="w-5 h-5 text-rose-500 shrink-0 mt-0.5" />

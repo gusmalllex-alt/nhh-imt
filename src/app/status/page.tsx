@@ -17,6 +17,7 @@ export default function StatusTracking() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 10;
@@ -27,9 +28,12 @@ export default function StatusTracking() {
 
   const fetchData = async () => {
     setLoading(true);
+    setFetchError(null);
     const result = await getRequests();
     if (result.success) {
       setRequests(result.data || []);
+    } else {
+      setFetchError(result.message || "เกิดข้อผิดพลาดในการดึงข้อมูล");
     }
     setLoading(false);
   };
@@ -204,6 +208,16 @@ export default function StatusTracking() {
                     <td colSpan={5} className="px-6 py-32 text-center">
                        <Loader2 className="w-10 h-10 text-emerald-500 animate-spin mx-auto mb-4" />
                        <span className="text-sm font-bold text-slate-400 uppercase tracking-widest">Refreshing...</span>
+                    </td>
+                  </tr>
+                ) : fetchError ? (
+                  <tr>
+                    <td colSpan={5} className="px-6 py-32 text-center">
+                       <AlertCircle className="w-10 h-10 text-rose-500 mx-auto mb-4" />
+                       <div className="text-sm font-bold text-rose-800 uppercase tracking-widest">{fetchError}</div>
+                       <p className="text-[10px] text-slate-400 mt-2 font-bold uppercase tracking-tight">
+                          ตรวจสอบการเชื่อมต่อ Supabase หรือ GitHub Secrets
+                       </p>
                     </td>
                   </tr>
                 ) : paginatedRequests.length === 0 ? (
