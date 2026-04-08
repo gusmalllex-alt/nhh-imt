@@ -86,7 +86,7 @@ export default function LoginPage() {
              <div className="w-20 h-20 bg-emerald-50 rounded-3xl mx-auto flex items-center justify-center p-3 shadow-inner mb-6 ring-1 ring-emerald-500/10">
                 <Image src={logo} alt="Nonghan Hospital Logo" width={60} height={60} className="object-contain" />
              </div>
-             <h1 className="text-3xl font-black text-slate-900 tracking-tight">เข้าสู่ระบบหลังบ้าน</h1>
+             <h1 className="text-3xl font-black text-slate-900 tracking-tight">เข้าสู่ระบบ</h1>
              <p className="text-slate-400 font-bold text-sm mt-2 uppercase tracking-widest">IMT Portal Administrative Access</p>
           </div>
 
@@ -154,7 +154,7 @@ export default function LoginPage() {
                   ) : (
                     <>
                       <ShieldCheck className="w-6 h-6" />
-                      <span>เข้าสู่ระบบเดี๋ยวนี้</span>
+                      <span>เข้าสู่ระบบ</span>
                       <ArrowRight className="w-5 h-5 ml-1 opacity-50" />
                     </>
                   )}

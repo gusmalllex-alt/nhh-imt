@@ -72,7 +72,7 @@ export default function Home() {
   if (!mounted) return null;
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] font-sans text-gray-800 selection:bg-emerald-200">
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-emerald-200">
       
       {/* Header Section with Dark Emerald Gradient & Grid */}
       <header className="relative bg-gradient-to-b from-[#003820] to-[#004d30] pt-16 pb-32 px-4 overflow-hidden shadow-xl">
@@ -90,22 +90,22 @@ export default function Home() {
         <div className="max-w-4xl mx-auto text-center relative z-10">
           {/* Logo */}
           <div className="mb-8 inline-block animate-float">
-            <div className="relative w-28 h-28 mx-auto rounded-full bg-white/95 p-2 shadow-2xl border-4 border-emerald-500/30 flex items-center justify-center">
+            <div className="relative w-24 h-24 mx-auto flex items-center justify-center">
               <Image 
                 src={logo} 
                 alt="Nonghan Hospital Logo" 
                 width={100} 
                 height={100} 
-                className="object-contain w-20 h-20"
+                className="object-contain w-24 h-24 drop-shadow-2xl"
                 priority
               />
             </div>
           </div>
 
-          <h1 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight drop-shadow-lg">
+          <h1 className="text-2xl md:text-3xl font-black text-white mb-2 tracking-tight drop-shadow-md">
             แบบสำรวจความต้องการระบบสารสนเทศ
           </h1>
-          <p className="text-emerald-100 text-lg md:text-xl font-bold mb-8 opacity-90">
+          <p className="text-emerald-100 text-xs md:text-sm font-bold mb-8 opacity-90">
              กลุ่มงานสุขภาพดิจิทัล โรงพยาบาลหนองหาน · จังหวัดอุดรธานี
           </p>
         </div>
@@ -116,39 +116,39 @@ export default function Home() {
         <form onSubmit={handleSubmit} className="space-y-8">
           
           {/* Section 1: Data Details */}
-          <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-emerald-900/10 p-8 md:p-12 border border-gray-100 relative overflow-hidden">
-            <div className="flex items-center gap-4 mb-10">
-              <div className="w-14 h-14 rounded-2xl bg-emerald-600 flex items-center justify-center text-white shadow-lg">
-                <FileText className="w-7 h-7" />
+          <div className="bg-white rounded-[1.5rem] shadow-xl shadow-emerald-900/5 p-4 md:p-8 border border-slate-200 relative overflow-hidden">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center text-white shadow-sm">
+                <FileText className="w-4 h-4" />
               </div>
               <div>
-                <h2 className="text-2xl font-black text-gray-900">1. ข้อมูลที่ต้องการ</h2>
-                <p className="text-sm font-bold text-gray-400 mt-1 uppercase tracking-widest">IMT Data Specification</p>
+                <h2 className="text-lg font-black text-slate-900 leading-none">1. ข้อมูลที่ต้องการ</h2>
+                <p className="text-[9px] font-bold text-slate-500 mt-1 uppercase tracking-widest">IMT Data Specification</p>
               </div>
             </div>
 
             <div className="space-y-10">
               {/* Category Selection */}
-              <div className="space-y-4">
-                <label className="text-lg font-black text-gray-800 flex items-center gap-2">
+              <div className="space-y-3">
+                <label className="text-[10px] font-extrabold text-slate-600 uppercase tracking-wider flex items-center gap-2">
                    📑 รายละเอียดที่ต้องการ <span className="text-rose-500">*</span>
                 </label>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                   {dataTypes.map((type) => (
                     <label 
                       key={type.id}
-                      className={`relative flex flex-col items-center justify-center p-6 cursor-pointer rounded-3xl border-2 transition-all duration-300 ${
+                      className={`relative flex flex-col items-center justify-center p-3 cursor-pointer rounded-xl border-2 transition-all duration-300 ${
                         selectedType === type.id 
-                          ? 'bg-emerald-50 border-emerald-500 shadow-lg shadow-emerald-500/10 scale-[1.02]' 
-                          : 'bg-gray-50 border-transparent hover:bg-gray-100'
+                          ? 'bg-emerald-50 border-emerald-500 shadow-sm' 
+                          : 'bg-slate-100/50 border-transparent hover:bg-slate-100'
                       }`}
                     >
                       <input 
                         type="radio" name="type" value={type.id} required className="sr-only"
                         onChange={(e) => setSelectedType(e.target.value)}
                       />
-                      <span className="text-5xl mb-4">{type.emoji}</span>
-                      <span className={`text-lg font-black ${selectedType === type.id ? 'text-emerald-700' : 'text-gray-700'}`}>
+                      <span className="text-2xl mb-1">{type.emoji}</span>
+                      <span className={`text-xs font-black ${selectedType === type.id ? 'text-emerald-700' : 'text-slate-800'}`}>
                         {type.label}
                       </span>
                     </label>
@@ -157,25 +157,25 @@ export default function Home() {
               </div>
 
               {/* Title & Condition */}
-              <div className="grid grid-cols-1 gap-6">
-                <div className="space-y-2">
-                  <label className="text-base font-bold text-gray-800 flex items-center gap-2">
+              <div className="grid grid-cols-1 gap-5">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-extrabold text-slate-600 uppercase tracking-wider flex items-center gap-2">
                      📝 ชื่อเรื่อง / ชื่อรายงาน <span className="text-rose-500">*</span>
                   </label>
                   <input 
                     type="text" name="title" required
-                    className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 focus:ring-4 focus:ring-emerald-500/10 focus:bg-white transition-all outline-none font-bold text-lg"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 outline-none font-bold text-xs focus:border-emerald-500 focus:bg-white transition-all text-slate-900"
                     placeholder="ระบุสิ่งที่ต้องการ..."
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-base font-bold text-gray-800 flex items-center gap-2">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-extrabold text-slate-600 uppercase tracking-wider flex items-center gap-2">
                      🏗️ เงื่อนไข / สูตรคำนวณ / รายละเอียด <span className="text-rose-500">*</span>
                   </label>
                   <textarea 
-                    name="condition" rows={4} required
-                    className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 focus:ring-4 focus:ring-emerald-500/10 focus:bg-white transition-all outline-none font-bold text-lg resize-none"
+                    name="condition" rows={3} required
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 outline-none font-bold text-xs focus:border-emerald-500 focus:bg-white transition-all text-slate-900 resize-none"
                     placeholder="อธิบายแฟ้มที่ต้องการดึง อย่างละเอียด..."
                   />
                 </div>
@@ -183,44 +183,44 @@ export default function Home() {
 
               {/* Urgency & Frequency */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
-                <div className="space-y-4">
-                   <label className="text-base font-bold text-gray-800 flex items-center gap-2">
+                <div className="space-y-2">
+                   <label className="text-[10px] font-extrabold text-slate-600 uppercase tracking-wider flex items-center gap-2">
                       ⚡ ระดับความเร่งด่วน <span className="text-rose-500">*</span>
                    </label>
-                   <div className="flex flex-col gap-2">
+                   <div className="flex flex-col gap-1.5">
                       {urgencies.map((u) => (
                         <label 
                           key={u.id}
-                          className={`flex items-center justify-between p-4 cursor-pointer rounded-2xl border-2 transition-all ${
+                          className={`flex items-center justify-between p-2.5 cursor-pointer rounded-lg border-2 transition-all ${
                             selectedUrgency === u.id 
                               ? u.color 
-                              : 'bg-gray-50 border-transparent hover:bg-gray-100'
+                              : 'bg-slate-100/50 border-transparent hover:bg-slate-100'
                           }`}
                         >
                           <input 
                             type="radio" name="urgency" value={u.id} required className="sr-only"
                             onChange={(e) => setSelectedUrgency(e.target.value)}
                           />
-                          <div className="flex items-center gap-3">
-                            <span className="text-2xl">{u.emoji}</span>
+                          <div className="flex items-center gap-2.5">
+                            <span className="text-lg">{u.emoji}</span>
                             <div className="flex flex-col leading-tight">
-                              <span className="font-black">{u.label}</span>
-                              <span className="text-[10px] uppercase font-bold opacity-60">{u.time}</span>
+                              <span className="text-[11px] font-black text-slate-800">{u.label}</span>
+                              <span className="text-[8px] uppercase font-bold text-slate-500">{u.time}</span>
                             </div>
                           </div>
-                          <div className={`w-5 h-5 rounded-full border-2 border-current flex items-center justify-center ${selectedUrgency === u.id ? 'opacity-100' : 'opacity-20'}`}>
-                             {selectedUrgency === u.id && <div className="w-2.5 h-2.5 rounded-full bg-current" />}
+                          <div className={`w-3.5 h-3.5 rounded-full border-2 border-current flex items-center justify-center ${selectedUrgency === u.id ? 'opacity-100' : 'opacity-20'}`}>
+                             {selectedUrgency === u.id && <div className="w-1 h-1 rounded-full bg-current" />}
                           </div>
                         </label>
                       ))}
                    </div>
                 </div>
 
-                <div className="space-y-4">
-                  <label className="text-base font-bold text-gray-800 flex items-center gap-2">
+                <div className="space-y-2">
+                  <label className="text-[10px] font-extrabold text-slate-600 uppercase tracking-wider flex items-center gap-2">
                     📅 รอบการใช้ข้อมูล <span className="text-rose-500">*</span>
                   </label>
-                  <select name="frequency" className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 focus:ring-4 focus:ring-emerald-500/10 focus:bg-white transition-all outline-none font-bold text-lg appearance-none cursor-pointer h-[184px]" required multiple={false}>
+                  <select name="frequency" className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 outline-none font-bold text-xs focus:border-emerald-500 focus:bg-white transition-all text-slate-900 appearance-none cursor-pointer h-[120px]" required multiple={false}>
                     <option value="one-time">ขอครั้งเดียว (One-time)</option>
                     <option value="day">รายวัน (Daily)</option>
                     <option value="week">รายสัปดาห์ (Weekly)</option>
@@ -269,47 +269,47 @@ export default function Home() {
           </div>
 
           {/* Section 2: Contact Info */}
-          <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-emerald-900/10 p-8 md:p-12 border border-gray-100 relative overflow-hidden">
-             <div className="flex items-center gap-4 mb-10">
-              <div className="w-14 h-14 rounded-2xl bg-teal-600 flex items-center justify-center text-white shadow-lg">
-                <User className="w-7 h-7" />
+          <div className="bg-white rounded-[1.5rem] shadow-xl shadow-emerald-900/5 p-4 md:p-8 border border-slate-200 relative overflow-hidden">
+             <div className="flex items-center gap-3 mb-6">
+              <div className="w-8 h-8 bg-teal-600 rounded-lg flex items-center justify-center text-white shadow-sm">
+                <User className="w-4 h-4" />
               </div>
               <div>
-                <h2 className="text-2xl font-black text-gray-900">2. ข้อมูลผู้แจ้ง</h2>
-                <p className="text-sm font-bold text-gray-400 mt-1 uppercase tracking-widest">Requester Information</p>
+                <h2 className="text-lg font-black text-slate-900 leading-none">2. ข้อมูลผู้แจ้ง</h2>
+                <p className="text-[9px] font-bold text-slate-500 mt-1 uppercase tracking-widest">Requester Information</p>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-               <div className="space-y-2">
-                  <label className="text-base font-bold text-gray-800 flex items-center gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+               <div className="space-y-1">
+                  <label className="text-[10px] font-extrabold text-slate-600 uppercase tracking-wider flex items-center gap-2">
                     👤 ชื่อ-นามสกุล <span className="text-rose-500">*</span>
                   </label>
-                  <input type="text" name="requesterName" required className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 outline-none font-bold text-lg" placeholder="ระบุชื่อจริง..." />
+                  <input type="text" name="requesterName" required className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 outline-none font-bold text-xs focus:border-emerald-500 focus:bg-white transition-all text-slate-900" placeholder="ระบุชื่อจริง..." />
                </div>
-               <div className="space-y-2">
-                  <label className="text-base font-bold text-gray-800 flex items-center gap-2">
+               <div className="space-y-1">
+                  <label className="text-[10px] font-extrabold text-slate-600 uppercase tracking-wider flex items-center gap-2">
                     📞 เบอร์โทรศัพท์ <span className="text-rose-500">*</span>
                   </label>
-                  <input type="tel" name="phone" required className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 outline-none font-bold text-lg" placeholder="08X-XXX-XXXX..." />
+                  <input type="tel" name="phone" required className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 outline-none font-bold text-xs focus:border-emerald-500 focus:bg-white transition-all text-slate-900" placeholder="08X-XXX-XXXX..." />
                </div>
-               <div className="space-y-2">
-                  <label className="text-base font-bold text-gray-800 flex items-center gap-2">
+               <div className="space-y-1">
+                  <label className="text-[10px] font-extrabold text-slate-600 uppercase tracking-wider flex items-center gap-2">
                     💬 Line ID (ถ้ามี)
                   </label>
-                  <input type="text" name="lineId" className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 outline-none font-bold text-lg" placeholder="ID Line..." />
+                  <input type="text" name="lineId" className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 outline-none font-bold text-xs focus:border-emerald-500 focus:bg-white transition-all text-slate-900" placeholder="ID Line..." />
                </div>
-               <div className="space-y-2">
-                  <label className="text-base font-bold text-gray-800 flex items-center gap-2">
+               <div className="space-y-1">
+                  <label className="text-[10px] font-extrabold text-slate-600 uppercase tracking-wider flex items-center gap-2">
                     📧 อีเมล <span className="text-rose-500">*</span>
                   </label>
-                  <input type="email" name="email" required className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 outline-none font-bold text-lg" placeholder="ระบุอีเมล..." />
+                  <input type="email" name="email" required className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 outline-none font-bold text-xs focus:border-emerald-500 focus:bg-white transition-all text-slate-900" placeholder="ระบุอีเมล..." />
                </div>
-               <div className="md:col-span-2 space-y-2">
-                  <label className="text-base font-bold text-gray-800 flex items-center gap-2">
+               <div className="md:col-span-2 space-y-1">
+                  <label className="text-[10px] font-extrabold text-slate-600 uppercase tracking-wider flex items-center gap-2">
                     🏢 แผนก / หน่วยงาน <span className="text-rose-500">*</span>
                   </label>
-                  <select name="department" required className="w-full bg-gray-50 border-none rounded-2xl px-6 py-4 outline-none font-bold text-lg appearance-none cursor-pointer">
+                  <select name="department" required className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 outline-none font-bold text-xs appearance-none cursor-pointer focus:border-emerald-500 focus:bg-white transition-all text-slate-900">
                     <option value="" disabled>คลิกเลือกหน่วยงาน...</option>
                     {[
                       "งานธุรการ", "งาน CKD", "งาน LAB", "องค์กรแพทย์", "งานกายภาพบำบัด", "งานการพยาบาล", "งานการพยาบาลป่วยผ่าตัดและวิสัญญีพยาบาล",
@@ -333,8 +333,8 @@ export default function Home() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className={`w-full max-w-lg overflow-hidden relative flex items-center justify-center gap-3 py-6 rounded-[2.5rem] font-black text-2xl text-white transition-all shadow-2xl hover:scale-[1.03] active:scale-[0.98] ${
-                isSubmitting ? 'bg-gray-400' : 'bg-[#004d40] shadow-emerald-900/40'
+              className={`w-full max-w-lg overflow-hidden relative flex items-center justify-center gap-3 py-4 rounded-2xl font-black text-xl text-white transition-all shadow-xl hover:scale-[1.02] active:scale-[0.98] ${
+                isSubmitting ? 'bg-slate-400' : 'bg-[#004d40] shadow-emerald-900/20'
               }`}
             >
               {isSubmitting ? 'กำลังส่งข้อมูล...' : '🚀 ยืนยันการส่งข้อมูล'}
