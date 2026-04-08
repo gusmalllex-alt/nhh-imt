@@ -190,19 +190,19 @@ export default function StatusTracking() {
         </div>
 
         {/* Requests List */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden min-h-[600px] flex flex-col">
+        <div className="bg-white/90 backdrop-blur-3xl rounded-[2rem] shadow-xl shadow-slate-200/50 border border-white overflow-hidden min-h-[600px] flex flex-col overflow-x-hidden">
           <div className="overflow-x-auto flex-1">
-            <table className="w-full text-left">
-              <thead className="bg-slate-50 border-b border-slate-200">
+            <table className="w-full text-left border-collapse">
+              <thead className="bg-gradient-to-r from-slate-50/80 to-transparent border-b border-slate-200 shadow-sm">
                 <tr>
-                  <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-slate-500">ลำดับ / วันที่</th>
-                  <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-slate-500 w-[40%]">เรื่องข้อมูลที่ขอ</th>
-                  <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-slate-500">ผู้ขอรับบริการ</th>
-                  <th className="px-6 py-4 text-center text-[11px] font-bold uppercase tracking-wider text-slate-500">สถานะงาน</th>
-                  <th className="px-6 py-4 text-center text-[11px] font-bold uppercase tracking-wider text-slate-500">ดูข้อมูล</th>
+                  <th className="px-6 py-5 text-[11px] font-bold uppercase tracking-wider text-slate-500 rounded-tl-[2rem]">ลำดับ / วันที่</th>
+                  <th className="px-6 py-5 text-[11px] font-bold uppercase tracking-wider text-slate-500 w-[40%]">เรื่องข้อมูลที่ขอ</th>
+                  <th className="px-6 py-5 text-[11px] font-bold uppercase tracking-wider text-slate-500">ผู้ขอรับบริการ</th>
+                  <th className="px-6 py-5 text-center text-[11px] font-bold uppercase tracking-wider text-slate-500">สถานะงาน</th>
+                  <th className="px-6 py-5 text-center text-[11px] font-bold uppercase tracking-wider text-slate-500 rounded-tr-[2rem]">ดูข้อมูล</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100/80 bg-white">
                 {loading ? (
                   <tr>
                     <td colSpan={5} className="px-6 py-32 text-center">
@@ -225,7 +225,7 @@ export default function StatusTracking() {
                     <td colSpan={5} className="px-6 py-32 text-center text-slate-400 font-bold">ไม่พบข้อมูลผลการค้นหา</td>
                   </tr>
                 ) : paginatedRequests.map((req, idx) => (
-                  <tr key={req.id} className="group hover:bg-slate-50 transition-colors cursor-pointer" onClick={() => { setSelectedRequest(req); setIsModalOpen(true); }}>
+                  <tr key={req.id} className="group hover:bg-emerald-50/40 transition-all duration-300 cursor-pointer hover:shadow-md hover:scale-[1.002] bg-white relative z-0 hover:z-10" onClick={() => { setSelectedRequest(req); setIsModalOpen(true); }}>
                     <td className="px-6 py-5">
                       <div className="flex flex-col">
                         <span className="text-[10px] font-bold text-slate-400 mb-1">REQ#{filteredRequests.length - ((currentPage - 1) * rowsPerPage + idx)}</span>
@@ -299,73 +299,154 @@ export default function StatusTracking() {
                <button onClick={() => setIsModalOpen(false)} className="p-1.5 hover:bg-slate-200 rounded-md transition-colors text-slate-400"><X className="w-5 h-5" /></button>
             </div>
 
-            <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto font-sans">
+            <div className="p-0 max-h-[75vh] overflow-y-auto font-sans bg-slate-50">
                
-               {/* Work Info */}
-               <div className="bg-slate-50 p-5 rounded-lg border border-slate-100 grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="md:col-span-2">
-                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">หัวข้อที่แจ้ง</label>
-                     <div className="text-base font-bold text-slate-900 leading-snug mt-1">{selectedRequest.title}</div>
-                  </div>
-                  <div>
-                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">สถานะการดำเนินงาน</label>
-                     <div className="mt-1">{getStatusBadge(selectedRequest.status)}</div>
-                  </div>
-                  <div>
-                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">ผู้รับผิดชอบงาน</label>
-                     <div className="text-sm font-bold text-slate-800 mt-1">{selectedRequest.assigned_to || "อยู่ระหว่างรอรับเรื่อง"}</div>
-                  </div>
-                  <div className="md:col-span-2">
-                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">รายละเอียดงาน</label>
-                     <div className="text-sm text-slate-600 bg-white p-3 rounded-lg border border-slate-200 mt-1 font-medium italic whitespace-pre-wrap">{selectedRequest.condition || "ไม่ได้ระบุรายละเอียด"}</div>
-                  </div>
-               </div>
-
-               {/* Admin Reply Area */}
-               {selectedRequest.status === "ขอข้อมูลเพิ่ม" && (
-                  <div className="bg-purple-900 text-white rounded-lg p-6 shadow-lg">
-                     <div className="flex items-center gap-2 text-purple-200 font-bold text-xs uppercase tracking-widest mb-3">
-                        <AlertCircle className="w-4 h-4 animate-pulse" /> ข้อความจากเจ้าหน้าที่
+               {/* Work Info Section */}
+               <div className="p-6 md:p-8 space-y-8">
+                  {/* Title and Status Header */}
+                  <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                     <div className="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
+                        <div className="flex-1">
+                           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1"><FileText className="w-3 h-3" /> หัวข้อที่แจ้ง / รายละเอียดข้อมูลที่ขอ</label>
+                           <h4 className="text-xl font-black text-slate-900 leading-snug mt-2">{selectedRequest.title || "-"}</h4>
+                        </div>
+                        <div className="flex flex-col items-start md:items-end gap-2">
+                           <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">สถานะงานปัจจุบัน</div>
+                           <div>{getStatusBadge(selectedRequest.status)}</div>
+                        </div>
                      </div>
-                     <div className="text-lg font-bold leading-relaxed mb-6 italic">
-                        "{selectedRequest.admin_note || "เจ้าหน้าที่ต้องการข้อมูลเพิ่มเติมครับ"}"
+                  </div>
+
+                  {/* Classification Grid */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                     <div className="bg-white p-4 rounded-xl border border-slate-200">
+                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">ประเภทงาน</label>
+                        <div className="text-sm font-bold text-slate-800">{selectedRequest.type || "-"}</div>
+                     </div>
+                     <div className="bg-white p-4 rounded-xl border border-slate-200">
+                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">ความเร่งด่วน</label>
+                        <div className={`text-sm font-bold ${selectedRequest.urgency === 'ด่วนมาก' ? 'text-rose-600' : 'text-slate-800'}`}>{selectedRequest.urgency || "-"}</div>
+                     </div>
+                     <div className="bg-white p-4 rounded-xl border border-slate-200">
+                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">ความถี่ที่ใช้งาน</label>
+                        <div className="text-sm font-bold text-slate-800">{selectedRequest.frequency || "-"}</div>
+                     </div>
+                     <div className="bg-white p-4 rounded-xl border border-slate-200">
+                        <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">ผู้รับผิดชอบงาน</label>
+                        <div className="text-sm font-bold text-emerald-600">{selectedRequest.assigned_to || "รอดำเนินการ"}</div>
+                     </div>
+                  </div>
+
+                  {/* Dates Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                     <div className="flex items-center gap-3 bg-white px-4 py-3 border border-slate-200 rounded-xl">
+                        <Calendar className="w-5 h-5 text-slate-400" />
+                        <div>
+                           <div className="text-[10px] font-bold text-slate-400 uppercase">วันที่ส่งคำขอ</div>
+                           <div className="text-xs font-bold text-slate-800">{selectedRequest.created_at ? new Date(selectedRequest.created_at).toLocaleDateString('th-TH') : "-"}</div>
+                        </div>
+                     </div>
+                     <div className="flex items-center gap-3 bg-sky-50 px-4 py-3 border border-sky-100 rounded-xl">
+                        <PlayCircle className="w-5 h-5 text-sky-500" />
+                        <div>
+                           <div className="text-[10px] font-bold text-sky-600 uppercase">วันที่รับเรื่อง</div>
+                           <div className="text-xs font-bold text-sky-900">{selectedRequest.date_received ? new Date(selectedRequest.date_received).toLocaleDateString('th-TH') : "ยังไม่รับเรื่อง"}</div>
+                        </div>
+                     </div>
+                     <div className="flex items-center gap-3 bg-emerald-50 px-4 py-3 border border-emerald-100 rounded-xl">
+                        <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                        <div>
+                           <div className="text-[10px] font-bold text-emerald-600 uppercase">กำหนดเสร็จ / ทำเสร็จ</div>
+                           <div className="text-xs font-bold text-emerald-900">{selectedRequest.due_date ? new Date(selectedRequest.due_date).toLocaleDateString('th-TH') : "-"}</div>
+                        </div>
+                     </div>
+                  </div>
+
+                  {/* Full Detail & File */}
+                  <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2 mb-3">
+                        <ClipboardList className="w-4 h-4" /> เงื่อนไข / คำอธิบายเพิ่มเติม
+                     </label>
+                     <div className="text-sm text-slate-700 bg-slate-50 p-4 rounded-xl border border-slate-100 leading-relaxed whitespace-pre-wrap font-medium">
+                        {selectedRequest.condition || "ไม่ได้ระบุรายละเอียด"}
                      </div>
                      
-                     <div className="space-y-3">
-                        <label className="text-[10px] font-bold text-purple-200 uppercase tracking-wider ml-1">พิมพ์คำคมหรือข้อมูลตอบกลับ</label>
-                        <textarea 
-                           className="w-full bg-white/10 border border-white/20 rounded-lg p-4 text-white font-bold outline-none focus:bg-white/20 transition-all min-h-[120px] text-sm"
-                           placeholder="ระบุข้อมูลที่ส่งเพิ่มที่นี่..."
-                           value={replyText}
-                           onChange={(e) => setReplyText(e.target.value)}
-                        />
-                        <button 
-                           disabled={!replyText.trim() || isSubmittingReply}
-                           onClick={handleSubmitReply}
-                           className="w-full py-3 bg-white text-purple-900 rounded-lg font-bold shadow-md hover:bg-purple-50 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
-                        >
-                           {isSubmittingReply ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Send className="w-4 h-4" /> ส่งข้อมูลตอบกลับ</>}
-                        </button>
+                     {selectedRequest.file_url && (
+                        <div className="mt-4 pt-4 border-t border-slate-100">
+                           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">ไฟล์แนบประกอบ</label>
+                           <a 
+                             href={selectedRequest.file_url} 
+                             target="_blank" 
+                             rel="noopener noreferrer"
+                             className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-xl font-bold text-xs hover:bg-emerald-100 transition-all shadow-sm group"
+                           >
+                             <FileDown className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" />
+                             คลิกเพื่อดาวน์โหลด / เปิดดูไฟล์แนบ
+                           </a>
+                        </div>
+                     )}
+                  </div>
+
+                  {/* Admin Reply Area (If Needs Info) */}
+                  {selectedRequest.status === "ขอข้อมูลเพิ่ม" && (
+                     <div className="bg-gradient-to-br from-purple-900 to-indigo-900 text-white rounded-2xl p-6 md:p-8 shadow-xl border border-purple-700/50">
+                        <div className="flex items-center gap-2 text-purple-200 font-bold text-xs uppercase tracking-widest mb-4">
+                           <AlertCircle className="w-5 h-5 animate-pulse text-purple-300" /> หมายเหตุจากเจ้าหน้าที่ฝ่าย IT
+                        </div>
+                        <div className="text-lg font-bold leading-relaxed mb-8 bg-black/20 p-5 rounded-xl border border-white/10">
+                           "{selectedRequest.admin_note || "เจ้าหน้าที่ต้องการข้อมูลเพิ่มเติมครับ กรุณาตอบกลับ"}"
+                        </div>
+                        
+                        <div className="space-y-4">
+                           <label className="text-[11px] font-bold text-purple-200 uppercase tracking-wider block">พิมพ์ข้อมูลเพื่อตอบกลับเจ้าหน้าที่</label>
+                           <textarea 
+                              className="w-full bg-white/10 border border-white/20 rounded-xl p-4 text-white font-medium outline-none focus:bg-white/20 focus:border-white/40 transition-all min-h-[140px] text-sm placeholder:text-white/30"
+                              placeholder="ระบุข้อมูลที่ต้องการให้เพิ่มเติมที่นี่..."
+                              value={replyText}
+                              onChange={(e) => setReplyText(e.target.value)}
+                           />
+                           <button 
+                              disabled={!replyText.trim() || isSubmittingReply}
+                              onClick={handleSubmitReply}
+                              className="w-full py-4 bg-white text-indigo-900 rounded-xl font-black shadow-lg hover:bg-purple-50 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                           >
+                              {isSubmittingReply ? <Loader2 className="w-5 h-5 animate-spin" /> : <><Send className="w-5 h-5" /> ส่งข้อความตอบกลับไปยัง IT</>}
+                           </button>
+                        </div>
+                     </div>
+                  )}
+
+                  {/* Requester Info */}
+                  <div className="bg-emerald-900/5 rounded-2xl border border-emerald-900/10 p-6 md:p-8">
+                     <div className="flex items-center gap-2 text-emerald-800 font-black text-sm uppercase tracking-widest mb-6">
+                        <UserCircle2 className="w-5 h-5" /> ข้อมูลผู้ติดต่อ
+                     </div>
+                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div>
+                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">ชื่อ-สกุล</label>
+                           <div className="text-sm font-bold text-slate-900 flex items-center gap-2"><User2 className="w-4 h-4 text-slate-400" /> {selectedRequest.requester_name || "-"}</div>
+                        </div>
+                        <div>
+                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">หน่วยงาน / แผนก</label>
+                           <div className="text-sm font-bold text-slate-900 flex items-center gap-2"><Building2 className="w-4 h-4 text-slate-400" /> {selectedRequest.department || "-"}</div>
+                        </div>
+                        <div>
+                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">เบอร์โทรศัพท์</label>
+                           <div className="text-sm font-bold text-slate-900 flex items-center gap-2"><PhoneCall className="w-4 h-4 text-slate-400" /> {selectedRequest.phone || "-"}</div>
+                        </div>
+                        <div>
+                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">อีเมล</label>
+                           <div className="text-sm font-bold text-slate-900 flex items-center gap-2 truncate"><Mail className="w-4 h-4 text-slate-400" /> {selectedRequest.email || "-"}</div>
+                        </div>
                      </div>
                   </div>
-               )}
-
-               {/* Requester Info */}
-               <div className="bg-white p-5 rounded-lg border border-slate-200 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">ชื่อผู้ส่งคำขอ</label>
-                     <div className="text-sm font-bold text-slate-800">{selectedRequest.requester_name}</div>
-                  </div>
-                  <div>
-                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">หน่วยงาน</label>
-                     <div className="text-sm font-bold text-slate-800">{selectedRequest.department}</div>
-                  </div>
+                  
                </div>
-
             </div>
 
-            <div className="px-6 py-4 border-t border-slate-100 flex justify-end">
-               <button onClick={() => setIsModalOpen(false)} className="px-8 py-2 bg-slate-100 text-slate-600 rounded-lg font-bold text-xs hover:bg-slate-200 transition-colors">ปิดหน้าต่าง</button>
+            {/* Modal Footer */}
+            <div className="px-6 py-5 bg-white border-t border-slate-200 flex justify-end shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.05)] relative z-10">
+               <button onClick={() => setIsModalOpen(false)} className="px-10 py-3 bg-slate-900 text-white rounded-xl font-bold text-sm hover:bg-slate-800 shadow-md transition-all active:scale-95">ปิดหน้าต่าง</button>
             </div>
           </div>
         </div>
