@@ -64,41 +64,55 @@ export default function LoginPage() {
     <div className="min-h-screen flex selection:bg-emerald-200 relative bg-slate-50">
       
       {/* Left Panel - Branding (Hidden on Mobile) */}
-      <div className="hidden lg:flex lg:w-5/12 xl:w-1/2 bg-emerald-900 relative flex-col justify-between overflow-hidden">
-         {/* Medical Image Background with Blend */}
-         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=3136&auto=format&fit=crop')] bg-cover bg-center mix-blend-overlay opacity-30" />
-         <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/95 via-emerald-800/90 to-slate-900/90" />
+      <div className="hidden lg:flex lg:w-5/12 xl:w-1/2 bg-slate-950 relative flex-col items-center justify-between overflow-hidden py-12 px-8 text-center shadow-2xl z-20">
+         
+         {/* Beautiful Medical Background */}
+         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2653&auto=format&fit=crop')] bg-cover bg-center opacity-40 mix-blend-overlay" />
+         <div className="absolute inset-0 bg-gradient-to-b from-emerald-950/90 via-emerald-900/80 to-slate-900/95" />
          
          {/* Top Left Back Link */}
-         <div className="relative z-10 p-10 xl:p-14">
-            <Link href="/" className="inline-flex items-center gap-4 text-emerald-100/70 hover:text-white font-bold transition-colors group">
-              <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-white/20 group-hover:scale-110 transition-all backdrop-blur-md">
+         <div className="absolute top-10 left-10 z-10">
+            <Link href="/" className="inline-flex items-center gap-3 text-emerald-100/70 hover:text-white font-bold transition-colors group">
+              <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-white/20 group-hover:scale-110 transition-all backdrop-blur-md shadow-lg">
                 <Home className="w-4 h-4" />
               </div>
-              <span className="text-sm tracking-widest uppercase">กลับสู่หน้าหลัก</span>
+              <span className="text-sm tracking-widest uppercase">หน้าหลัก</span>
             </Link>
          </div>
          
-         {/* Title Area */}
-         <div className="relative z-10 p-10 xl:p-14 pb-20">
-           <div className="w-28 h-28 bg-white/90 backdrop-blur-xl rounded-[2rem] flex items-center justify-center p-4 shadow-2xl shadow-emerald-900/50 mb-10 border-[4px] border-white/20 transform hover:-translate-y-1 transition-all duration-500">
-             <Image src={logo} alt="Nonghan Hospital" width={90} height={90} className="object-contain drop-shadow-md" />
+         {/* Center Content (Logo + Title) */}
+         <div className="relative z-10 flex flex-col items-center justify-center flex-1 w-full max-w-2xl mx-auto">
+           
+           {/* Logo without background container */}
+           <div className="mb-8 transform hover:scale-105 transition-transform duration-700 animate-in zoom-in-95 duration-1000">
+             <Image 
+               src={logo} 
+               alt="Nonghan Hospital Logo" 
+               width={130} 
+               height={130} 
+               className="object-contain drop-shadow-[0_15px_15px_rgba(0,0,0,0.5)]" 
+             />
            </div>
            
-           <h1 className="text-4xl xl:text-4xl font-black text-white leading-[1.2] mb-6 tracking-tight animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
-             แบบสำรวจความต้องการ<br />
-             <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 to-teal-200">
-                ระบบสารสนเทศ
-             </span>
+           <h1 className="text-3xl xl:text-5xl font-black text-white leading-tight tracking-tight animate-in fade-in slide-in-from-bottom-5 duration-700 delay-150">
+             แบบสำรวจความต้องการระบบสารสนเทศ
            </h1>
            
-           <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
-               <p className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-emerald-800/40 border border-emerald-400/20 text-emerald-50 font-bold text-sm leading-relaxed backdrop-blur-md shadow-xl shadow-emerald-900/20">
-                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                 กลุ่มงานสุขภาพดิจิทัล โรงพยาบาลหนองหาน · จังหวัดอุดรธานี
-               </p>
-           </div>
+           <div className="w-20 h-1.5 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full mt-6 opacity-90 shadow-[0_0_10px_rgba(52,211,153,0.5)]" />
+           
          </div>
+         
+         {/* Bottom Center Area (Badge) */}
+         <div className="relative z-10 w-full flex justify-center pb-2 animate-in fade-in slide-in-from-bottom-5 duration-700 delay-300">
+             <div className="inline-flex items-center justify-center gap-3 px-6 py-3.5 rounded-full bg-slate-950/40 border border-emerald-500/30 text-emerald-50 font-bold text-sm lg:text-base leading-relaxed backdrop-blur-xl shadow-2xl shadow-emerald-900/20">
+               <span className="relative flex h-3 w-3">
+                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                 <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+               </span>
+               กลุ่มงานสุขภาพดิจิทัล โรงพยาบาลหนองหาน · จังหวัดอุดรธานี
+             </div>
+         </div>
+         
       </div>
 
       {/* Right Panel - Form Container */}
