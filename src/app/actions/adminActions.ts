@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { sendLineNotification, sendEmailNotification } from "@/lib/notifications";
 
 /**
@@ -8,6 +8,10 @@ import { sendLineNotification, sendEmailNotification } from "@/lib/notifications
 
 export async function getRequests() {
   try {
+    if (!isSupabaseConfigured) {
+      return { success: false, message: "ระบบยังไม่ได้เชื่อมต่อฐานข้อมูล (Supabase)" };
+    }
+    
     if (!supabase) {
       throw new Error("Supabase is not configured. Please check your environment variables.");
     }
@@ -56,6 +60,10 @@ export async function updateRequestStatus(requestId: string, updates: {
   dateCompleted?: string
 }) {
   try {
+    if (!isSupabaseConfigured) {
+      return { success: false, message: "ระบบยังไม่ได้เชื่อมต่อฐานข้อมูล (Supabase)" };
+    }
+
     const updatePayload: any = {};
     if (updates.status) updatePayload.status = updates.status;
     if (updates.assigned_to) updatePayload.receiver = updates.assigned_to;
@@ -117,6 +125,10 @@ export async function updateRequestStatus(requestId: string, updates: {
 
 export async function addUserInformation(requestId: string, additionalInfo: string) {
   try {
+    if (!isSupabaseConfigured) {
+      return { success: false, message: "ระบบยังไม่ได้เชื่อมต่อฐานข้อมูล (Supabase)" };
+    }
+
     // 1. Fetch existing data
     const { data: currentReq, error: fetchErr } = await supabase
       .from('requests')
@@ -170,6 +182,10 @@ export async function addUserInformation(requestId: string, additionalInfo: stri
 
 export async function deleteRequest(requestId: string) {
   try {
+    if (!isSupabaseConfigured) {
+      return { success: false, message: "ระบบยังไม่ได้เชื่อมต่อฐานข้อมูล (Supabase)" };
+    }
+
     const { error } = await supabase
       .from('requests')
       .delete()

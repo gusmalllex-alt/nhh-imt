@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import { sendLineNotification, sendEmailNotification } from "@/lib/notifications";
 
 /**
@@ -10,6 +10,10 @@ export async function submitRequestAction(formData: FormData) {
   try {
     const file = formData.get("file") as File | null;
     let fileUrl = null;
+
+    if (!isSupabaseConfigured) {
+      throw new Error("ระบบยังไม่ได้ตั้งค่าเชื่อมต่อฐานข้อมูล (Supabase) กรุณาตรวจสอบ Environment Variables");
+    }
 
     // 1. Upload File to Supabase Storage if exists
     if (file && file.size > 0 && file.name) {

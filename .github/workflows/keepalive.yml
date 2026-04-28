@@ -1,0 +1,38 @@
+name: Supabase Keep Alive
+
+on:
+  schedule:
+    # รันทุกๆ 3 วัน เวลาเที่ยงคืน (00:00 UTC)
+    - cron: "0 0 */3 * *"
+  workflow_dispatch: # อนุญาตให้กดรันแบบ manual ได้จากหน้า Actions
+
+jobs:
+  ping-supabase:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase Database
+        env:
+          SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
+            echo "Error: Missing Supabase secrets"
+            exit 1
+          fi
+          
+          echo "Pinging Supabase REST API to prevent auto-pause..."
+          
+          # ดึงข้อมูล 1 แถวจากตาราง requests เพื่อสร้าง activity ให้ฐานข้อมูล
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+            -X GET "${SUPABASE_URL}/rest/v1/requests?select=id&limit=1" \
+            -H "apikey: ${SUPABASE_ANON_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_ANON_KEY}")
+            
+          echo "Supabase API returned HTTP status: $HTTP_STATUS"
+          
+          if [ "$HTTP_STATUS" -eq 200 ] || [ "$HTTP_STATUS" -eq 204 ]; then
+            echo "✅ Ping successful!"
+          else
+            echo "❌ Ping failed with status $HTTP_STATUS"
+            exit 1
+          fi
