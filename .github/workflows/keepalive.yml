@@ -2,8 +2,8 @@ name: Supabase Keep Alive
 
 on:
   schedule:
-    # รันทุกๆ 6 วัน เวลาเที่ยงคืน (00:00 UTC)
-    - cron: "0 0 */6 * *"
+    # รันทุกๆ 5 วัน เวลาเที่ยงคืน (00:00 UTC)
+    - cron: "0 0 */5 * *"
   workflow_dispatch: # อนุญาตให้กดรันแบบ manual ได้จากหน้า Actions
 
 jobs:
