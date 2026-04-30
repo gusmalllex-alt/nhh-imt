@@ -248,7 +248,7 @@ export default function AdminDashboardView({ requests }: { requests: any[] }) {
           </ResponsiveContainer>
         </ChartCard>
 
-        {/* 3. Frequency Bar ← NEW */}
+        {/* 3. Frequency Bar */}
         <ChartCard title="รอบการใช้ข้อมูล" sub="Data Usage Frequency" icon={<Clock className="w-5 h-5 text-indigo-500" />} accent="from-indigo-500 to-blue-500">
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={statsData.freqData} barSize={36}>
@@ -284,7 +284,8 @@ export default function AdminDashboardView({ requests }: { requests: any[] }) {
                 innerRadius={68} outerRadius={100}
                 paddingAngle={3} cornerRadius={8}
                 dataKey="value"
-                label={({ name, value }) => `${value}`}
+                label={({ name, value, percent }) => value > 0 ? `${value}` : ''}
+                labelLine={false}
               >
                 {statsData.typeData.map((_, i) => (
                   <Cell key={i} fill={TYPE_COLORS[i % TYPE_COLORS.length]} stroke="transparent" />
