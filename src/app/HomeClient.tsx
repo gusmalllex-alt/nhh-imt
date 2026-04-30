@@ -85,30 +85,35 @@ export default function HomeClient() {
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900 selection:bg-emerald-200">
       
       {/* Header Section with Dark Emerald Gradient & Grid */}
-      <header className="relative bg-gradient-to-b from-[#003820] to-[#004d30] pt-16 pb-32 px-4 overflow-hidden shadow-xl">
-        {/* Grid Pattern Overlay */}
-        <div className="absolute inset-0 opacity-[0.15] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] pointer-events-none" />
+      <header className="relative bg-gradient-to-br from-[#003820] via-[#004d30] to-[#0f172a] pt-20 pb-36 px-4 overflow-hidden shadow-2xl">
+        {/* Background texture & effects */}
+        <div className="absolute inset-0 opacity-[0.08] bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] pointer-events-none" />
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-emerald-500/15 rounded-full blur-[100px] pointer-events-none animate-pulse" />
+        <div className="absolute top-1/2 left-0 w-64 h-64 bg-teal-500/10 rounded-full blur-[80px] pointer-events-none" />
         
         {/* Status Activity Link */}
-        <div className="absolute top-6 right-6 z-30">
-          <Link href="/status" className="flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white hover:bg-white/20 transition-all font-bold shadow-lg group">
-            <Activity className="w-5 h-5 text-yellow-300 group-hover:rotate-12 transition-transform" />
-            <span className="text-sm">ติดตามสถานะ</span>
+        <div className="absolute top-8 right-8 z-30">
+          <Link href="/status" className="flex items-center gap-3 px-6 py-3 bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl text-white hover:bg-white/20 transition-all font-black shadow-2xl group active:scale-95">
+            <Activity className="w-5 h-5 text-emerald-400 group-hover:rotate-12 transition-transform" />
+            <span className="text-xs uppercase tracking-widest">ติดตามสถานะ</span>
           </Link>
         </div>
 
         <div className="max-w-4xl mx-auto text-center relative z-10">
           {/* Logo */}
-          <div className="mb-8 inline-block animate-float">
-            <div className="relative w-24 h-24 mx-auto flex items-center justify-center">
-              <Image 
-                src={logo} 
-                alt="โลโก้โรงพยาบาลหนองหาน (Nonghan Hospital Logo) ใช้สำหรับแบบฟอร์มคำขอสารสนเทศ" 
-                width={100} 
-                height={100} 
-                className="object-contain w-24 h-24 drop-shadow-2xl"
-                priority
-              />
+          <div className="mb-10 inline-block animate-float">
+            <div className="relative group">
+              <div className="absolute inset-0 bg-emerald-400/20 blur-2xl rounded-full scale-75 group-hover:scale-110 transition-transform duration-700" />
+              <div className="relative w-28 h-28 bg-white/10 backdrop-blur-md rounded-[2rem] flex items-center justify-center p-4 border border-white/20 shadow-2xl">
+                <Image 
+                  src={logo} 
+                  alt="โลโก้โรงพยาบาลหนองหาน" 
+                  width={112} 
+                  height={112} 
+                  className="object-contain w-20 h-20 drop-shadow-2xl"
+                  priority
+                />
+              </div>
             </div>
           </div>
 
@@ -126,14 +131,15 @@ export default function HomeClient() {
         <form onSubmit={handleSubmit} className="space-y-8">
           
           {/* Section 1: Data Details */}
-          <div className="bg-white rounded-[1.5rem] shadow-xl shadow-emerald-900/5 p-4 md:p-8 border border-slate-200 relative overflow-hidden">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center text-white shadow-sm">
-                <FileText className="w-4 h-4" />
-              </div>
+          <div className="bg-white/80 backdrop-blur-3xl rounded-[2.5rem] shadow-2xl shadow-emerald-900/10 p-6 md:p-10 border border-white relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-10 opacity-5 group-hover:opacity-10 transition-opacity pointer-events-none">
+               <Activity className="w-32 h-32 rotate-12" />
+            </div>
+            <div className="flex items-center gap-4 mb-8 relative z-10">
+              <div className="w-2 h-10 bg-gradient-to-b from-emerald-400 to-emerald-600 rounded-full" />
               <div>
-                <h2 className="text-lg font-black text-slate-900 leading-none">1. ข้อมูลที่ต้องการ</h2>
-                <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">IMT Data Specification</p>
+                <h2 className="text-xl font-black text-slate-900 leading-none tracking-tight">1. ข้อมูลที่ต้องการ</h2>
+                <p className="text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-[0.2em]">Data Specification & Details</p>
               </div>
             </div>
 
@@ -295,14 +301,15 @@ export default function HomeClient() {
           </div>
 
           {/* Section 2: Contact Info */}
-          <div className="bg-white rounded-[1.5rem] shadow-xl shadow-emerald-900/5 p-4 md:p-8 border border-slate-200 relative overflow-hidden">
-             <div className="flex items-center gap-3 mb-6">
-              <div className="w-8 h-8 bg-teal-600 rounded-lg flex items-center justify-center text-white shadow-sm">
-                <User className="w-4 h-4" />
-              </div>
+          <div className="bg-white/80 backdrop-blur-3xl rounded-[2.5rem] shadow-2xl shadow-emerald-900/10 p-6 md:p-10 border border-white relative overflow-hidden group">
+            <div className="absolute top-0 right-0 p-10 opacity-5 group-hover:opacity-10 transition-opacity pointer-events-none">
+               <User className="w-32 h-32 rotate-12" />
+            </div>
+            <div className="flex items-center gap-4 mb-8 relative z-10">
+              <div className="w-2 h-10 bg-gradient-to-b from-teal-400 to-teal-600 rounded-full" />
               <div>
-                <h2 className="text-lg font-black text-slate-900 leading-none">2. ข้อมูลผู้แจ้ง</h2>
-                <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Requester Information</p>
+                <h2 className="text-xl font-black text-slate-900 leading-none tracking-tight">2. ข้อมูลผู้แจ้ง</h2>
+                <p className="text-[10px] font-bold text-slate-400 mt-2 uppercase tracking-[0.2em]">Requester & Contact Information</p>
               </div>
             </div>
 
@@ -355,18 +362,29 @@ export default function HomeClient() {
           </div>
 
           {/* Submit Area */}
-          <div className="flex flex-col items-center gap-6 pt-10">
+          <div className="flex flex-col items-center gap-8 pt-10">
             <button
               type="submit"
               disabled={isSubmitting}
-              className={`w-full max-w-lg overflow-hidden relative flex items-center justify-center gap-3 py-4 rounded-2xl font-black text-xl text-white transition-all shadow-xl hover:scale-[1.02] active:scale-[0.98] ${
-                isSubmitting ? 'bg-slate-400' : 'bg-[#004d40] shadow-emerald-900/20'
+              className={`w-full max-w-lg overflow-hidden relative flex items-center justify-center gap-4 py-5 rounded-[2rem] font-black text-xl text-white transition-all shadow-2xl hover:scale-[1.03] active:scale-[0.97] hover:shadow-emerald-900/30 ${
+                isSubmitting ? 'bg-slate-400' : 'bg-gradient-to-r from-[#003820] to-[#004d40]'
               }`}
             >
-              {isSubmitting ? 'กำลังส่งข้อมูล...' : '🚀 ยืนยันการส่งข้อมูล'}
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="w-6 h-6 animate-spin" />
+                  <span>กำลังส่งข้อมูล...</span>
+                </>
+              ) : (
+                <>
+                  <Send className="w-6 h-6 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                  <span>ยืนยันการส่งข้อมูล</span>
+                </>
+              )}
               {/* Shine Effect */}
               <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer" />
             </button>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">กดปุ่มเพื่อบันทึกข้อมูลเข้าสู่ระบบ IMT Nonghan</p>
           </div>
         </form>
       </main>

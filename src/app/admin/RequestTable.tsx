@@ -144,19 +144,21 @@ export default function RequestTable({ initialRequests }: { initialRequests: any
     <div className="space-y-6 animate-in fade-in duration-500">
       
       {/* Search & Filter Bar */}
-      <div className="bg-white/80 backdrop-blur-xl p-4 md:p-5 rounded-3xl border border-white shadow-lg shadow-slate-200/40">
-        <div className="flex flex-col lg:flex-row gap-4 items-center">
+      <div className="bg-white/70 backdrop-blur-3xl p-6 rounded-[2.5rem] border border-white shadow-2xl shadow-slate-200/40 group">
+        <div className="flex flex-col lg:flex-row gap-6 items-center">
           <div className="relative flex-1 w-full group">
-             <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
-              <input 
+             <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none">
+                <Search className="w-5 h-5 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
+             </div>
+             <input 
                type="text" 
-               placeholder="ค้นหาเรื่อง, ผู้ขอ, แผนก..." 
+               placeholder="ค้นหาเรื่อง, ผู้ขอ, แผนก หรือคำสำคัญ..." 
                value={searchTerm}
                onChange={(e) => {
                  setSearchTerm(e.target.value);
                  setCurrentPage(1);
                }}
-               className="w-full pl-14 pr-6 py-3.5 bg-slate-50/50 border border-slate-200 rounded-2xl text-sm font-bold outline-none focus:bg-white focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all text-slate-800 placeholder:text-slate-400"
+               className="w-full pl-16 pr-8 py-4 bg-slate-50/50 border border-slate-100 rounded-2xl text-sm font-black outline-none focus:bg-white focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-500/30 transition-all text-slate-800 placeholder:text-slate-400"
              />
           </div>
           
@@ -168,10 +170,10 @@ export default function RequestTable({ initialRequests }: { initialRequests: any
                   setStatusFilter(status);
                   setCurrentPage(1);
                 }}
-                className={`px-5 py-2.5 rounded-xl text-[11px] font-black uppercase tracking-wider whitespace-nowrap transition-all border ${
+                className={`px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-[0.1em] whitespace-nowrap transition-all border ${
                   statusFilter === status 
-                    ? "bg-slate-900 text-white border-slate-900 shadow-md transform scale-105" 
-                    : "bg-white text-slate-500 border-slate-200 hover:border-slate-300 hover:bg-slate-50"
+                    ? "bg-slate-900 text-white border-slate-900 shadow-xl transform scale-105" 
+                    : "bg-white text-slate-500 border-slate-100 hover:border-slate-200 hover:bg-slate-50 shadow-sm"
                 }`}
               >
                 {status}
@@ -206,12 +208,12 @@ export default function RequestTable({ initialRequests }: { initialRequests: any
         <div className="overflow-x-auto flex-1">
           <table className="w-full text-left">
              <thead>
-               <tr className="bg-slate-50 border-b border-slate-100">
-                 <th className="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-slate-500">วันที่ / เรื่อง</th>
-                 <th className="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-slate-500">ผู้ขอรับบริการ</th>
-                 <th className="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-slate-500 text-center">ความด่วน</th>
-                 <th className="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-slate-500 text-center">สถานะ</th>
-                 <th className="px-6 py-3 text-[11px] font-bold uppercase tracking-wider text-slate-500 text-right">จัดการ</th>
+               <tr className="bg-slate-50/50 border-b border-slate-100">
+                 <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">วันที่ / ลำดับ</th>
+                 <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">เรื่องคำขอข้อมูล</th>
+                 <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">ผู้ติดต่อ / แผนก</th>
+                 <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-center">สถานะ</th>
+                 <th className="px-8 py-5 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-right">จัดการ</th>
                </tr>
              </thead>
              <tbody className="divide-y divide-slate-100">
@@ -280,11 +282,11 @@ export default function RequestTable({ initialRequests }: { initialRequests: any
         </div>
 
         {/* Pagination */}
-        <div className="px-6 py-4 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-4">
-           <div className="flex items-center gap-3">
-              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">แสดง</span>
+        <div className="px-8 py-6 bg-slate-50/50 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-6">
+           <div className="flex items-center gap-4">
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">แสดงผล</span>
               <select 
-                 className="bg-white border border-slate-200 text-slate-700 text-xs font-bold rounded-lg px-2 py-1 outline-none focus:ring-2 focus:ring-emerald-500/20 active:scale-95 transition-all cursor-pointer"
+                 className="bg-white border border-slate-200 text-slate-900 text-xs font-black rounded-xl px-4 py-2 outline-none focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-500/30 transition-all cursor-pointer shadow-sm"
                  value={rowsPerPage}
                  onChange={(e) => {
                     setRowsPerPage(Number(e.target.value));
@@ -297,21 +299,21 @@ export default function RequestTable({ initialRequests }: { initialRequests: any
               </select>
            </div>
            
-           <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-              หน้า <span className="text-emerald-600 text-sm">{currentPage}</span> / <span className="text-slate-700">{totalPages || 1}</span>
+           <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-3">
+              หน้า <span className="text-emerald-600 text-sm bg-white px-3 py-1 rounded-lg border border-slate-100 shadow-sm">{currentPage}</span> จาก <span className="text-slate-900">{totalPages || 1}</span>
            </div>
-           <div className="flex gap-2">
+           <div className="flex gap-3">
               <button 
                 disabled={currentPage === 1 || paginatedRequests.length === 0}
                 onClick={() => handlePageChange(currentPage - 1)}
-                className="px-4 py-1.5 bg-white border border-slate-200 rounded-lg font-bold text-xs text-slate-600 hover:bg-slate-100 disabled:opacity-30 transition-all active:scale-95 shadow-sm"
+                className="px-6 py-2.5 bg-white border border-slate-200 rounded-xl font-black text-xs text-slate-600 hover:bg-slate-100 disabled:opacity-30 transition-all active:scale-95 shadow-sm"
               >
                 ย้อนกลับ
               </button>
               <button 
                 disabled={currentPage === totalPages || totalPages === 0}
                 onClick={() => handlePageChange(currentPage + 1)}
-                className="px-4 py-1.5 bg-white border border-slate-200 rounded-lg font-bold text-xs text-slate-600 hover:bg-slate-100 disabled:opacity-30 transition-all active:scale-95 shadow-sm"
+                className="px-6 py-2.5 bg-white border border-slate-200 rounded-xl font-black text-xs text-slate-600 hover:bg-slate-100 disabled:opacity-30 transition-all active:scale-95 shadow-sm"
               >
                 หน้าถัดไป
               </button>
