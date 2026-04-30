@@ -433,19 +433,7 @@ export default function HomeClient() {
         </div>
       </footer>
 
-      {/* Required Animations */}
-      <style dangerouslySetInnerHTML={{__html: `
-        @keyframes shimmer {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(100%); }
-        }
-        @keyframes float {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-10px); }
-        }
-        .animate-shimmer { animation: shimmer 2s infinite ease-in-out; }
-        .animate-float { animation: float 4s ease-in-out infinite; }
-      `}} />
+
 
     </div>
   );
