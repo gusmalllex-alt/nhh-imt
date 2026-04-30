@@ -3,7 +3,7 @@
 import { useMemo } from "react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, Legend, LabelList, RadialBarChart, RadialBar
+  PieChart, Pie, Cell, Legend, LabelList
 } from "recharts";
 import {
   FileText, Activity, Zap, Clock, RefreshCw, TrendingUp, Target, BarChart2
@@ -228,31 +228,22 @@ export default function AdminDashboardView({ requests }: { requests: any[] }) {
           </ResponsiveContainer>
         </ChartCard>
 
-        {/* 2. Urgency Radial ← NEW */}
+        {/* 2. Urgency Bar ← UPDATED */}
         <ChartCard title="จำแนกตามความเร่งด่วน" sub="Request Urgency Level" icon={<Zap className="w-5 h-5 text-amber-500" />} accent="from-amber-500 to-rose-500">
           <ResponsiveContainer width="100%" height={280}>
-            <RadialBarChart
-              cx="50%" cy="55%"
-              innerRadius="25%" outerRadius="90%"
-              data={statsData.urgencyData}
-              startAngle={180} endAngle={-180}
-            >
-              <RadialBar
-                dataKey="value"
-                cornerRadius={10}
-                background={{ fill: "#f1f5f9" }}
-                label={{ position: "insideStart", fill: "#fff", fontSize: 12, fontWeight: 900 }}
-              >
+            <BarChart data={statsData.urgencyData} layout="vertical" margin={{ left: 8, right: 36 }}>
+              <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
+              <XAxis type="number" hide />
+              <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} width={115}
+                tick={{ fontSize: 10, fontWeight: 700, fill: '#475569' }} />
+              <Tooltip content={<CustomTooltip />} cursor={{ fill: '#f8fafc', radius: 8 }} />
+              <Bar dataKey="value" radius={[0, 10, 10, 0]} barSize={28}>
                 {statsData.urgencyData.map((entry, i) => (
                   <Cell key={i} fill={entry.fill} />
                 ))}
-              </RadialBar>
-              <Tooltip content={<CustomTooltip />} />
-              <Legend
-                verticalAlign="bottom" height={40}
-                wrapperStyle={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}
-              />
-            </RadialBarChart>
+                <LabelList dataKey="value" position="right" style={{ fontSize: '13px', fontWeight: 900, fill: '#475569' }} />
+              </Bar>
+            </BarChart>
           </ResponsiveContainer>
         </ChartCard>
 
