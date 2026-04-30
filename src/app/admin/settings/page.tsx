@@ -1,9 +1,8 @@
 "use client";
 
 import { 
-  Settings, Server, Database, Globe, Cpu, 
-  ShieldCheck, HardDrive, Layout, 
-  Terminal, CheckCircle2, Info
+  Settings, Server, Database, Globe, Cpu,   ShieldCheck, HardDrive, Layout, 
+   Terminal, CheckCircle2, Info, Activity, Zap, Lock, User
 } from "lucide-react";
 import Link from "next/link";
 

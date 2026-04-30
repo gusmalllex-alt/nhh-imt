@@ -6,7 +6,7 @@ import Link from "next/link";
 import { 
   FileUp, Send, CheckCircle2, Building, Phone, Mail, 
   User, FileText, AlertCircle, Calendar, PieChart, LayoutDashboard, 
-  Zap, Clock, Timer, Sparkles, ShieldAlert, Activity, ShieldCheck, HeartPulse
+  Zap, Clock, Timer, Sparkles, ShieldAlert, Activity, ShieldCheck, HeartPulse, Loader2
 } from "lucide-react";
 import { submitRequestAction } from "./actions/submitRequest";
 import logo from "../../public/nhh.png";
