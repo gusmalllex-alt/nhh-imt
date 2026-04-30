@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import { 
-  Users, Search, Plus, Filter, 
+  Users, Search, Plus, 
   Loader2, UserPlus, X, Pencil, Trash2, Settings, MoreVertical as Dots,
-  Shield, AlertCircle, CheckCircle2, XCircle, Mail
+  Shield, AlertCircle, CheckCircle2, Mail
 } from "lucide-react";
 
 export default function UserManagement() {
@@ -96,9 +96,8 @@ export default function UserManagement() {
 
       setIsModalOpen(false);
       setNewStaff({ full_name: "", email: "", password: "", role: "Admin", status: "Active" });
-      alert("สร้างบัญชีและโปรไฟล์เจ้าหน้าที่สำเร็จ!");
     } catch (err: any) {
-      alert("Error: " + err.message);
+      console.error("Error adding staff:", err);
     } finally {
       setSubmitting(false);
     }
@@ -118,9 +117,8 @@ export default function UserManagement() {
       
       setProfiles(profiles.filter(p => p.id !== user.id));
       setOpenMenuId(null);
-      alert("ลบข้อมูลสำเร็จ");
     } catch (err: any) {
-      alert("Error: " + err.message);
+      console.error("Error deleting user:", err);
     } finally {
       setSubmitting(false);
     }
@@ -156,9 +154,8 @@ export default function UserManagement() {
       
       setProfiles(profiles.map(p => p.id === editingUser.id ? { ...p, ...editFormData } : p));
       setIsEditModalOpen(false);
-      alert("อัพเดทข้อมูลสำเร็จ!");
     } catch (err: any) {
-      alert("Error: " + err.message);
+      console.error("Error updating user:", err);
     } finally {
       setSubmitting(false);
     }
@@ -172,20 +169,25 @@ export default function UserManagement() {
   if (loading && profiles.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px]">
-        <Loader2 className="w-10 h-10 text-emerald-600 animate-spin mb-4" />
-        <p className="text-slate-500 font-bold text-xs uppercase tracking-widest">Loading Personnel...</p>
+        <div className="w-16 h-16 bg-white rounded-2xl shadow-xl flex items-center justify-center mb-6 relative">
+          <div className="absolute inset-0 bg-emerald-500/10 rounded-2xl animate-ping opacity-75" />
+          <Loader2 className="w-8 h-8 text-emerald-600 animate-spin relative z-10" />
+        </div>
+        <p className="text-slate-400 font-black uppercase tracking-[0.3em] text-[10px] animate-pulse">Loading Staff Records</p>
       </div>
     );
   }
 
   if (error === "NOT_CONFIGURED") {
     return (
-      <div className="max-w-2xl mx-auto bg-white rounded-xl border border-slate-200 p-10 text-center shadow-sm">
-         <AlertCircle className="w-12 h-12 text-amber-500 mx-auto mb-6" />
-         <h2 className="text-2xl font-bold text-slate-900 mb-4">ยังไม่ได้ตั้งค่าตารางบุคลากร</h2>
-         <p className="text-slate-600 mb-8 text-sm leading-relaxed">กรุณารันคำสั่ง SQL ใน Supabase เพื่อสร้างตาราง profiles:</p>
-         <div className="bg-slate-900 p-4 rounded-lg text-left mb-8 overflow-x-auto">
-            <pre className="text-emerald-400 font-mono text-xs">
+      <div className="max-w-2xl mx-auto bg-white/80 backdrop-blur-3xl rounded-[3rem] border border-white p-12 text-center shadow-2xl shadow-slate-200/50">
+         <div className="w-20 h-20 bg-amber-50 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-amber-100">
+            <AlertCircle className="w-10 h-10 text-amber-500" />
+         </div>
+         <h2 className="text-3xl font-black text-slate-900 mb-4 tracking-tight">ยังไม่ได้ตั้งค่าตารางบุคลากร</h2>
+         <p className="text-slate-500 mb-10 text-sm font-bold leading-relaxed max-w-md mx-auto">กรุณารันคำสั่ง SQL ใน Supabase เพื่อสร้างตาราง profiles เพื่อจัดการสิทธิ์การเข้าใช้งาน:</p>
+         <div className="bg-slate-950 p-8 rounded-[2rem] text-left mb-10 overflow-x-auto shadow-inner ring-4 ring-slate-50">
+            <pre className="text-emerald-400 font-mono text-xs leading-relaxed">
 {`create table public.profiles (
   id uuid references auth.users on delete cascade primary key,
   full_name text not null,
@@ -196,123 +198,140 @@ export default function UserManagement() {
 );`}
             </pre>
          </div>
-         <button onClick={() => window.location.reload()} className="px-6 py-2.5 bg-emerald-600 text-white rounded-lg font-bold hover:bg-emerald-700 transition-colors">Reload Page</button>
+         <button onClick={() => window.location.reload()} className="px-10 py-4 bg-emerald-600 text-white rounded-2xl font-black text-sm hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-900/20 active:scale-95 uppercase tracking-widest">Reload Page</button>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500">
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-           <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
-             <Users className="w-6 h-6 text-emerald-600" /> จัดการบุคลากร
-           </h2>
-           <p className="text-slate-500 text-xs font-medium mt-1">รายชื่อเจ้าหน้าที่และสิทธิการใช้งานระบบ</p>
+    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-12">
+      
+      {/* ── Page Header ─────────────────────────────────── */}
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8">
+        <div className="space-y-2">
+           <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-emerald-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-emerald-900/20">
+                 <Users className="w-6 h-6 text-white" />
+              </div>
+              <h2 className="text-4xl font-black text-slate-900 tracking-tighter">จัดการบุคลากร</h2>
+           </div>
+           <p className="text-slate-400 font-bold text-xs uppercase tracking-[0.2em] ml-16">Personnel Management & Role Authorization</p>
         </div>
         
         <button 
           onClick={() => setIsModalOpen(true)}
-          className="px-5 py-2.5 bg-emerald-600 text-white rounded-lg font-bold text-sm flex items-center gap-2 hover:bg-emerald-700 transition-all shadow-sm"
+          className="group relative overflow-hidden px-8 py-4 bg-emerald-600 text-white rounded-2xl font-black text-sm flex items-center gap-3 hover:bg-emerald-700 transition-all shadow-2xl shadow-emerald-900/20 active:scale-95"
         >
-           <UserPlus className="w-4 h-4" /> เพิ่มเจ้าหน้าที่
+           <UserPlus className="w-5 h-5 group-hover:scale-110 transition-transform" />
+           <span className="uppercase tracking-widest">เพิ่มเจ้าหน้าที่ใหม่</span>
+           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-shimmer" />
         </button>
       </div>
 
-      {/* Stats & Search */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-         <div className="lg:col-span-3 relative group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-emerald-500 transition-colors" />
+      {/* ── Search & Stats ──────────────────────────────── */}
+      <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 items-center">
+         <div className="xl:col-span-3 relative group">
+            <div className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 group-focus-within:text-emerald-500 transition-colors">
+               <Search className="w-full h-full" />
+            </div>
             <input 
               type="text" 
-              placeholder="ค้นหาชื่อ หรืออีเมล..." 
+              placeholder="ค้นหาชื่อเจ้าหน้าที่ หรืออีเมลบุคลากร..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-11 pr-4 py-2.5 bg-white border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-emerald-500/10 focus:border-emerald-500 transition-all font-medium text-sm"
+              className="w-full pl-16 pr-8 py-5 bg-white border-2 border-slate-100/50 rounded-[2rem] outline-none focus:bg-white focus:border-emerald-500/30 focus:ring-8 focus:ring-emerald-500/5 transition-all font-black text-slate-800 text-sm placeholder:text-slate-300 placeholder:font-bold shadow-sm"
             />
          </div>
-         <div className="bg-slate-900 text-white p-2 rounded-lg flex items-center justify-around shadow-inner">
-            <div className="text-center">
-               <div className="text-lg font-bold leading-none">{profiles.length}</div>
-               <div className="text-[10px] font-medium text-slate-400 uppercase tracking-tighter">ทั้งหมด</div>
+         <div className="bg-slate-900 rounded-[2rem] p-5 flex items-center justify-around shadow-2xl border border-slate-800">
+            <div className="text-center px-4">
+               <div className="text-2xl font-black text-white tabular-nums leading-none mb-1">{profiles.length}</div>
+               <div className="text-[9px] font-black text-slate-500 uppercase tracking-widest">บุคลากรทั้งหมด</div>
             </div>
-            <div className="w-px h-6 bg-slate-800" />
-            <div className="text-center">
-               <div className="text-lg font-bold leading-none text-emerald-400">{profiles.filter(p => p.status === 'Active').length}</div>
-               <div className="text-[10px] font-medium text-slate-400 uppercase tracking-tighter">ออนไลน์</div>
+            <div className="w-px h-8 bg-slate-800" />
+            <div className="text-center px-4">
+               <div className="text-2xl font-black text-emerald-400 tabular-nums leading-none mb-1">{profiles.filter(p => p.status === 'Active').length}</div>
+               <div className="text-[9px] font-black text-slate-500 uppercase tracking-widest">กำลังใช้งาน</div>
             </div>
          </div>
       </div>
 
-      {/* User Table */}
-      <div className="bg-white rounded-xl border border-slate-200 shadow-sm">
-        <div className="overflow-x-visible">
-          <table className="w-full text-left">
-            <thead className="bg-slate-50 border-b border-slate-200">
-              <tr>
-                <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-slate-500">ชื่อเจ้าหน้าที่</th>
-                <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-slate-500">สถานะ</th>
-                <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-slate-500 text-right">ดำเนินการ</th>
+      {/* ── User Table ──────────────────────────────────── */}
+      <div className="bg-white/80 backdrop-blur-3xl rounded-[2.5rem] border border-white shadow-2xl shadow-slate-200/50 overflow-hidden">
+        <div className="overflow-x-auto custom-scrollbar">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b border-slate-100 bg-slate-50/50">
+                <th className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">ข้อมูลพื้นฐานเจ้าหน้าที่</th>
+                <th className="px-8 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">สถานะระบบ</th>
+                <th className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-right">การจัดการ</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-50">
               {filteredProfiles.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-6 py-20 text-center text-slate-400">
-                     <p className="font-bold">ไม่พบข้อมูลสมาชิก</p>
+                  <td colSpan={3} className="px-10 py-32 text-center text-slate-400">
+                     <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6 opacity-50">
+                        <Users className="w-8 h-8" />
+                     </div>
+                     <p className="font-black uppercase tracking-[0.15em] text-sm text-slate-300">ไม่พบข้อมูลรายชื่อเจ้าหน้าที่</p>
                   </td>
                 </tr>
               ) : (
                 filteredProfiles.map((user) => (
-                  <tr key={user.id} className="hover:bg-slate-50/50 transition-colors">
-                    <td className="px-6 py-4">
-                       <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-lg bg-emerald-600 flex items-center justify-center font-bold text-white text-xs shadow-sm">
+                  <tr key={user.id} className="group hover:bg-emerald-50/20 transition-all duration-300">
+                    <td className="px-10 py-6">
+                       <div className="flex items-center gap-4">
+                          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center font-black text-slate-500 text-sm shadow-inner group-hover:from-emerald-500 group-hover:to-teal-600 group-hover:text-white group-hover:shadow-lg transition-all duration-500 group-hover:scale-105 group-hover:rotate-3">
                              {user.full_name?.substring(0, 2).toUpperCase()}
                           </div>
-                          <div className="flex flex-col">
-                             <span className="text-sm font-bold text-slate-900 leading-none">{user.full_name}</span>
-                             <span className="text-[11px] font-medium text-slate-500 mt-1">{user.email || 'N/A'}</span>
+                          <div className="flex flex-col gap-1">
+                             <span className="text-base font-black text-slate-900 tracking-tight leading-none">{user.full_name}</span>
+                             <div className="flex items-center gap-2 text-slate-400 font-bold text-[11px] uppercase tracking-wider">
+                                <Mail className="w-3 h-3 text-emerald-500 opacity-60" />
+                                {user.email || 'N/A'}
+                             </div>
                           </div>
                        </div>
                     </td>
-                    <td className="px-6 py-4">
-                       <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[10px] font-bold ${
-                         user.status === 'Active' ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600'
+                    <td className="px-8 py-6">
+                       <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all ${
+                         user.status === 'Active' 
+                           ? 'bg-emerald-50 text-emerald-700 border-emerald-100 shadow-sm' 
+                           : 'bg-slate-100 text-slate-500 border-slate-200 opacity-60'
                        }`}>
-                          <div className={`w-1.5 h-1.5 rounded-full ${user.status === 'Active' ? 'bg-emerald-500' : 'bg-slate-400'}`} />
+                          <div className={`w-1.5 h-1.5 rounded-full ${user.status === 'Active' ? 'bg-emerald-500 shadow-[0_0_8px_#10b981] animate-pulse' : 'bg-slate-400'}`} />
                           {user.status || 'Active'}
                        </span>
                     </td>
-                    <td className={`px-6 py-4 text-right transition-all ${openMenuId === user.id ? 'relative z-[30]' : 'relative'}`}>
+                    <td className={`px-10 py-6 text-right relative transition-all ${openMenuId === user.id ? 'z-40' : 'z-10'}`}>
                        <button 
                          onClick={(e) => {
                            e.stopPropagation();
                            setOpenMenuId(openMenuId === user.id ? null : user.id);
                          }}
-                         className={`p-1.5 rounded-md transition-colors ${openMenuId === user.id ? 'bg-slate-100 text-slate-900' : 'text-slate-400 hover:text-slate-900 hover:bg-slate-50'}`}
+                         className={`w-10 h-10 rounded-xl transition-all flex items-center justify-center mx-auto md:ml-auto md:mr-0 ${openMenuId === user.id ? 'bg-slate-900 text-white shadow-xl rotate-90 scale-110' : 'bg-slate-50 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 border border-slate-100'}`}
                        >
-                          <Dots className="w-4 h-4" />
+                          <Dots className="w-5 h-5" />
                        </button>
 
-                       {/* Action Dropdown Menu */}
                        {openMenuId === user.id && (
                          <>
-                           <div className="fixed inset-0 z-10" onClick={() => setOpenMenuId(null)} />
-                           <div className="absolute right-0 top-full mt-1 w-44 bg-white rounded-lg shadow-2xl border border-slate-200 py-1.5 z-[50] animate-in fade-in slide-in-from-top-1 duration-200 text-left">
+                           <div className="fixed inset-0 z-40 bg-slate-950/5 backdrop-blur-[2px]" onClick={() => setOpenMenuId(null)} />
+                           <div className="absolute right-10 top-1/2 -translate-y-1/2 w-52 bg-white rounded-[2rem] shadow-2xl shadow-slate-900/10 border border-slate-100 py-3 z-50 animate-in fade-in zoom-in-95 duration-300 origin-right text-left overflow-hidden">
                               <button 
                                 onClick={() => handleEditClick(user)}
-                                className="w-full px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 flex items-center gap-2 transition-colors"
+                                className="w-full px-6 py-4 text-xs font-black text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-3 transition-all"
                               >
-                                 <Pencil className="w-3.5 h-3.5 text-blue-500" /> แก้ไขข้อมูล
+                                 <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center"><Pencil className="w-4 h-4" /></div>
+                                 แก้ไขข้อมูล
                               </button>
-                              <div className="h-px bg-slate-50 my-1" />
+                              <div className="h-px bg-slate-50 mx-4 my-1" />
                               <button 
                                 onClick={() => handleDeleteUser(user)}
-                                className="w-full px-4 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 flex items-center gap-2 transition-colors"
+                                className="w-full px-6 py-4 text-xs font-black text-rose-500 hover:bg-rose-50 flex items-center gap-3 transition-all"
                               >
-                                 <Trash2 className="w-3.5 h-3.5" /> ลบบัญชี
+                                 <div className="w-8 h-8 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center"><Trash2 className="w-4 h-4" /></div>
+                                 ลบบัญชี
                               </button>
                            </div>
                          </>
@@ -326,135 +345,181 @@ export default function UserManagement() {
         </div>
       </div>
 
-      {/* Add Modal */}
+      {/* ── Add Modal ───────────────────────────────────── */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-[2px]">
-           <div className="bg-white w-full max-w-md rounded-xl shadow-2xl animate-in zoom-in-95 duration-200 border border-slate-200 overflow-hidden">
-              <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                 <h3 className="font-bold text-slate-900">เพิ่มเจ้าหน้าที่ใหม่</h3>
-                 <button onClick={() => setIsModalOpen(false)} className="p-1 hover:bg-slate-100 rounded-md transition-colors"><X className="w-5 h-5 text-slate-400" /></button>
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-6 sm:p-12">
+           <div className="fixed inset-0 bg-slate-950/30 backdrop-blur-xl animate-in fade-in duration-500" onClick={() => setIsModalOpen(false)} />
+           <div className="bg-white/95 backdrop-blur-3xl w-full max-w-xl rounded-[3rem] shadow-2xl shadow-slate-900/20 animate-in zoom-in-95 duration-300 border border-white overflow-hidden relative z-10 flex flex-col max-h-full">
+              <div className="px-10 py-8 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                 <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-emerald-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-emerald-900/20 text-white">
+                       <UserPlus className="w-6 h-6" />
+                    </div>
+                    <div>
+                       <h3 className="text-2xl font-black text-slate-900 tracking-tight leading-none">เพิ่มเจ้าหน้าที่ใหม่</h3>
+                       <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1.5">New Account Registration</p>
+                    </div>
+                 </div>
+                 <button onClick={() => setIsModalOpen(false)} className="w-10 h-10 bg-white border border-slate-100 rounded-xl flex items-center justify-center hover:bg-slate-50 hover:scale-110 transition-all text-slate-400"><X className="w-5 h-5" /></button>
               </div>
 
-              <form onSubmit={handleAddStaff} className="p-6 space-y-4">
-                 <div className="space-y-4">
-                    <div className="space-y-1">
-                       <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">ชื่อ-นามสกุล</label>
-                       <input 
-                         required
-                         type="text" 
-                         value={newStaff.full_name}
-                         onChange={(e) => setNewStaff({...newStaff, full_name: e.target.value})}
-                         className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all" 
-                         placeholder="ป้อนชื่อ-นามสกุล..." 
-                       />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                       <div className="space-y-1">
-                          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">อีเมล</label>
+              <form onSubmit={handleAddStaff} className="p-10 space-y-8 overflow-y-auto custom-scrollbar">
+                 <div className="space-y-6">
+                    <div className="space-y-2.5">
+                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-4">ชื่อ-นามสกุล บุคลากร (Full Name)</label>
+                       <div className="relative group">
+                          <Users className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 group-focus-within:text-emerald-500 transition-colors" />
                           <input 
                             required
-                            type="email" 
-                            value={newStaff.email}
-                            onChange={(e) => setNewStaff({...newStaff, email: e.target.value})}
-                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all" 
-                            placeholder="user@nhh.com" 
+                            type="text" 
+                            value={newStaff.full_name}
+                            onChange={(e) => setNewStaff({...newStaff, full_name: e.target.value})}
+                            className="w-full bg-slate-50/50 border-2 border-slate-100/50 rounded-2xl pl-14 pr-6 py-4 outline-none font-black text-slate-800 text-sm focus:bg-white focus:border-emerald-500/30 focus:ring-8 focus:ring-emerald-500/5 transition-all placeholder:text-slate-300 placeholder:font-bold" 
+                            placeholder="ป้อนชื่อ-นามสกุล..." 
                           />
                        </div>
-                       <div className="space-y-1">
-                          <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">รหัสผ่าน</label>
-                          <input 
-                            required
-                            type="password" 
-                            value={newStaff.password}
-                            onChange={(e) => setNewStaff({...newStaff, password: e.target.value})}
-                            className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all" 
-                            placeholder="ความยาว 6+..." 
-                          />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                       <div className="space-y-2.5">
+                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-4">อีเมลเจ้าหน้าที่ (Email)</label>
+                          <div className="relative group">
+                             <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 group-focus-within:text-emerald-500 transition-colors" />
+                             <input 
+                               required
+                               type="email" 
+                               value={newStaff.email}
+                               onChange={(e) => setNewStaff({...newStaff, email: e.target.value})}
+                               className="w-full bg-slate-50/50 border-2 border-slate-100/50 rounded-2xl pl-14 pr-6 py-4 outline-none font-black text-slate-800 text-sm focus:bg-white focus:border-emerald-500/30 focus:ring-8 focus:ring-emerald-500/5 transition-all placeholder:text-slate-300 placeholder:font-bold" 
+                               placeholder="user@nhh.com" 
+                             />
+                          </div>
+                       </div>
+                       <div className="space-y-2.5">
+                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-4">รหัสผ่านเริ่มต้น (Password)</label>
+                          <div className="relative group">
+                             <Shield className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 group-focus-within:text-emerald-500 transition-colors" />
+                             <input 
+                               required
+                               type="password" 
+                               value={newStaff.password}
+                               onChange={(e) => setNewStaff({...newStaff, password: e.target.value})}
+                               className="w-full bg-slate-50/50 border-2 border-slate-100/50 rounded-2xl pl-14 pr-6 py-4 outline-none font-black text-slate-800 text-sm focus:bg-white focus:border-emerald-500/30 focus:ring-8 focus:ring-emerald-500/5 transition-all placeholder:text-slate-300 placeholder:font-bold" 
+                               placeholder="ความยาว 6+..." 
+                             />
+                          </div>
                        </div>
                     </div>
                  </div>
 
-                 <button 
-                   type="submit"
-                   disabled={submitting}
-                   className="w-full bg-emerald-600 text-white py-2.5 rounded-lg font-bold text-sm shadow-md hover:bg-emerald-700 active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-4"
-                 >
-                    {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-                    บันทึกข้อมูล
-                 </button>
+                 <div className="pt-6 border-t border-slate-100">
+                    <button 
+                      type="submit"
+                      disabled={submitting}
+                      className="w-full group relative overflow-hidden bg-emerald-600 text-white py-5 rounded-[1.5rem] font-black text-base shadow-2xl shadow-emerald-900/20 hover:bg-emerald-700 hover:-translate-y-1 active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+                    >
+                       {submitting ? (
+                          <Loader2 className="w-6 h-6 animate-spin" />
+                       ) : (
+                          <>
+                             <Plus className="w-6 h-6 group-hover:scale-110 transition-transform" />
+                             <span className="uppercase tracking-[0.2em]">บันทึกข้อมูลเจ้าหน้าที่</span>
+                          </>
+                       )}
+                       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-shimmer" />
+                    </button>
+                 </div>
               </form>
            </div>
         </div>
       )}
 
-      {/* Edit Modal */}
+      {/* ── Edit Modal ──────────────────────────────────── */}
       {isEditModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-[2px]">
-           <div className="bg-white w-full max-w-md rounded-xl shadow-2xl animate-in zoom-in-95 duration-200 border border-slate-200 overflow-hidden">
-              <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                 <h3 className="font-bold text-slate-900 flex items-center gap-2">
-                    <Pencil className="w-4 h-4 text-emerald-600" /> แก้ไขข้อมูลเจ้าหน้าที่
-                 </h3>
-                 <button onClick={() => setIsEditModalOpen(false)} className="p-1 hover:bg-slate-100 rounded-md transition-colors"><X className="w-5 h-5 text-slate-400" /></button>
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-6 sm:p-12">
+           <div className="fixed inset-0 bg-slate-950/30 backdrop-blur-xl animate-in fade-in duration-500" onClick={() => setIsEditModalOpen(false)} />
+           <div className="bg-white/95 backdrop-blur-3xl w-full max-w-xl rounded-[3rem] shadow-2xl shadow-slate-900/20 animate-in zoom-in-95 duration-300 border border-white overflow-hidden relative z-10">
+              <div className="px-10 py-8 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                 <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-xl border border-slate-100 text-emerald-600">
+                       <Pencil className="w-5 h-5" />
+                    </div>
+                    <div>
+                       <h3 className="text-2xl font-black text-slate-900 tracking-tight leading-none">แก้ไขข้อมูลเจ้าหน้าที่</h3>
+                       <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1.5">Profile & Authorization Update</p>
+                    </div>
+                 </div>
+                 <button onClick={() => setIsEditModalOpen(false)} className="w-10 h-10 bg-white border border-slate-100 rounded-xl flex items-center justify-center hover:bg-slate-50 hover:scale-110 transition-all text-slate-400"><X className="w-5 h-5" /></button>
               </div>
 
-              <form onSubmit={handleUpdateUser} className="p-6 space-y-4">
-                 <div className="space-y-4">
-                    <div className="space-y-1">
-                       <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">ชื่อ-นามสกุล</label>
+              <form onSubmit={handleUpdateUser} className="p-10 space-y-10">
+                 <div className="space-y-6">
+                    <div className="space-y-2.5">
+                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-4">ชื่อ-นามสกุล บุคลากร (Full Name)</label>
                        <input 
                          required
                          type="text" 
                          value={editFormData.full_name}
                          onChange={(e) => setEditFormData({...editFormData, full_name: e.target.value})}
-                         className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm font-bold text-slate-900 focus:ring-4 focus:ring-emerald-500/10 focus:border-emerald-500 outline-none transition-all" 
+                         className="w-full bg-slate-50/50 border-2 border-slate-100/50 rounded-2xl px-6 py-4 outline-none font-black text-slate-900 text-sm focus:bg-white focus:border-emerald-500/30 focus:ring-8 focus:ring-emerald-500/5 transition-all shadow-sm" 
                        />
                     </div>
                     
-                    <div className="space-y-1">
-                       <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">สถานะการใช้งาน</label>
-                       <select 
-                         value={editFormData.status}
-                         onChange={(e) => setEditFormData({...editFormData, status: e.target.value})}
-                         className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2.5 text-sm font-bold text-slate-900 outline-none cursor-pointer"
-                       >
-                          <option value="Active">เปิดใช้งาน</option>
-                          <option value="Inactive">ปิดใช้งาน</option>
-                       </select>
+                    <div className="space-y-2.5">
+                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-4">สถานะการใช้งาน (System Status)</label>
+                       <div className="relative">
+                          <Settings className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 pointer-events-none" />
+                          <select 
+                            value={editFormData.status}
+                            onChange={(e) => setEditFormData({...editFormData, status: e.target.value})}
+                            className="w-full bg-slate-50/50 border-2 border-slate-100/50 rounded-2xl pl-14 pr-6 py-4 outline-none font-black text-slate-900 text-sm focus:bg-white focus:border-emerald-500/30 focus:ring-8 focus:ring-emerald-500/5 transition-all cursor-pointer appearance-none shadow-sm"
+                          >
+                             <option value="Active">🟢 เปิดใช้งาน (Active)</option>
+                             <option value="Inactive">🔴 ปิดใช้งาน (Inactive)</option>
+                          </select>
+                       </div>
                     </div>
                  </div>
 
-                 <div className="pt-4 border-t border-slate-100 flex flex-col gap-3">
+                 <div className="pt-8 border-t border-slate-100 flex flex-col gap-4">
                     <button 
                       type="button"
                       onClick={async () => {
-                         if (!editingUser.email) return alert("ไม่พบอีเมลเจ้าหน้าที่");
+                         if (!editingUser.email) return;
                          setSubmitting(true);
                          try {
                             const { error } = await supabase.auth.resetPasswordForEmail(editingUser.email, {
                               redirectTo: window.location.origin + '/login'
                             });
                             if (error) throw error;
-                            alert("ส่งอีเมลรีเซ็ตรหัสผ่านสำเร็จ! กรุณาแจ้งให้เจ้าหน้าที่ตรวจสอบ Inbox");
+                            alert("ส่งอีเมลรีเซ็ตรหัสผ่านสำเร็จ!");
                          } catch (err: any) {
-                            alert("Error: " + err.message);
+                            console.error("Reset error:", err);
                          } finally {
                             setSubmitting(false);
                          }
                       }}
                       disabled={submitting}
-                      className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border-2 border-slate-200 text-slate-600 font-bold text-xs hover:bg-slate-50 hover:border-slate-300 transition-all disabled:opacity-50"
+                      className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-2xl bg-white border-2 border-slate-100 text-slate-500 font-black text-[11px] uppercase tracking-widest hover:bg-slate-50 hover:border-slate-200 transition-all shadow-sm active:scale-95 disabled:opacity-50"
                     >
-                       <Mail className="w-4 h-4 text-emerald-600" /> ส่งอีเมลรีเซ็ตรหัสผ่าน
+                       <Mail className="w-5 h-5 text-emerald-500" />
+                       ส่งอีเมลรีเซ็ตรหัสผ่าน (Password Recovery)
                     </button>
                     
                     <button 
                       type="submit"
                       disabled={submitting}
-                      className="w-full bg-emerald-600 text-white py-3 rounded-lg font-bold text-sm shadow-lg hover:bg-emerald-700 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                      className="w-full group relative overflow-hidden bg-emerald-600 text-white py-5 rounded-[1.5rem] font-black text-base shadow-2xl shadow-emerald-900/20 hover:bg-emerald-700 hover:-translate-y-1 active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
                     >
-                       {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <CheckCircle2 className="w-5 h-5" />}
-                       บันทึกการเปลี่ยนแปลง
+                       {submitting ? (
+                          <Loader2 className="w-6 h-6 animate-spin" />
+                       ) : (
+                          <>
+                             <CheckCircle2 className="w-6 h-6 group-hover:scale-110 transition-transform" />
+                             <span className="uppercase tracking-[0.2em]">บันทึกการเปลี่ยนแปลง</span>
+                          </>
+                       )}
+                       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-shimmer" />
                     </button>
                  </div>
               </form>

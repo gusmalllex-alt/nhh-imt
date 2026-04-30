@@ -214,6 +214,7 @@ export default function AdminDashboardView({ requests }: { requests: any[] }) {
                 innerRadius={68} outerRadius={100}
                 paddingAngle={3} cornerRadius={8}
                 dataKey="value"
+                label={({ name, value }) => value > 0 ? `${value}` : ''}
               >
                 {statsData.statusData.map((entry, i) => (
                   <Cell key={i} fill={entry.fill} stroke="transparent" />
