@@ -133,14 +133,14 @@ export default function HomeClient() {
               </div>
               <div>
                 <h2 className="text-lg font-black text-slate-900 leading-none">1. ข้อมูลที่ต้องการ</h2>
-                <p className="text-[9px] font-bold text-slate-500 mt-1 uppercase tracking-widest">IMT Data Specification</p>
+                <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">IMT Data Specification</p>
               </div>
             </div>
 
             <div className="space-y-10">
               {/* Category Selection */}
               <div className="space-y-3">
-                <label className="text-[10px] font-extrabold text-slate-600 uppercase tracking-wider flex items-center gap-2">
+                <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
                    📑 รายละเอียดที่ต้องการ <span className="text-rose-500">*</span>
                 </label>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
@@ -169,23 +169,23 @@ export default function HomeClient() {
               {/* Title & Condition */}
               <div className="grid grid-cols-1 gap-5">
                 <div className="space-y-1">
-                  <label className="text-[10px] font-extrabold text-slate-600 uppercase tracking-wider flex items-center gap-2">
+                  <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
                      📝 ชื่อเรื่อง / ชื่อรายงาน <span className="text-rose-500">*</span>
                   </label>
                   <input 
                     type="text" name="title" required
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 outline-none font-bold text-xs focus:border-emerald-500 focus:bg-white transition-all text-slate-900"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 outline-none font-medium text-sm focus:border-emerald-500 focus:bg-white transition-all text-slate-900"
                     placeholder="ระบุสิ่งที่ต้องการ..."
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[10px] font-extrabold text-slate-600 uppercase tracking-wider flex items-center gap-2">
+                  <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
                      🏗️ เงื่อนไข / สูตรคำนวณ / รายละเอียด <span className="text-rose-500">*</span>
                   </label>
                   <textarea 
                     name="condition" rows={3} required
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 outline-none font-bold text-xs focus:border-emerald-500 focus:bg-white transition-all text-slate-900 resize-none"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 outline-none font-medium text-sm focus:border-emerald-500 focus:bg-white transition-all text-slate-900 resize-none"
                     placeholder="อธิบายแฟ้มที่ต้องการดึง อย่างละเอียด..."
                   />
                 </div>
@@ -194,7 +194,7 @@ export default function HomeClient() {
               {/* Urgency & Frequency */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
                 <div className="space-y-2">
-                   <label className="text-[10px] font-extrabold text-slate-600 uppercase tracking-wider flex items-center gap-2">
+                   <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
                       ⚡ ระดับความเร่งด่วน <span className="text-rose-500">*</span>
                    </label>
                    <div className="flex flex-col gap-1.5">
@@ -214,8 +214,8 @@ export default function HomeClient() {
                           <div className="flex items-center gap-2.5">
                             <span className="text-lg">{u.emoji}</span>
                             <div className="flex flex-col leading-tight">
-                              <span className="text-[11px] font-black text-slate-800">{u.label}</span>
-                              <span className="text-[8px] uppercase font-bold text-slate-500">{u.time}</span>
+                              <span className="text-sm font-bold text-slate-800">{u.label}</span>
+                              <span className="text-xs font-medium text-slate-500">{u.time}</span>
                             </div>
                           </div>
                           <div className={`w-3.5 h-3.5 rounded-full border-2 border-current flex items-center justify-center ${selectedUrgency === u.id ? 'opacity-100' : 'opacity-20'}`}>
@@ -227,7 +227,7 @@ export default function HomeClient() {
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[10px] font-extrabold text-slate-600 uppercase tracking-wider flex items-center gap-2">
+                  <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
                     📅 รอบการใช้ข้อมูล <span className="text-rose-500">*</span>
                   </label>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
@@ -246,10 +246,10 @@ export default function HomeClient() {
                         />
                         <span className="text-lg mb-1">{f.emoji}</span>
                         <div className="flex flex-col items-center leading-none">
-                          <span className={`text-[10px] font-black ${selectedFrequency === f.id ? 'text-emerald-700' : 'text-slate-800'}`}>
+                          <span className={`text-sm font-black ${selectedFrequency === f.id ? 'text-emerald-700' : 'text-slate-800'}`}>
                             {f.label}
                           </span>
-                          <span className="text-[7px] font-bold text-slate-400 mt-0.5 uppercase tracking-tighter">{f.desc}</span>
+                          <span className="text-xs font-bold text-slate-400 mt-0.5 uppercase tracking-wide">{f.desc}</span>
                         </div>
                       </label>
                     ))}
@@ -302,40 +302,40 @@ export default function HomeClient() {
               </div>
               <div>
                 <h2 className="text-lg font-black text-slate-900 leading-none">2. ข้อมูลผู้แจ้ง</h2>
-                <p className="text-[9px] font-bold text-slate-500 mt-1 uppercase tracking-widest">Requester Information</p>
+                <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase tracking-widest">Requester Information</p>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                <div className="space-y-1">
-                  <label className="text-[10px] font-extrabold text-slate-600 uppercase tracking-wider flex items-center gap-2">
+                  <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
                     👤 ชื่อ-นามสกุล <span className="text-rose-500">*</span>
                   </label>
-                  <input type="text" name="requesterName" required className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 outline-none font-bold text-xs focus:border-emerald-500 focus:bg-white transition-all text-slate-900" placeholder="ระบุชื่อจริง..." />
+                  <input type="text" name="requesterName" required className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 outline-none font-medium text-sm focus:border-emerald-500 focus:bg-white transition-all text-slate-900" placeholder="ระบุชื่อจริง..." />
                </div>
                <div className="space-y-1">
-                  <label className="text-[10px] font-extrabold text-slate-600 uppercase tracking-wider flex items-center gap-2">
+                  <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
                     📞 เบอร์โทรศัพท์ <span className="text-rose-500">*</span>
                   </label>
-                  <input type="tel" name="phone" required className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 outline-none font-bold text-xs focus:border-emerald-500 focus:bg-white transition-all text-slate-900" placeholder="08X-XXX-XXXX..." />
+                  <input type="tel" name="phone" required className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 outline-none font-medium text-sm focus:border-emerald-500 focus:bg-white transition-all text-slate-900" placeholder="08X-XXX-XXXX..." />
                </div>
                <div className="space-y-1">
-                  <label className="text-[10px] font-extrabold text-slate-600 uppercase tracking-wider flex items-center gap-2">
+                  <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
                     💬 Line ID (ถ้ามี)
                   </label>
-                  <input type="text" name="lineId" className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 outline-none font-bold text-xs focus:border-emerald-500 focus:bg-white transition-all text-slate-900" placeholder="ID Line..." />
+                  <input type="text" name="lineId" className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 outline-none font-medium text-sm focus:border-emerald-500 focus:bg-white transition-all text-slate-900" placeholder="ID Line..." />
                </div>
                <div className="space-y-1">
-                  <label className="text-[10px] font-extrabold text-slate-600 uppercase tracking-wider flex items-center gap-2">
+                  <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
                     📧 อีเมล <span className="text-rose-500">*</span>
                   </label>
-                  <input type="email" name="email" required className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 outline-none font-bold text-xs focus:border-emerald-500 focus:bg-white transition-all text-slate-900" placeholder="ระบุอีเมล..." />
+                  <input type="email" name="email" required className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 outline-none font-medium text-sm focus:border-emerald-500 focus:bg-white transition-all text-slate-900" placeholder="ระบุอีเมล..." />
                </div>
                <div className="md:col-span-2 space-y-1">
-                  <label className="text-[10px] font-extrabold text-slate-600 uppercase tracking-wider flex items-center gap-2">
+                  <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
                     🏢 แผนก / หน่วยงาน <span className="text-rose-500">*</span>
                   </label>
-                  <select name="department" required className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 outline-none font-bold text-xs appearance-none cursor-pointer focus:border-emerald-500 focus:bg-white transition-all text-slate-900">
+                  <select name="department" required className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2.5 outline-none font-medium text-sm appearance-none cursor-pointer focus:border-emerald-500 focus:bg-white transition-all text-slate-900">
                     <option value="" disabled>คลิกเลือกหน่วยงาน...</option>
                     {[
                       "งานธุรการ", "งาน CKD", "งาน LAB", "องค์กรแพทย์", "งานกายภาพบำบัด", "งานการพยาบาล", "งานการพยาบาลป่วยผ่าตัดและวิสัญญีพยาบาล",
