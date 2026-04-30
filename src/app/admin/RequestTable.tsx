@@ -442,10 +442,13 @@ export default function RequestTable({ initialRequests }: { initialRequests: any
                         <UserCircle2 className="w-5 h-5" /> ข้อมูลผู้ติดต่อ
                      </div>
                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <div>
-                           <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">ชื่อ-สกุล</label>
-                           <div className="text-sm font-bold text-slate-900 flex items-center gap-2"><User border-slate-400="true" className="w-4 h-4 text-slate-400" /> {selectedReq.requester_name || "-"}</div>
-                        </div>
+                         <div>
+                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">ชื่อ-สกุล</label>
+                            <div className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                               <User className="w-4 h-4 text-slate-400" /> 
+                               {selectedReq.requester_name || "-"}
+                            </div>
+                         </div>
                         <div>
                            <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block mb-1">หน่วยงาน / แผนก</label>
                            <div className="text-sm font-bold text-slate-900 flex items-center gap-2"><Building2 className="w-4 h-4 text-slate-400" /> {selectedReq.department || "-"}</div>
