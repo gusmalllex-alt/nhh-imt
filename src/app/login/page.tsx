@@ -116,13 +116,13 @@ export default function LoginPage() {
       </div>
 
       {/* Right Panel - Form Container */}
-      <div className="w-full lg:w-7/12 xl:w-1/2 relative flex items-center justify-center p-6 sm:p-12 overflow-hidden">
+      <div className="w-full lg:w-7/12 xl:w-1/2 relative flex items-center justify-center p-6 sm:p-10 overflow-hidden">
         
         {/* Decorative blur on right side */}
         <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-emerald-200/40 rounded-full blur-[120px] opacity-60 pointer-events-none" />
         <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-blue-200/30 rounded-full blur-[120px] opacity-60 pointer-events-none" />
         
-        <div className="w-full max-w-md relative z-10 animate-in fade-in slide-in-from-bottom-8 duration-700">
+        <div className="w-full max-w-md relative z-10 animate-in fade-in slide-in-from-bottom-8 duration-700 mx-auto">
           
           {/* Mobile Back & Logo */}
           <div className="lg:hidden mb-12 text-center">
@@ -134,13 +134,16 @@ export default function LoginPage() {
              </div>
           </div>
 
-          <div className="mb-10 text-center lg:text-left drop-shadow-sm">
-            <h2 className="text-3xl lg:text-4xl font-black text-slate-900 tracking-tight mb-2">ยินดีต้อนรับ 👋</h2>
-            <p className="text-slate-500 font-medium text-sm lg:text-base">เข้าสู่ระบบเพื่อจัดการคำขอและติดตามสถานะงานระบบ IMT</p>
+          <div className="mb-10 text-center">
+            <h2 className="text-3xl lg:text-4xl font-black text-slate-900 tracking-tight mb-3">ยินดีต้อนรับ 👋</h2>
+            <p className="text-slate-500 font-medium text-sm lg:text-base leading-relaxed">
+              เข้าสู่ระบบเพื่อจัดการคำขอ<br className="sm:hidden" />และติดตามสถานะงานระบบ IMT
+            </p>
+            <div className="mx-auto mt-4 w-16 h-1 rounded-full bg-gradient-to-r from-emerald-400 to-teal-400 opacity-80" />
           </div>
 
           {/* Form Card */}
-          <div className="bg-white/80 backdrop-blur-2xl rounded-[2.5rem] shadow-2xl shadow-slate-200/60 border border-white p-8 sm:p-10">
+          <div className="bg-white/80 backdrop-blur-2xl rounded-[2.5rem] shadow-2xl shadow-slate-200/60 border border-white p-8 sm:p-10 mx-auto">
             <form onSubmit={handleLogin} className="space-y-6">
               
               {!supabase && (
