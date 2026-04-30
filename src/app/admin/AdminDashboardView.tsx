@@ -229,22 +229,26 @@ export default function AdminDashboardView({ requests }: { requests: any[] }) {
           </ResponsiveContainer>
         </ChartCard>
 
-        {/* 2. Urgency Bar */}
-        <ChartCard title="จำแนกตามความเร่งด่วน" sub="Request Urgency Level" icon={<Zap className="w-5 h-5 text-amber-500" />} accent="from-amber-500 to-rose-500">
+        {/* 2. Request Type Donut */}
+        <ChartCard title="ประเภทข้อมูลที่ขอ" sub="Request Category Distribution" icon={<BarChart2 className="w-5 h-5 text-purple-500" />} accent="from-purple-500 to-indigo-500">
           <ResponsiveContainer width="100%" height={280}>
-            <BarChart data={statsData.urgencyData} layout="vertical" margin={{ left: 8, right: 36 }}>
-              <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
-              <XAxis type="number" hide />
-              <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} width={115}
-                tick={{ fontSize: 10, fontWeight: 700, fill: '#475569' }} />
-              <Tooltip content={<CustomTooltip />} cursor={{ fill: '#f8fafc', radius: 8 }} />
-              <Bar dataKey="value" radius={[0, 10, 10, 0]} barSize={28}>
-                {statsData.urgencyData.map((entry, i) => (
-                  <Cell key={i} fill={entry.fill} />
+            <PieChart>
+              <Pie
+                data={statsData.typeData}
+                cx="50%" cy="50%"
+                innerRadius={68} outerRadius={100}
+                paddingAngle={3} cornerRadius={8}
+                dataKey="value"
+                label={({ name, value, percent }) => value > 0 ? `${value}` : ''}
+                labelLine={false}
+              >
+                {statsData.typeData.map((_, i) => (
+                  <Cell key={i} fill={TYPE_COLORS[i % TYPE_COLORS.length]} stroke="transparent" />
                 ))}
-                <LabelList dataKey="value" position="right" style={{ fontSize: '13px', fontWeight: 900, fill: '#475569' }} />
-              </Bar>
-            </BarChart>
+              </Pie>
+              <Tooltip content={<CustomTooltip />} />
+              <Legend verticalAlign="bottom" height={40} wrapperStyle={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }} />
+            </PieChart>
           </ResponsiveContainer>
         </ChartCard>
 
@@ -274,26 +278,22 @@ export default function AdminDashboardView({ requests }: { requests: any[] }) {
           </ResponsiveContainer>
         </ChartCard>
 
-        {/* 4. Request Type Donut */}
-        <ChartCard title="ประเภทข้อมูลที่ขอ" sub="Request Category Distribution" icon={<BarChart2 className="w-5 h-5 text-purple-500" />} accent="from-purple-500 to-indigo-500">
+        {/* 4. Urgency Bar */}
+        <ChartCard title="จำแนกตามความเร่งด่วน" sub="Request Urgency Level" icon={<Zap className="w-5 h-5 text-amber-500" />} accent="from-amber-500 to-rose-500">
           <ResponsiveContainer width="100%" height={280}>
-            <PieChart>
-              <Pie
-                data={statsData.typeData}
-                cx="50%" cy="50%"
-                innerRadius={68} outerRadius={100}
-                paddingAngle={3} cornerRadius={8}
-                dataKey="value"
-                label={({ name, value, percent }) => value > 0 ? `${value}` : ''}
-                labelLine={false}
-              >
-                {statsData.typeData.map((_, i) => (
-                  <Cell key={i} fill={TYPE_COLORS[i % TYPE_COLORS.length]} stroke="transparent" />
+            <BarChart data={statsData.urgencyData} layout="vertical" margin={{ left: 8, right: 36 }}>
+              <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
+              <XAxis type="number" hide />
+              <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} width={115}
+                tick={{ fontSize: 10, fontWeight: 700, fill: '#475569' }} />
+              <Tooltip content={<CustomTooltip />} cursor={{ fill: '#f8fafc', radius: 8 }} />
+              <Bar dataKey="value" radius={[0, 10, 10, 0]} barSize={28}>
+                {statsData.urgencyData.map((entry, i) => (
+                  <Cell key={i} fill={entry.fill} />
                 ))}
-              </Pie>
-              <Tooltip content={<CustomTooltip />} />
-              <Legend verticalAlign="bottom" height={40} wrapperStyle={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }} />
-            </PieChart>
+                <LabelList dataKey="value" position="right" style={{ fontSize: '13px', fontWeight: 900, fill: '#475569' }} />
+              </Bar>
+            </BarChart>
           </ResponsiveContainer>
         </ChartCard>
 
