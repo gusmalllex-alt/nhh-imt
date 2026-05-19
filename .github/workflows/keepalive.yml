@@ -2,8 +2,8 @@ name: Supabase Keep Alive
 
 on:
   schedule:
-    # รันทุกวันจันทร์และวันพฤหัสบดี เวลา 00:00 UTC เพื่อป้องกันปัญหา GitHub delay
-    - cron: "0 0 * * 1,4"
+    # รันทุกวัน เวลา 00:00 UTC เพื่อป้องกันปัญหาโปรเจกต์โดน Pause
+    - cron: "0 0 * * *"
   workflow_dispatch: # อนุญาตให้กดรันแบบ manual ได้จากหน้า Actions
 
 jobs:

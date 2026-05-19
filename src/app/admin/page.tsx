@@ -86,9 +86,16 @@ function AdminPageContent() {
             <h2 className="text-3xl font-black text-slate-900 tracking-tight">
               {activeTab === "dashboard" ? "แดชบอร์ดสรุปผล" : "รายการคำขอทั้งหมด"}
             </h2>
-            <p className="text-emerald-600 font-bold text-[10px] uppercase tracking-widest mt-1">
-               {activeTab === "dashboard" ? "Overview & Analytics" : "Request Management"}
-            </p>
+            <div className="flex items-center gap-3 mt-1.5">
+              <p className="text-emerald-600 font-bold text-[10px] uppercase tracking-widest">
+                 {activeTab === "dashboard" ? "Overview & Analytics" : "Request Management"}
+              </p>
+              <div className="w-1 h-1 bg-slate-300 rounded-full"></div>
+              <div className="flex items-center gap-1.5 px-2 py-0.5 bg-emerald-50 border border-emerald-100 rounded-md">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_5px_rgba(16,185,129,0.5)] animate-pulse"></span>
+                <span className="text-[9px] font-black text-emerald-700 uppercase tracking-widest">Database Active</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
