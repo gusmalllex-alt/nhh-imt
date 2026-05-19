@@ -439,13 +439,13 @@ export default function HomeClient() {
              <p className="text-emerald-400 font-bold text-xs">โรงพยาบาลหนองหาน · Nonghan Hospital</p>
            </div>
 
-           <div className="flex flex-col md:flex-row justify-center items-center gap-3 md:gap-6 text-emerald-100/70 font-bold text-xs">
+           <div className="flex flex-col md:flex-row justify-center gap-3 md:gap-6 text-emerald-100/70 font-bold text-xs">
               <span className="flex items-center justify-center gap-2"><Phone className="w-3.5 h-3.5" /> 042-261135-6 ต่อ 235 หรือ 469</span>
               <span className="flex items-center justify-center gap-2"><HeartPulse className="w-3.5 h-3.5" /> 24/7 Service</span>
-              
-              <div className="hidden md:block w-1 h-1 bg-white/20 rounded-full"></div>
-              
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/10 rounded-full backdrop-blur-sm mt-2 md:mt-0">
+           </div>
+
+           <div className="flex justify-center mt-2">
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/10 rounded-full backdrop-blur-sm">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse"></span>
                 <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Database Active</span>
               </div>
