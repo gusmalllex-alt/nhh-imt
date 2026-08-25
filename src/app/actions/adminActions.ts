@@ -119,11 +119,25 @@ export async function updateRequestStatus(requestId: string, updates: {
             .single();
 
           if (reqInfo && reqInfo.email) {
-             const subject = `[IMT Portal] อัปเดตสถานะคำขอ: ${reqInfo.report_name}`;
-             const body = `เรียนคุณ ${reqInfo.requester_name},\n\n` +
-               `คำขอข้อมูลเรื่อง "${reqInfo.report_name}" มีการเปลี่ยนแปลงสถานะเป็น: ${updates.status}\n\n` +
-               `คุณสามารถติดตามรายละเอียดและความคืบหน้าได้ที่: https://gusmalllex-alt.github.io/nhh-imt/status\n\n` +
-               `ขอบคุณครับ\nกลุ่มงานดิจิทัลและเทคโนโลยีสารสนเทศ โรงพยาบาลหนองหาน`;
+             const isCompleted = updates.status === "ดำเนินการเรียบร้อย";
+             const subject = isCompleted
+               ? `[IMT Portal] ดำเนินการเรียบร้อย: ${reqInfo.report_name} (ขอความอนุเคราะห์ประเมินความพึงพอใจ)`
+               : `[IMT Portal] อัปเดตสถานะคำขอ: ${reqInfo.report_name}`;
+
+             let body = `เรียนคุณ ${reqInfo.requester_name},\n\n` +
+               `คำขอข้อมูลเรื่อง "${reqInfo.report_name}" ของท่าน ขณะนี้มีการเปลี่ยนแปลงสถานะเป็น: 【${updates.status}】\n\n`;
+
+             if (isCompleted) {
+                body += `🎉 กลุ่มงานสุขภาพดิจิทัล ได้ดำเนินการจัดทำข้อมูลตามคำขอของท่านเสร็จสิ้นเรียบร้อยแล้วครับ\n\n` +
+                  `⭐ เพื่อนำผลไปพัฒนาและปรับปรุงคุณภาพการให้บริการให้ดียิ่งขึ้น ขอความอนุเคราะห์ท่านสละเวลาสั้นๆ ทำแบบประเมินความพึงพอใจ (1-5 ดาว) ได้ที่:\n` +
+                  `🔗 https://gusmalllex-alt.github.io/nhh-imt/status\n` +
+                  `*(ท่านสามารถคลิกปุ่ม "⭐ แบบประเมินความพึงพอใจ" ต่อท้ายคำขอของท่านในหน้าระบบติดตามสถานะได้ทันที)*\n\n`;
+             } else {
+                body += `ท่านสามารถติดตามรายละเอียดและความคืบหน้าได้ที่:\n` +
+                  `🔗 https://gusmalllex-alt.github.io/nhh-imt/status\n\n`;
+             }
+
+             body += `ขอบคุณครับ\nกลุ่มงานสุขภาพดิจิทัล โรงพยาบาลหนองหาน · จังหวัดอุดรธานี`;
              
              await sendEmailNotification(reqInfo.email, subject, body);
           }
