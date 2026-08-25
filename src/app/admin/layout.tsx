@@ -14,7 +14,8 @@ import {
   Loader2,
   ListTodo,
   Activity,
-  Clock
+  Clock,
+  Star
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
@@ -217,8 +218,9 @@ function AdminSidebarContent() {
   const view = searchParams.get("view");
 
   const links = [
-    { href: "/admin?view=dashboard", icon: LayoutDashboard, label: "Dashboard", isActive: pathname === "/admin" && view !== "requests" },
+    { href: "/admin?view=dashboard", icon: LayoutDashboard, label: "Dashboard", isActive: pathname === "/admin" && (!view || view === "dashboard") },
     { href: "/admin?view=requests", icon: ListTodo, label: "จัดการคำขอทั้งหมด", isActive: pathname === "/admin" && view === "requests" },
+    { href: "/admin?view=evaluations", icon: Star, label: "แบบประเมินความพึงพอใจ", isActive: pathname === "/admin" && view === "evaluations" },
     { href: "/admin/users", icon: Users, label: "จัดการบุคลากร", isActive: pathname === "/admin/users" }
   ];
 

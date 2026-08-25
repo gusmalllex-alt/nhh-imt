@@ -6,9 +6,10 @@ import {
   Search, Calendar as CalendarIcon, RefreshCw, ChevronLeft, ChevronRight, 
   Home, Activity, CheckCircle2, Clock, AlertCircle, PlayCircle, XCircle,
   FileDown, Info, Send, X, ClipboardList, User2, Building2, PhoneCall, Mail,
-  MessageSquare, UserCircle2, Calendar, FileText, Loader2, Zap
+  MessageSquare, UserCircle2, Calendar, FileText, Loader2, Zap,
+  Star, Award, Sparkles, HeartHandshake, Check
 } from "lucide-react";
-import { getRequests, addUserInformation } from "../actions/adminActions";
+import { getRequests, addUserInformation, submitEvaluation } from "../actions/adminActions";
 import logo from "../../../public/nhh.png";
 import Image from "next/image";
 
@@ -25,6 +26,16 @@ export default function StatusClient() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [replyText, setReplyText] = useState("");
   const [isSubmittingReply, setIsSubmittingReply] = useState(false);
+
+  // Evaluation States
+  const [evalModalOpen, setEvalModalOpen] = useState(false);
+  const [evaluatingReq, setEvaluatingReq] = useState<any | null>(null);
+  const [accuracyScore, setAccuracyScore] = useState<number>(5);
+  const [completenessScore, setCompletenessScore] = useState<number>(5);
+  const [timelinessScore, setTimelinessScore] = useState<number>(5);
+  const [suggestion, setSuggestion] = useState<string>("");
+  const [isSubmittingEval, setIsSubmittingEval] = useState(false);
+  const [evalSuccess, setEvalSuccess] = useState(false);
 
   const fetchData = async () => {
     setLoading(true);
@@ -116,6 +127,41 @@ export default function StatusClient() {
       alert("เกิดข้อผิดพลาด: " + result.message);
     }
     setIsSubmittingReply(false);
+  };
+
+  const handleOpenEvaluation = (req: any, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    setEvaluatingReq(req);
+    setAccuracyScore(5);
+    setCompletenessScore(5);
+    setTimelinessScore(5);
+    setSuggestion("");
+    setEvalSuccess(false);
+    setEvalModalOpen(true);
+  };
+
+  const handleSubmitEvaluation = async () => {
+    if (!evaluatingReq) return;
+    setIsSubmittingEval(true);
+    const res = await submitEvaluation({
+      requestId: evaluatingReq.id,
+      accuracyScore,
+      completenessScore,
+      timelinessScore,
+      suggestion
+    });
+
+    setIsSubmittingEval(false);
+    if (res.success) {
+      setEvalSuccess(true);
+      setTimeout(() => {
+        setEvalModalOpen(false);
+        setEvalSuccess(false);
+        handleRefresh();
+      }, 1800);
+    } else {
+      alert("ข้อผิดพลาด: " + res.message);
+    }
   };
 
   return (
@@ -265,15 +311,46 @@ export default function StatusClient() {
                       </div>
                     </td>
                     <td className="px-8 py-6 text-center">
-                      {getStatusBadge(req.status)}
+                      <div className="flex flex-col items-center gap-2">
+                        {getStatusBadge(req.status)}
+                        {req.status === "ดำเนินการเรียบร้อย" && (
+                          req.evaluation ? (
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-amber-50 text-amber-700 border border-amber-200 shadow-sm">
+                              <Star className="w-3 h-3 fill-amber-400 text-amber-500" />
+                              ประเมินแล้ว ({((req.evaluation.accuracy_score + req.evaluation.completeness_score + req.evaluation.timeliness_score) / 3).toFixed(1)}/5)
+                            </span>
+                          ) : (
+                            <button
+                              onClick={(e) => handleOpenEvaluation(req, e)}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-black bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-white shadow-md shadow-amber-500/25 hover:shadow-lg transition-all active:scale-95 animate-pulse"
+                            >
+                              <Star className="w-3.5 h-3.5 fill-white" />
+                              แบบประเมินความพึงพอใจ
+                            </button>
+                          )
+                        )}
+                      </div>
                     </td>
                     <td className="px-8 py-6 text-center" onClick={(e) => e.stopPropagation()}>
-                      <button 
-                        onClick={() => { setSelectedRequest(req); setIsModalOpen(true); }}
-                        className="w-10 h-10 bg-slate-50 text-slate-400 rounded-xl hover:bg-emerald-600 hover:text-white transition-all shadow-sm active:scale-90 flex items-center justify-center mx-auto border border-slate-100"
-                      >
-                         <Info className="w-5 h-5" />
-                      </button>
+                      <div className="flex items-center justify-center gap-2">
+                        {req.status === "ดำเนินการเรียบร้อย" && !req.evaluation && (
+                          <button
+                            onClick={(e) => handleOpenEvaluation(req, e)}
+                            title="ทำแบบประเมินความพึงพอใจ"
+                            className="px-3 py-2 bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 rounded-xl font-black text-xs transition-all shadow-sm flex items-center gap-1.5 group active:scale-90"
+                          >
+                            <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-500 group-hover:rotate-12 transition-transform" />
+                            <span className="hidden xl:inline">ประเมิน</span>
+                          </button>
+                        )}
+                        <button 
+                          onClick={() => { setSelectedRequest(req); setIsModalOpen(true); }}
+                          title="ดูรายละเอียดคำขอ"
+                          className="w-10 h-10 bg-slate-50 text-slate-400 rounded-xl hover:bg-emerald-600 hover:text-white transition-all shadow-sm active:scale-90 flex items-center justify-center border border-slate-100"
+                        >
+                           <Info className="w-5 h-5" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -441,6 +518,83 @@ export default function StatusClient() {
                      </div>
                   )}
 
+                  {/* Evaluation Box (If Completed) */}
+                  {selectedRequest.status === "ดำเนินการเรียบร้อย" && (
+                    <div className="bg-gradient-to-br from-amber-500/10 via-emerald-500/10 to-teal-500/10 rounded-3xl p-8 border border-amber-200/60 shadow-lg relative overflow-hidden">
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div>
+                          <div className="flex items-center gap-2 text-amber-700 font-black text-[11px] uppercase tracking-wider mb-1">
+                            <Sparkles className="w-4 h-4 text-amber-500 animate-spin" /> แบบประเมินความพึงพอใจการให้บริการ
+                          </div>
+                          <p className="text-xs text-slate-600 font-medium">
+                            {selectedRequest.evaluation 
+                              ? "ท่านได้ทำการประเมินความพึงพอใจสำหรับคำขอนี้เรียบร้อยแล้ว ขอบพระคุณสำหรับข้อเสนอแนะ" 
+                              : "งานของท่านดำเนินการเรียบร้อยแล้ว ขอความกรุณาประเมินความพึงพอใจเพื่อนำไปพัฒนาการให้บริการต่อไป"}
+                          </p>
+                        </div>
+                        {selectedRequest.evaluation ? (
+                          <div className="bg-white px-5 py-3 rounded-2xl shadow-sm border border-amber-200 flex items-center gap-3">
+                            <div className="text-right">
+                              <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest">คะแนนเฉลี่ย</div>
+                              <div className="text-base font-black text-amber-600">
+                                {((selectedRequest.evaluation.accuracy_score + selectedRequest.evaluation.completeness_score + selectedRequest.evaluation.timeliness_score) / 3).toFixed(1)} / 5
+                              </div>
+                            </div>
+                            <div className="flex text-amber-400">
+                              {[1,2,3,4,5].map((s) => (
+                                <Star 
+                                  key={s} 
+                                  className={`w-4 h-4 ${s <= Math.round((selectedRequest.evaluation.accuracy_score + selectedRequest.evaluation.completeness_score + selectedRequest.evaluation.timeliness_score) / 3) ? 'fill-amber-400 text-amber-400' : 'text-slate-200'}`} 
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => {
+                              setIsModalOpen(false);
+                              handleOpenEvaluation(selectedRequest);
+                            }}
+                            className="px-6 py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-white rounded-2xl font-black text-xs shadow-lg shadow-amber-500/25 active:scale-95 transition-all flex items-center gap-2 shrink-0 animate-bounce"
+                          >
+                            <Star className="w-4 h-4 fill-white" />
+                            ทำแบบประเมินความพึงพอใจ
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Display already evaluated breakdown */}
+                      {selectedRequest.evaluation && (
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-6 pt-6 border-t border-amber-200/50">
+                          <div className="bg-white/80 p-3.5 rounded-xl border border-amber-100">
+                            <div className="text-[10px] font-bold text-slate-500">1. ความถูกต้อง</div>
+                            <div className="text-sm font-black text-amber-600 mt-1 flex items-center gap-1">
+                              {selectedRequest.evaluation.accuracy_score} / 5 ⭐
+                            </div>
+                          </div>
+                          <div className="bg-white/80 p-3.5 rounded-xl border border-amber-100">
+                            <div className="text-[10px] font-bold text-slate-500">2. ความครบถ้วน</div>
+                            <div className="text-sm font-black text-amber-600 mt-1 flex items-center gap-1">
+                              {selectedRequest.evaluation.completeness_score} / 5 ⭐
+                            </div>
+                          </div>
+                          <div className="bg-white/80 p-3.5 rounded-xl border border-amber-100">
+                            <div className="text-[10px] font-bold text-slate-500">3. ความทันเวลา</div>
+                            <div className="text-sm font-black text-amber-600 mt-1 flex items-center gap-1">
+                              {selectedRequest.evaluation.timeliness_score} / 5 ⭐
+                            </div>
+                          </div>
+                          {selectedRequest.evaluation.suggestion && (
+                            <div className="col-span-1 sm:col-span-3 bg-white/80 p-4 rounded-xl border border-amber-100 mt-1">
+                              <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">ข้อเสนอแนะ:</div>
+                              <p className="text-xs text-slate-700 font-medium mt-1 italic">"{selectedRequest.evaluation.suggestion}"</p>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   {/* Requester Info */}
                   <div className="bg-slate-100/50 rounded-3xl border border-slate-200 p-8">
                      <div className="flex items-center gap-3 text-slate-400 font-black text-[10px] uppercase tracking-[0.2em] mb-8">
@@ -471,6 +625,200 @@ export default function StatusClient() {
             <div className="px-8 py-6 bg-white border-t border-slate-100 flex justify-end">
                <button onClick={() => setIsModalOpen(false)} className="px-10 py-3.5 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 shadow-xl transition-all active:scale-95">ปิดหน้าต่าง</button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* --- Evaluation Rating Modal --- */}
+      {evalModalOpen && evaluatingReq && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 sm:p-6 bg-slate-950/70 backdrop-blur-md animate-in fade-in duration-300">
+          <div className="relative w-full max-w-xl bg-white rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 border border-amber-100">
+            
+            {/* Header */}
+            <div className="px-8 py-6 bg-gradient-to-r from-amber-500 via-amber-600 to-emerald-700 text-white flex justify-between items-center relative overflow-hidden">
+              <div className="absolute right-0 top-0 opacity-10 pointer-events-none transform translate-x-4 -translate-y-4">
+                <Star className="w-40 h-40 fill-white" />
+              </div>
+              <div className="relative z-10 flex items-center gap-3.5">
+                <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/20 shadow-inner">
+                  <Star className="w-6 h-6 fill-white text-white animate-spin" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-black tracking-tight leading-tight">แบบประเมินความพึงพอใจ</h3>
+                  <p className="text-amber-100 text-xs font-bold mt-0.5">การขอรับบริการข้อมูลสารสนเทศ (IMT)</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setEvalModalOpen(false)} 
+                className="relative z-10 p-2 hover:bg-white/20 rounded-full transition-all text-white/80 hover:text-white"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Target Request Info */}
+            <div className="bg-amber-50/60 px-8 py-4 border-b border-amber-100 flex items-center justify-between">
+              <div className="flex flex-col">
+                <span className="text-[10px] font-black text-amber-800/60 uppercase tracking-widest">เรื่องที่ขอรับบริการ</span>
+                <span className="text-sm font-black text-slate-800 line-clamp-1">{evaluatingReq.title}</span>
+              </div>
+              <span className="text-xs font-bold text-amber-700 bg-amber-100/80 px-3 py-1 rounded-lg">
+                {evaluatingReq.department}
+              </span>
+            </div>
+
+            {/* Evaluation Form Content */}
+            <div className="p-8 space-y-6 max-h-[70vh] overflow-y-auto custom-scrollbar font-sans">
+              
+              {evalSuccess ? (
+                <div className="py-12 flex flex-col items-center justify-center text-center animate-in zoom-in-95">
+                  <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 mb-4 shadow-lg shadow-emerald-500/20 border-2 border-emerald-300">
+                    <Check className="w-10 h-10" />
+                  </div>
+                  <h4 className="text-2xl font-black text-slate-900 mb-2">ขอบพระคุณสำหรับข้อเสนอแนะ!</h4>
+                  <p className="text-sm text-slate-500 font-bold max-w-sm">
+                    ระบบได้บันทึกการประเมินความพึงพอใจของท่านเรียบร้อยแล้ว ทีมงานจะนำผลไปพัฒนาการให้บริการให้ดียิ่งขึ้นครับ
+                  </p>
+                </div>
+              ) : (
+                <>
+                  {/* Rating Item 1: Accuracy */}
+                  <div className="bg-slate-50/80 p-5 rounded-2xl border border-slate-200/80">
+                    <div className="flex justify-between items-center mb-3">
+                      <div>
+                        <label className="text-sm font-black text-slate-800 block">
+                          1. ระดับความพึงพอใจในด้านความถูกต้อง <span className="text-rose-500">*</span>
+                        </label>
+                        <span className="text-[11px] text-slate-500 font-medium">ความถูกต้องของข้อมูลตามที่ระบุ</span>
+                      </div>
+                      <span className="text-xs font-black text-amber-600 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200">
+                        {accuracyScore === 5 ? "มากที่สุด (5)" : accuracyScore === 4 ? "มาก (4)" : accuracyScore === 3 ? "ปานกลาง (3)" : accuracyScore === 2 ? "น้อย (2)" : "น้อยที่สุด (1)"}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between gap-2 pt-1">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button
+                          key={star}
+                          type="button"
+                          onClick={() => setAccuracyScore(star)}
+                          className={`flex-1 py-3 rounded-xl flex flex-col items-center justify-center gap-1 transition-all ${
+                            accuracyScore >= star
+                              ? 'bg-amber-400/15 border-2 border-amber-400 text-amber-600 shadow-sm'
+                              : 'bg-white border border-slate-200 text-slate-400 hover:bg-slate-100'
+                          }`}
+                        >
+                          <Star className={`w-6 h-6 ${accuracyScore >= star ? 'fill-amber-400 text-amber-500' : 'text-slate-300'}`} />
+                          <span className="text-[10px] font-black">{star}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Rating Item 2: Completeness */}
+                  <div className="bg-slate-50/80 p-5 rounded-2xl border border-slate-200/80">
+                    <div className="flex justify-between items-center mb-3">
+                      <div>
+                        <label className="text-sm font-black text-slate-800 block">
+                          2. ระดับความพึงพอใจในด้านความครบถ้วน <span className="text-rose-500">*</span>
+                        </label>
+                        <span className="text-[11px] text-slate-500 font-medium">ความสมบูรณ์ ครบถ้วนของข้อมูลและรายงาน</span>
+                      </div>
+                      <span className="text-xs font-black text-amber-600 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200">
+                        {completenessScore === 5 ? "มากที่สุด (5)" : completenessScore === 4 ? "มาก (4)" : completenessScore === 3 ? "ปานกลาง (3)" : completenessScore === 2 ? "น้อย (2)" : "น้อยที่สุด (1)"}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between gap-2 pt-1">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button
+                          key={star}
+                          type="button"
+                          onClick={() => setCompletenessScore(star)}
+                          className={`flex-1 py-3 rounded-xl flex flex-col items-center justify-center gap-1 transition-all ${
+                            completenessScore >= star
+                              ? 'bg-amber-400/15 border-2 border-amber-400 text-amber-600 shadow-sm'
+                              : 'bg-white border border-slate-200 text-slate-400 hover:bg-slate-100'
+                          }`}
+                        >
+                          <Star className={`w-6 h-6 ${completenessScore >= star ? 'fill-amber-400 text-amber-500' : 'text-slate-300'}`} />
+                          <span className="text-[10px] font-black">{star}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Rating Item 3: Timeliness */}
+                  <div className="bg-slate-50/80 p-5 rounded-2xl border border-slate-200/80">
+                    <div className="flex justify-between items-center mb-3">
+                      <div>
+                        <label className="text-sm font-black text-slate-800 block">
+                          3. ระดับความพึงพอใจในด้านความทันเวลา <span className="text-rose-500">*</span>
+                        </label>
+                        <span className="text-[11px] text-slate-500 font-medium">ความรวดเร็วและทันต่อเวลาที่กำหนด</span>
+                      </div>
+                      <span className="text-xs font-black text-amber-600 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200">
+                        {timelinessScore === 5 ? "มากที่สุด (5)" : timelinessScore === 4 ? "มาก (4)" : timelinessScore === 3 ? "ปานกลาง (3)" : timelinessScore === 2 ? "น้อย (2)" : "น้อยที่สุด (1)"}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between gap-2 pt-1">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button
+                          key={star}
+                          type="button"
+                          onClick={() => setTimelinessScore(star)}
+                          className={`flex-1 py-3 rounded-xl flex flex-col items-center justify-center gap-1 transition-all ${
+                            timelinessScore >= star
+                              ? 'bg-amber-400/15 border-2 border-amber-400 text-amber-600 shadow-sm'
+                              : 'bg-white border border-slate-200 text-slate-400 hover:bg-slate-100'
+                          }`}
+                        >
+                          <Star className={`w-6 h-6 ${timelinessScore >= star ? 'fill-amber-400 text-amber-500' : 'text-slate-300'}`} />
+                          <span className="text-[10px] font-black">{star}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Item 4: Suggestions (Optional) */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-black text-slate-800 flex items-center justify-between">
+                      <span>4. ข้อเสนอแนะเพิ่มเติม</span>
+                      <span className="text-[11px] font-bold text-slate-400">(ไม่บังคับกรอก)</span>
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={suggestion}
+                      onChange={(e) => setSuggestion(e.target.value)}
+                      placeholder="ระบุข้อเสนอแนะ หรือสิ่งที่อยากให้พัฒนาเพิ่มเติม..."
+                      className="w-full bg-slate-50 border border-slate-200 rounded-2xl p-4 text-sm font-medium text-slate-800 outline-none focus:bg-white focus:border-amber-500 focus:ring-4 focus:ring-amber-500/10 transition-all resize-none"
+                    />
+                  </div>
+
+                  {/* Submit Button */}
+                  <div className="pt-2">
+                    <button
+                      type="button"
+                      disabled={isSubmittingEval}
+                      onClick={handleSubmitEvaluation}
+                      className="w-full py-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-white rounded-2xl font-black text-sm shadow-xl shadow-amber-500/30 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                    >
+                      {isSubmittingEval ? (
+                        <>
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                          กำลังส่งผลการประเมิน...
+                        </>
+                      ) : (
+                        <>
+                          <Star className="w-5 h-5 fill-white" />
+                          ส่งแบบประเมินความพึงพอใจ
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </>
+              )}
+
+            </div>
+
           </div>
         </div>
       )}

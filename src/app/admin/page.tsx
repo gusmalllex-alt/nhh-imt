@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { getRequests } from "../actions/adminActions";
-import { LayoutDashboard, AlertCircle, Loader2, ListTodo, PieChart } from "lucide-react";
+import { LayoutDashboard, AlertCircle, Loader2, ListTodo, PieChart, Star } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import RequestTable from "./RequestTable";
 import AdminDashboardView from "./AdminDashboardView";
+import EvaluationDashboardView from "./EvaluationDashboardView";
 import { Suspense } from "react";
 
 export default function AdminPage() {
@@ -22,7 +23,8 @@ function AdminPageContent() {
   const [error, setError] = useState<string | null>(null);
   
   const searchParams = useSearchParams();
-  const activeTab = searchParams.get("view") === "requests" ? "requests" : "dashboard";
+  const view = searchParams.get("view");
+  const activeTab = view === "requests" ? "requests" : view === "evaluations" ? "evaluations" : "dashboard";
 
   const fetchData = async () => {
     setLoading(true);
@@ -76,19 +78,19 @@ function AdminPageContent() {
       {/* Header & Tabs */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white/50 backdrop-blur-sm p-6 rounded-3xl border border-slate-200/60 shadow-sm relative overflow-hidden">
          <div className="absolute right-0 top-0 opacity-5 pointer-events-none transform translate-x-1/4 -translate-y-1/4">
-             {activeTab === "dashboard" ? <PieChart className="w-32 h-32" /> : <ListTodo className="w-32 h-32" />}
+             {activeTab === "dashboard" ? <PieChart className="w-32 h-32" /> : activeTab === "evaluations" ? <Star className="w-32 h-32" /> : <ListTodo className="w-32 h-32" />}
          </div>
         <div className="relative z-10 flex items-center gap-4">
           <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-emerald-600 shadow-sm ring-1 ring-slate-100">
-             {activeTab === "dashboard" ? <PieChart className="w-6 h-6" /> : <ListTodo className="w-6 h-6" />}
+             {activeTab === "dashboard" ? <PieChart className="w-6 h-6" /> : activeTab === "evaluations" ? <Star className="w-6 h-6 fill-amber-400 text-amber-500" /> : <ListTodo className="w-6 h-6" />}
           </div>
           <div>
             <h2 className="text-3xl font-black text-slate-900 tracking-tight">
-              {activeTab === "dashboard" ? "แดชบอร์ดสรุปผล" : "รายการคำขอทั้งหมด"}
+              {activeTab === "dashboard" ? "แดชบอร์ดสรุปผล" : activeTab === "evaluations" ? "แบบประเมินความพึงพอใจ" : "รายการคำขอทั้งหมด"}
             </h2>
             <div className="flex items-center gap-3 mt-1.5">
               <p className="text-emerald-600 font-bold text-[10px] uppercase tracking-widest">
-                 {activeTab === "dashboard" ? "Overview & Analytics" : "Request Management"}
+                 {activeTab === "dashboard" ? "Overview & Analytics" : activeTab === "evaluations" ? "Satisfaction Survey & Feedback" : "Request Management"}
               </p>
               <div className="w-1 h-1 bg-slate-300 rounded-full"></div>
               <div className="flex items-center gap-1.5 px-2 py-0.5 bg-emerald-50 border border-emerald-100 rounded-md">
@@ -104,6 +106,8 @@ function AdminPageContent() {
       <div className="transition-all duration-500">
         {activeTab === "dashboard" ? (
           <AdminDashboardView requests={requests} />
+        ) : activeTab === "evaluations" ? (
+          <EvaluationDashboardView requests={requests} />
         ) : (
           <RequestTable initialRequests={requests} />
         )}
