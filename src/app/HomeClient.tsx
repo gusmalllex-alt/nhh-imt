@@ -61,7 +61,8 @@ export default function HomeClient() {
   const dataTypes = [
     { id: 'ตัวชี้วัด', label: 'ตัวชี้วัด (KPIs)', emoji: '📊', desc: 'ข้อมูลตัวชี้วัด และสถิติเปรียบเทียบตาราง' },
     { id: 'รายงาน', label: 'รายงาน (Reports)', emoji: '📋', desc: 'แฟ้มตารางข้อมูลดิบ หรือสรุปผลต่างๆ' },
-    { id: 'แดชบอร์ด', label: 'แดชบอร์ด (Dashboard)', emoji: '🖥️', desc: 'ระบบกราฟสรุปภาพรวมสำหรับผู้บริหาร' }
+    { id: 'แดชบอร์ด', label: 'แดชบอร์ด (Dashboard)', emoji: '🖥️', desc: 'ระบบกราฟสรุปภาพรวมสำหรับผู้บริหาร' },
+    { id: 'แบบประเมิน', label: 'แบบประเมิน (Evaluation)', emoji: '📝', desc: 'แบบสำรวจและแบบประเมินผล' }
   ];
 
   const urgencies = [
@@ -149,7 +150,7 @@ export default function HomeClient() {
                 <label className="text-sm font-bold text-slate-700 flex items-center gap-2">
                    📑 รายละเอียดที่ต้องการ <span className="text-rose-500">*</span>
                 </label>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                   {dataTypes.map((type) => (
                     <label 
                       key={type.id}

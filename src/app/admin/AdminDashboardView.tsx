@@ -26,7 +26,7 @@ const URGENCY_COLORS: Record<string, string> = {
 };
 
 const FREQ_COLORS = ["#6366f1","#3b82f6","#06b6d4","#10b981","#f59e0b","#f43f5e"];
-const TYPE_COLORS = ["#6366f1","#10b981","#f59e0b"];
+const TYPE_COLORS = ["#6366f1","#10b981","#f59e0b","#ec4899","#8b5cf6","#06b6d4"];
 
 const ALL_STATUSES = [
   "รอดำเนินการ","รับเรื่อง","กำลังดำเนินการ",
