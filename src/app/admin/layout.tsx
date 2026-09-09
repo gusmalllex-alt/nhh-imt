@@ -190,6 +190,15 @@ export default function AdminLayout({
           </div>
         </header>
 
+        {/* ── Mobile Admin Navigation (visible only on phone) ── */}
+        <div className="md:hidden relative z-10 bg-white/80 backdrop-blur-xl border-b border-slate-200/50 shadow-sm">
+          <div className="flex items-center gap-2 px-4 py-3 overflow-x-auto scrollbar-hide">
+            <Suspense fallback={<Loader2 className="w-4 h-4 animate-spin text-emerald-500 mx-auto" />}>
+              <AdminMobileNav onLogout={handleLogout} />
+            </Suspense>
+          </div>
+        </div>
+
         {/* Page Body */}
         <div className="flex-1 overflow-y-auto p-6 md:p-8 scroll-smooth custom-scrollbar">
           <div className="max-w-7xl mx-auto min-h-full flex flex-col">
@@ -315,5 +324,45 @@ function LoginHistoryList({ userEmail }: { userEmail: string | undefined }) {
         </div>
       ))}
     </div>
+  );
+}
+
+function AdminMobileNav({ onLogout }: { onLogout: () => void }) {
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const view = searchParams.get("view");
+
+  const links = [
+    { href: "/admin?view=dashboard", icon: LayoutDashboard, label: "Dashboard", isActive: pathname === "/admin" && (!view || view === "dashboard") },
+    { href: "/admin?view=requests", icon: ListTodo, label: "คำขอ", isActive: pathname === "/admin" && view === "requests" },
+    { href: "/admin?view=evaluations", icon: Star, label: "ประเมิน", isActive: pathname === "/admin" && view === "evaluations" },
+    { href: "/admin/users", icon: Users, label: "บุคลากร", isActive: pathname === "/admin/users" },
+    { href: "/admin/settings", icon: Settings, label: "ตั้งค่า", isActive: pathname === "/admin/settings" },
+  ];
+
+  return (
+    <>
+      {links.map((link, idx) => (
+        <Link
+          key={idx}
+          href={link.href}
+          className={`flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-xs font-black transition-all active:scale-95 whitespace-nowrap ${
+            link.isActive
+              ? "bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-200"
+              : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+          }`}
+        >
+          <link.icon className="w-3.5 h-3.5" />
+          {link.label}
+        </Link>
+      ))}
+      <button
+        onClick={onLogout}
+        className="flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-full text-xs font-black bg-rose-50 text-rose-600 hover:bg-rose-100 transition-all active:scale-95 whitespace-nowrap"
+      >
+        <LogOut className="w-3.5 h-3.5" />
+        ออก
+      </button>
+    </>
   );
 }
