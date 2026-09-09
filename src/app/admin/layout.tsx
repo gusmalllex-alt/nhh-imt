@@ -81,7 +81,7 @@ export default function AdminLayout({
     <div className="flex h-screen bg-slate-50 font-sans text-gray-800 selection:bg-emerald-200">
       
       {/* ── Sidebar ─────────────────────────────────────── */}
-      <aside className="w-72 bg-gradient-to-b from-slate-950 via-slate-900 to-emerald-950 text-white flex flex-col shadow-2xl z-20 relative overflow-hidden">
+      <aside className="hidden md:flex w-72 bg-gradient-to-b from-slate-950 via-slate-900 to-emerald-950 text-white flex-col shadow-2xl z-20 relative overflow-hidden">
         {/* Sidebar background effects */}
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-[0.05]" />
         <div className="absolute -top-24 -left-24 w-64 h-64 bg-emerald-500/10 rounded-full blur-[80px] pointer-events-none" />
