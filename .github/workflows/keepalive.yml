@@ -2,14 +2,19 @@ name: Supabase Keep Alive
 
 on:
   schedule:
-    # รันทุกวัน เวลา 00:00 UTC เพื่อป้องกันปัญหาโปรเจกต์โดน Pause
+    # รันทุกวัน เวลา 00:00 UTC (07:00 เวลาไทย)
     - cron: "0 0 * * *"
   workflow_dispatch: # อนุญาตให้กดรันแบบ manual ได้จากหน้า Actions
+
+# ต้องมี write permission เพื่อสร้าง commit ป้องกัน GitHub ปิด workflow
+permissions:
+  contents: write
 
 jobs:
   ping-supabase:
     runs-on: ubuntu-latest
     steps:
+      # Step 1: Ping Supabase เพื่อป้องกัน Project ถูก Pause
       - name: Ping Supabase Database
         env:
           SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
@@ -19,20 +24,34 @@ jobs:
             echo "Error: Missing Supabase secrets"
             exit 1
           fi
-          
+
           echo "Pinging Supabase REST API to prevent auto-pause..."
-          
-          # ดึงข้อมูล 1 แถวจากตาราง requests เพื่อสร้าง activity ให้ฐานข้อมูล
+
           HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
             -X GET "${SUPABASE_URL}/rest/v1/requests?select=id&limit=1" \
             -H "apikey: ${SUPABASE_ANON_KEY}" \
             -H "Authorization: Bearer ${SUPABASE_ANON_KEY}")
-            
+
           echo "Supabase API returned HTTP status: $HTTP_STATUS"
-          
+
           if [ "$HTTP_STATUS" -eq 200 ] || [ "$HTTP_STATUS" -eq 204 ]; then
-            echo "✅ Ping successful!"
+            echo "✅ Supabase ping successful!"
           else
-            echo "❌ Ping failed with status $HTTP_STATUS"
+            echo "❌ Supabase ping failed with status $HTTP_STATUS"
             exit 1
           fi
+
+      # Step 2: สร้าง commit เล็กๆ เพื่อให้ repo มี activity
+      # ป้องกัน GitHub ปิด scheduled workflow หลัง 60 วันไม่มี activity
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Keep repo alive commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          date > .github/.keepalive
+          git add .github/.keepalive
+          git diff --cached --quiet && echo "No changes to commit" || \
+            git commit -m "chore: keep-alive $(date -u +%Y-%m-%d)" && \
+            git push
